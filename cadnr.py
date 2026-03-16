@@ -651,9 +651,9 @@ class App(tk.Tk):
         self._qr_github_ultimo_erro = ""
         self.github_repo = "Elizangela2805/documentos"
         self.github_branch = "main"
+        self.github_dir = "_pdf_gerados"
         self.github_pages_base = "https://elizangela2805.github.io/documentos"
         self.github_token = ""
-        self._migrar_pastas_documentos_legadas()
 
         container = ttk.Frame(self, padding=16)
         container.pack(fill="both", expand=True)
@@ -666,15 +666,18 @@ class App(tk.Tk):
         aba_outros_documentos = ttk.Frame(notebook, padding=18)
         aba_imprimir = ttk.Frame(notebook, padding=18)
         aba_cadastros = ttk.Frame(notebook, padding=18)
+        aba_engrenagem = ttk.Frame(notebook, padding=18)
         self.aba_cadnr = aba_cadnr
         self.aba_outros_documentos = aba_outros_documentos
         self.aba_imprimir = aba_imprimir
         self.aba_cadastros = aba_cadastros
+        self.aba_engrenagem = aba_engrenagem
 
         notebook.add(aba_cadnr, text="CADNR")
         notebook.add(aba_outros_documentos, text="OUTROS DOCUMENTOS")
         notebook.add(aba_imprimir, text="IMPRIMIR")
         notebook.add(aba_cadastros, text="CADASTROS")
+        notebook.add(aba_engrenagem, text="⚙")
 
         cert_imprimir_frame = ttk.Frame(aba_imprimir)
         cert_imprimir_frame.pack(anchor="w", fill="both", expand=True)
@@ -744,7 +747,7 @@ class App(tk.Tk):
         ).grid(row=0, column=0, sticky="w")
         ttk.Button(
             footer_imprimir,
-            text="Abrir Projetta HTML",
+            text="Abrir Site de Uploads",
             command=self._abrir_projetta_html_no_chrome,
             width=20,
         ).grid(row=0, column=1, sticky="w", padx=(8, 0))
@@ -755,52 +758,32 @@ class App(tk.Tk):
             width=20,
         ).grid(row=0, column=2, sticky="e")
 
-        botoes = ttk.Frame(aba_cadnr)
-        botoes.pack(anchor="w")
+        engrenagem_wrap = ttk.Frame(aba_engrenagem)
+        engrenagem_wrap.pack(fill="both", expand=True)
+        engrenagem_wrap.columnconfigure(0, weight=1)
+        engrenagem_wrap.rowconfigure(0, weight=1)
 
-        ttk.Button(
-            botoes,
-            text="CADASTRAR EMPRESA",
-            style="Success.TButton",
-            command=self.abrir_cadastro_empresa,
-            width=19,
-        ).grid(row=0, column=0, padx=(0, 6), pady=4)
+        botoes = ttk.Frame(engrenagem_wrap)
+        botoes.grid(row=0, column=0)
+        botoes.columnconfigure(0, weight=1)
+        botoes.columnconfigure(1, weight=1)
 
-        ttk.Button(
-            botoes,
-            text="CADASTRAR FUNCIONARIO",
-            style="Success.TButton",
-            command=self.abrir_cadastro_funcionario,
-            width=19,
-        ).grid(row=0, column=1, padx=(0, 6), pady=4)
-        ttk.Button(
-            botoes,
-            text="CADASTRAR FUNCAO",
-            style="Success.TButton",
-            command=self.abrir_cadastro_funcao,
-            width=19,
-        ).grid(row=0, column=2, padx=(0, 6), pady=4)
-        ttk.Button(
-            botoes,
-            text="CADASTRAR DOCUMENTO",
-            style="Success.TButton",
-            command=self.abrir_cadastro_documento,
-            width=19,
-        ).grid(row=0, column=3, pady=4)
-        ttk.Button(
-            botoes,
-            text="ASSINATURA DGT",
-            style="Success.TButton",
-            command=self._abrir_configuracao_assinatura_digital,
-            width=19,
-        ).grid(row=0, column=4, padx=(6, 0), pady=4)
-        ttk.Button(
-            botoes,
-            text="CONFIG GITHUB",
-            style="Success.TButton",
-            command=self._abrir_configuracao_github,
-            width=19,
-        ).grid(row=0, column=5, padx=(6, 0), pady=4)
+        acoes_engrenagem = [
+            ("CADASTRAR EMPRESA", self.abrir_cadastro_empresa),
+            ("CADASTRAR FUNCIONARIO", self.abrir_cadastro_funcionario),
+            ("CADASTRAR FUNCAO", self.abrir_cadastro_funcao),
+            ("CADASTRAR DOCUMENTO", self.abrir_cadastro_documento),
+            ("ASSINATURA DGT", self._abrir_configuracao_assinatura_digital),
+            ("CONFIG SITE", self._abrir_configuracao_github),
+        ]
+        for idx, (txt, cmd) in enumerate(acoes_engrenagem):
+            ttk.Button(
+                botoes,
+                text=txt,
+                style="Success.TButton",
+                command=cmd,
+                width=24,
+            ).grid(row=idx // 2, column=idx % 2, padx=10, pady=8, sticky="ew")
 
         filtros = ttk.Frame(aba_cadnr)
         filtros.pack(anchor="w", fill="x", pady=(16, 0))
@@ -864,7 +847,6 @@ class App(tk.Tk):
         self.nr_canvas.bind("<Configure>", self._on_nr_canvas_configure)
         self.nr_canvas.bind("<Enter>", self._ativar_scroll_mousewheel_nr)
         self.nr_canvas.bind("<Leave>", self._desativar_scroll_mousewheel_nr)
-        self._render_campos_nr()
         ttk.Button(
             nr_frame,
             text="ADICIONAR",
@@ -920,16 +902,32 @@ class App(tk.Tk):
         ).grid(row=2, column=3, sticky="w", pady=(8, 0))
 
         self._carregar_dados()
-        self._aplicar_configuracao_github_ambiente()
-        if self._limpar_nr_nao_usadas_no_projeto():
-            self._salvar_dados()
-        self._garantir_pastas_empresas()
         self._desmarcar_tudo_nr(salvar=False, atualizar_ui=False)
-        self._render_campos_nr()
-        self._atualizar_select_empresas()
-        self._atualizar_lista_nr_imprimir()
-        self._atualizar_preview_nr()
+        self._atualizar_select_empresas(limpar_nr=False)
+        self.after(120, self._pos_inicializacao_pesada)
         self.after(800, self._sincronizar_documentos_salvos_pendentes)
+
+    def _pos_inicializacao_pesada(self):
+        alterou_nr = False
+        try:
+            self._migrar_pastas_documentos_legadas()
+        except Exception:
+            pass
+        try:
+            alterou_nr = bool(self._limpar_nr_nao_usadas_no_projeto())
+        except Exception:
+            alterou_nr = False
+        try:
+            self._garantir_pastas_empresas()
+        except Exception:
+            pass
+        if alterou_nr:
+            try:
+                self._salvar_dados()
+            except Exception:
+                pass
+        empresa_id = self._empresa_id_selecionada_main()
+        self._aplicar_filtro_nr_por_empresa(empresa_id, limpar_nr=False)
 
     def _empresa_id_selecionada_main(self):
         idx = self.select_empresa.current()
@@ -1075,8 +1073,9 @@ class App(tk.Tk):
             nomes[chave] = nome_exibicao
         return nomes
 
-    def _aplicar_filtro_nr_por_empresa(self, empresa_id):
-        self._limpar_nr_nao_usadas_no_projeto()
+    def _aplicar_filtro_nr_por_empresa(self, empresa_id, limpar_nr=True):
+        if limpar_nr:
+            self._limpar_nr_nao_usadas_no_projeto()
         nomes_pasta = self._nomes_nr_na_pasta_empresa(empresa_id)
         if nomes_pasta is None:
             self.nr_filtradas_indices = []
@@ -1644,7 +1643,7 @@ class App(tk.Tk):
             self._carregar_outros_documentos_empresa_selecionada()
         self._salvar_dados()
 
-    def _atualizar_select_empresas(self, preservar_id=None):
+    def _atualizar_select_empresas(self, preservar_id=None, limpar_nr=True):
         self.main_empresa_ids = [None] + [empresa["id"] for empresa in self.empresas]
         self.select_empresa["values"] = [""] + [
             self._empresa_label(empresa) for empresa in self.empresas
@@ -1657,7 +1656,7 @@ class App(tk.Tk):
 
         self.select_empresa.current(idx)
         self._atualizar_select_funcionarios(self.main_empresa_ids[idx])
-        self._aplicar_filtro_nr_por_empresa(self.main_empresa_ids[idx])
+        self._aplicar_filtro_nr_por_empresa(self.main_empresa_ids[idx], limpar_nr=limpar_nr)
         self._atualizar_imprimir_empresas(preservar_id=preservar_id)
         self._atualizar_outros_documentos_empresas(preservar_id=preservar_id)
 
@@ -2464,7 +2463,7 @@ class App(tk.Tk):
     def _obter_pasta_saida(nome_limpo):
         # Salva fora do diretorio do repositorio Git local.
         desktop_base = App._obter_desktop_base()
-        pasta_destino = desktop_base / "CADNR_Publicados" / nome_limpo
+        pasta_destino = desktop_base / nome_limpo
         pasta_destino.mkdir(parents=True, exist_ok=True)
         return pasta_destino
 
@@ -2727,9 +2726,9 @@ class App(tk.Tk):
         repo_env = App._normalizar_repo_github(os.environ.get("CADNR_QR_GITHUB_REPO", ""))
         branch_env = str(os.environ.get("CADNR_QR_GITHUB_BRANCH", "") or "").strip()
 
-        # Prioriza o remoto Git atual para manter o QR alinhado com o push automatico.
-        repo = repo_git or repo_env or repo_padrao
-        branch = branch_git or branch_env or branch_padrao
+        # Prioriza configuracao explicita do app/ambiente; Git local fica como fallback.
+        repo = repo_env or repo_git or repo_padrao
+        branch = branch_env or branch_git or branch_padrao
         return repo, branch
 
     @staticmethod
@@ -2757,10 +2756,12 @@ class App(tk.Tk):
     def _aplicar_configuracao_github_ambiente(self):
         repo = str(self.github_repo or "").strip() or "Elizangela2805/documentos"
         branch = str(self.github_branch or "").strip() or "main"
+        pasta = str(self.github_dir or "").strip().strip("/")
         pages_base = str(self.github_pages_base or "").strip() or "https://elizangela2805.github.io/documentos"
         token = str(self.github_token or "").strip()
         os.environ["CADNR_QR_GITHUB_REPO"] = repo
         os.environ["CADNR_QR_GITHUB_BRANCH"] = branch
+        os.environ["CADNR_QR_GITHUB_DIR"] = pasta
         os.environ["CADNR_QR_GITHUB_PAGES_BASE"] = pages_base.rstrip("/")
         if token:
             os.environ["CADNR_QR_GITHUB_TOKEN"] = token
@@ -2821,7 +2822,7 @@ class App(tk.Tk):
         except Exception:
             return ""
 
-    def _url_github_qr_para_arquivo(self, caminho_arquivo, permitir_inexistente=False):
+    def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False):
         config = self._obter_config_qr_github()
         if not config:
             return ""
@@ -2831,9 +2832,6 @@ class App(tk.Tk):
             caminho = (Path(__file__).resolve().parent / caminho).resolve()
         if (not permitir_inexistente) and (not caminho.exists() or not caminho.is_file()):
             return ""
-        if caminho.suffix.lower() != ".pdf":
-            return ""
-
         repo_path = self._montar_caminho_repo_qr_github(caminho, config.get("pasta", ""))
         if not repo_path:
             return ""
@@ -2875,7 +2873,7 @@ class App(tk.Tk):
                 sha_existente = str(atual.get("sha", "") or "").strip() or None
         except error.HTTPError as exc:
             if exc.code != 404:
-                self._qr_github_ultimo_erro = f"GitHub GET HTTP {exc.code}"
+                self._qr_github_ultimo_erro = f"Publicacao GET HTTP {exc.code}"
         except Exception:
             pass
 
@@ -2911,10 +2909,25 @@ class App(tk.Tk):
                 detalhe = exc.read().decode("utf-8", errors="ignore")
             except Exception:
                 detalhe = ""
-            self._qr_github_ultimo_erro = f"GitHub PUT HTTP {exc.code} {detalhe[:180].strip()}"
+            detalhe_curto = detalhe[:180].strip()
+            msg = f"Publicacao PUT HTTP {exc.code} {detalhe_curto}"
+            if exc.code == 404:
+                msg += (
+                    " | Verifique token com permissao de escrita em Contents "
+                    "(Read and write) para o repositorio configurado."
+                )
+            self._qr_github_ultimo_erro = msg
         except Exception as exc:
-            self._qr_github_ultimo_erro = f"GitHub PUT falhou: {exc}"
+            self._qr_github_ultimo_erro = f"Publicacao PUT falhou: {exc}"
         return ""
+
+    def _url_github_qr_para_arquivo(self, caminho_arquivo, permitir_inexistente=False):
+        caminho = Path(str(caminho_arquivo or "")).expanduser()
+        if not caminho.is_absolute():
+            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+        if caminho.suffix.lower() != ".pdf":
+            return ""
+        return self._publicar_arquivo_no_site(caminho, permitir_inexistente=permitir_inexistente)
 
     def _on_app_close(self):
         self._encerrar_servidor_qr_local()
@@ -3326,11 +3339,11 @@ class App(tk.Tk):
         popup.ajustar_tamanho()
 
     def _abrir_configuracao_github(self):
-        popup = CadastroPopup(self, "Config GitHub")
+        popup = CadastroPopup(self, "Config Site")
         popup.columnconfigure(0, weight=1)
 
         r = 0
-        popup.secao("Publicacao automatica e QR (GitHub Pages)", r)
+        popup.secao("Publicacao automatica e QR (Site de Publicacao)", r)
 
         r += 1
         f_token = ttk.Frame(popup)
@@ -3357,6 +3370,14 @@ class App(tk.Tk):
         ttk.Entry(f_branch, textvariable=branch_var).grid(row=0, column=1, sticky="ew")
 
         r += 1
+        f_dir = ttk.Frame(popup)
+        f_dir.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
+        f_dir.columnconfigure(1, weight=1)
+        ttk.Label(f_dir, text="Pasta no site:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        dir_var = tk.StringVar(value=str(self.github_dir or "_pdf_gerados"))
+        ttk.Entry(f_dir, textvariable=dir_var).grid(row=0, column=1, sticky="ew")
+
+        r += 1
         f_pages = ttk.Frame(popup)
         f_pages.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
         f_pages.columnconfigure(1, weight=1)
@@ -3378,26 +3399,146 @@ class App(tk.Tk):
         def salvar_config():
             repo_txt = str(repo_var.get() or "").strip() or "Elizangela2805/documentos"
             branch_txt = str(branch_var.get() or "").strip() or "main"
+            dir_txt = str(dir_var.get() or "").strip().strip("/")
             pages_txt = str(pages_var.get() or "").strip() or "https://elizangela2805.github.io/documentos"
             token_txt = str(token_var.get() or "").strip()
             repo_norm = self._normalizar_repo_github(repo_txt)
             if not repo_norm:
-                messagebox.showerror("Config GitHub", "Repositorio invalido. Use formato dono/repositorio.")
+                messagebox.showerror("Config Site", "Repositorio invalido. Use formato dono/repositorio.")
                 return
             if not pages_txt.lower().startswith("http://") and not pages_txt.lower().startswith("https://"):
-                messagebox.showerror("Config GitHub", "Base Pages invalida. Informe URL iniciando com http(s).")
+                messagebox.showerror("Config Site", "Base publica invalida. Informe URL iniciando com http(s).")
                 return
             self.github_repo = repo_norm
             self.github_branch = branch_txt
+            self.github_dir = dir_txt or "_pdf_gerados"
             self.github_pages_base = pages_txt.rstrip("/")
             self.github_token = token_txt
             self._aplicar_configuracao_github_ambiente()
             self._salvar_dados()
-            messagebox.showinfo("Config GitHub", "Configuracao salva com sucesso.")
+            messagebox.showinfo("Config Site", "Configuracao salva com sucesso.")
             popup.destroy()
 
+        def testar_publicacao():
+            repo_txt = str(repo_var.get() or "").strip() or "Elizangela2805/documentos"
+            branch_txt = str(branch_var.get() or "").strip() or "main"
+            token_txt = str(token_var.get() or "").strip()
+            repo_norm = self._normalizar_repo_github(repo_txt)
+            if not repo_norm:
+                messagebox.showerror("Config Site", "Repositorio invalido. Use formato dono/repositorio.")
+                return
+            if not token_txt:
+                messagebox.showerror("Config Site", "Informe o token para testar a publicacao.")
+                return
+
+            headers = {
+                "Authorization": f"Bearer {token_txt}",
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "CADNR/1.0",
+                "X-GitHub-Api-Version": "2022-11-28",
+            }
+
+            try:
+                req_repo = request.Request(
+                    f"https://api.github.com/repos/{repo_norm}",
+                    headers=headers,
+                    method="GET",
+                )
+                with request.urlopen(req_repo, timeout=20):
+                    pass
+            except error.HTTPError as exc:
+                detalhe = ""
+                try:
+                    detalhe = exc.read().decode("utf-8", errors="ignore")
+                except Exception:
+                    detalhe = ""
+                detalhe = detalhe[:220].strip()
+                sufixo = f"\n\nDetalhe: {detalhe}" if detalhe else ""
+                messagebox.showerror(
+                    "Teste Publicacao",
+                    f"Falha ao acessar o repositorio ({exc.code}).{sufixo}",
+                )
+                return
+            except Exception as exc:
+                messagebox.showerror("Teste Publicacao", f"Falha de conexao: {exc}")
+                return
+
+            probe_nome = datetime.now().strftime("cadnr_probe_%Y%m%d_%H%M%S.txt")
+            probe_path = f"_cadnr_probe/{probe_nome}"
+            probe_api = f"https://api.github.com/repos/{repo_norm}/contents/{parse.quote(probe_path, safe='/')}"
+            probe_b64 = base64.b64encode(
+                f"cadnr probe {datetime.now().isoformat(timespec='seconds')}".encode("utf-8")
+            ).decode("ascii")
+            payload_put = {
+                "message": f"CADNR probe upload: {probe_nome}",
+                "content": probe_b64,
+                "branch": branch_txt,
+            }
+
+            sha_probe = ""
+            try:
+                req_put = request.Request(
+                    probe_api,
+                    headers=headers,
+                    method="PUT",
+                    data=json.dumps(payload_put).encode("utf-8"),
+                )
+                with request.urlopen(req_put, timeout=25) as resp:
+                    dados = json.loads(resp.read().decode("utf-8"))
+                if isinstance(dados, dict):
+                    content = dados.get("content", {}) if isinstance(dados.get("content"), dict) else {}
+                    sha_probe = str(content.get("sha", "") or "").strip()
+            except error.HTTPError as exc:
+                detalhe = ""
+                try:
+                    detalhe = exc.read().decode("utf-8", errors="ignore")
+                except Exception:
+                    detalhe = ""
+                detalhe = detalhe[:220].strip()
+                sufixo = f"\n\nDetalhe: {detalhe}" if detalhe else ""
+                if exc.code == 404:
+                    sufixo += (
+                        "\n\nVerifique permissao de escrita em Contents (Read and write)"
+                        " para o repositorio."
+                    )
+                messagebox.showerror(
+                    "Teste Publicacao",
+                    f"Falha ao publicar arquivo de teste ({exc.code}).{sufixo}",
+                )
+                return
+            except Exception as exc:
+                messagebox.showerror("Teste Publicacao", f"Falha ao publicar teste: {exc}")
+                return
+
+            aviso_limpeza = ""
+            if sha_probe:
+                payload_del = {
+                    "message": f"CADNR probe cleanup: {probe_nome}",
+                    "branch": branch_txt,
+                    "sha": sha_probe,
+                }
+                try:
+                    req_del = request.Request(
+                        probe_api,
+                        headers=headers,
+                        method="DELETE",
+                        data=json.dumps(payload_del).encode("utf-8"),
+                    )
+                    with request.urlopen(req_del, timeout=20):
+                        pass
+                except Exception as exc:
+                    aviso_limpeza = f"\n\nAviso: teste publicado, mas nao foi possivel remover o arquivo de prova ({exc})."
+
+            messagebox.showinfo(
+                "Teste Publicacao",
+                "Publicacao validada com sucesso.\n"
+                f"Repo: {repo_norm}\n"
+                f"Branch: {branch_txt}{aviso_limpeza}",
+            )
+
         ttk.Button(botoes, text="Cancelar", command=popup.destroy).grid(row=0, column=0, padx=(0, 8))
-        ttk.Button(botoes, text="Salvar", command=salvar_config).grid(row=0, column=1)
+        ttk.Button(botoes, text="Testar Publicacao", command=testar_publicacao).grid(row=0, column=1, padx=(0, 8))
+        ttk.Button(botoes, text="Salvar", command=salvar_config).grid(row=0, column=2)
 
         popup.ajustar_tamanho()
 
@@ -3419,9 +3560,9 @@ class App(tk.Tk):
         if caminho_pdf is not None:
             url_github = self._url_github_qr_para_arquivo(caminho_pdf)
             if url_github:
-                titulo = "QR - GitHub"
+                titulo = "QR - Site"
                 msg = (
-                    "PDF publicado no GitHub para leitura via QR.\n\n"
+                    "PDF publicado no site para leitura via QR.\n\n"
                     f"Arquivo: {caminho_pdf.name}\n"
                     f"URL: {url_github}\n\n"
                     "O link foi copiado para a area de transferencia."
@@ -3440,7 +3581,7 @@ class App(tk.Tk):
 
         if not self._iniciar_servidor_qr_local():
             detalhe_gh = str(self._qr_github_ultimo_erro or "").strip()
-            sufixo = f"\n\nDetalhe GitHub: {detalhe_gh}" if detalhe_gh else ""
+            sufixo = f"\n\nDetalhe da publicacao: {detalhe_gh}" if detalhe_gh else ""
             messagebox.showerror(
                 "QR",
                 "Nao foi possivel iniciar o servidor local para testes de QR."
@@ -3478,11 +3619,16 @@ class App(tk.Tk):
         messagebox.showinfo(titulo, msg)
 
     def _abrir_projetta_html_no_chrome(self):
-        caminho_html = (Path(__file__).resolve().parent / "projetta.html").resolve()
-        if not caminho_html.exists() or not caminho_html.is_file():
+        base = Path(__file__).resolve().parent
+        candidatos = [
+            (base / "index.html").resolve(),
+            (base / "projetta.html").resolve(),
+        ]
+        caminho_html = next((p for p in candidatos if p.exists() and p.is_file()), None)
+        if caminho_html is None:
             messagebox.showwarning(
-                "Projetta HTML",
-                f"Arquivo nao encontrado:\n{caminho_html}",
+                "Site de Uploads",
+                f"Arquivo nao encontrado:\n{candidatos[0]}",
             )
             return
         try:
@@ -3892,8 +4038,8 @@ class App(tk.Tk):
         self._aviso_git_sync_exibido = True
         detalhe_txt = str(detalhe or "").strip() or "erro nao identificado"
         messagebox.showwarning(
-            "GitHub",
-            "PDF gerado localmente, mas nao foi possivel enviar ao GitHub automaticamente.\n"
+            "Publicacao",
+            "PDF gerado localmente, mas nao foi possivel publicar no site automaticamente.\n"
             f"Detalhe: {detalhe_txt}",
         )
 
@@ -3915,7 +4061,7 @@ class App(tk.Tk):
                 continue
             vistos.add(chave)
             caminho_qr = str(item.get("qrcode", "") or "").strip()
-            self._sincronizar_pdf_no_github(caminho_pdf, caminho_qr)
+            self._sincronizar_pdf_no_github(caminho_pdf, caminho_qr, avisar_falha=False)
 
     def _avisar_falha_desktop_sync(self, detalhe):
         if self._aviso_desktop_sync_exibido:
@@ -3986,20 +4132,30 @@ class App(tk.Tk):
         except Exception as exc:
             self._avisar_falha_desktop_sync(exc)
 
-    def _sincronizar_pdf_no_github(self, caminho_pdf, caminho_qr=""):
+    def _sincronizar_pdf_no_github(self, caminho_pdf, caminho_qr="", avisar_falha=True):
         try:
             caminho = Path(str(caminho_pdf or "")).expanduser()
             if not caminho.is_absolute():
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
             if caminho.suffix.lower() != ".pdf" or not caminho.exists() or not caminho.is_file():
                 return
-            # Publica o PDF no repositorio remoto (GitHub Pages) via API.
-            url_publicada = self._url_github_qr_para_arquivo(caminho)
+            # Publica o PDF no repositorio remoto do site via API.
+            url_publicada = self._publicar_arquivo_no_site(caminho)
+            if url_publicada:
+                qr_txt = str(caminho_qr or "").strip()
+                if qr_txt:
+                    caminho_qr_arq = Path(qr_txt).expanduser()
+                    if not caminho_qr_arq.is_absolute():
+                        caminho_qr_arq = (Path(__file__).resolve().parent / caminho_qr_arq).resolve()
+                    if caminho_qr_arq.exists() and caminho_qr_arq.is_file():
+                        self._publicar_arquivo_no_site(caminho_qr_arq)
             if not url_publicada:
-                detalhe = str(self._qr_github_ultimo_erro or "").strip() or "falha ao publicar no GitHub Pages"
-                self._avisar_falha_git_sync(detalhe)
+                detalhe = str(self._qr_github_ultimo_erro or "").strip() or "falha ao publicar no site"
+                if avisar_falha:
+                    self._avisar_falha_git_sync(detalhe)
         except Exception as exc:
-            self._avisar_falha_git_sync(exc)
+            if avisar_falha:
+                self._avisar_falha_git_sync(exc)
             return
 
     def _montar_payload_qrcode_documento(self, caminho_documento, permitir_arquivo_inexistente=False):
@@ -7738,6 +7894,7 @@ class App(tk.Tk):
             repo_norm = self._normalizar_repo_github(repo_txt)
             self.github_repo = repo_norm or "Elizangela2805/documentos"
             self.github_branch = str(github_config.get("branch", "") or "").strip() or "main"
+            self.github_dir = str(github_config.get("dir", "") or "").strip().strip("/") or "_pdf_gerados"
             self.github_pages_base = (
                 str(github_config.get("pages_base", "") or "").strip().rstrip("/")
                 or "https://elizangela2805.github.io/documentos"
@@ -7830,6 +7987,7 @@ class App(tk.Tk):
             "github_config": {
                 "repo": str(self.github_repo or "").strip() or "Elizangela2805/documentos",
                 "branch": str(self.github_branch or "").strip() or "main",
+                "dir": str(self.github_dir or "").strip().strip("/") or "_pdf_gerados",
                 "pages_base": str(self.github_pages_base or "").strip().rstrip("/")
                 or "https://elizangela2805.github.io/documentos",
                 "token": str(self.github_token or "").strip(),
