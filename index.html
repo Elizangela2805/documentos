@@ -386,6 +386,29 @@
       await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, "Atualiza indice de documentos");
     };
 
+    const removerFuncionarioDoIndiceRemoto = async (funcionarioNome) => {
+      const owner = el.owner.value.trim();
+      const repo = el.repo.value.trim();
+      const branch = el.branch.value.trim() || "main";
+      const token = el.token.value.trim();
+      if (!owner || !repo || !token) return;
+      const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
+      const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
+      const itens = Array.isArray(data.items) ? data.items : [];
+      const root = normFolder(el.folder.value);
+      const prefix = root ? `${root}/${funcionarioNome}/` : `${funcionarioNome}/`;
+      const filtrados = itens.filter((it) => {
+        const p = normFolder(String(it?.path || ""));
+        return !(p === prefix.slice(0, -1) || p.startsWith(prefix));
+      });
+      const payload = {
+        updated_at: new Date().toISOString(),
+        total: filtrados.length,
+        items: filtrados,
+      };
+      await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, `Atualiza indice apos exclusao de ${funcionarioNome}`);
+    };
+
     const carregarIndicePublico = async () => {
       try {
         const res = await fetch(pagesUrl("", "", REPO_INDEX_PATH), { cache: "no-cache" });
@@ -534,6 +557,7 @@
             for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
               await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
             }
+            await removerFuncionarioDoIndiceRemoto(nome);
             log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
             await atualizarLista();
           } catch (err) {
