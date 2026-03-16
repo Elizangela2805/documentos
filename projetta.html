@@ -226,6 +226,7 @@
     const branchEsc = (branch) => encodeURIComponent(branch);
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
+    const pagesUrl = (owner, repo, path) => `https://${String(owner || "").toLowerCase()}.github.io/${repo}/${encodeURI(path)}`;
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
@@ -339,15 +340,17 @@
         const folder = it.path.includes("/") ? it.path.slice(0, it.path.lastIndexOf("/")) : "";
         const linkBlob = blobUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
         const linkRaw = rawUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
+        const linkPage = pagesUrl(el.owner.value.trim(), el.repo.value.trim(), it.path);
         const qrCell = document.createElement("td");
         const qrWrap = document.createElement("div");
         qrWrap.className = "qr-preview";
-        drawQrInline(qrWrap, linkBlob);
+        drawQrInline(qrWrap, linkPage);
         qrCell.appendChild(qrWrap);
         tr.innerHTML = `
           <td><strong>${fileName}</strong></td>
           <td class="small">${folder || "-"}</td>
-          <td><a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir página GitHub</a><br/>
+          <td><a class="muted-link" href="${linkPage}" target="_blank" rel="noopener">Abrir na página</a><br/>
+          <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir página GitHub</a><br/>
           <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir PDF bruto</a></td>
         `;
         tr.appendChild(qrCell);
@@ -430,8 +433,8 @@
           const fileNoExt = safeName.replace(/\.pdf$/i, "");
           const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
           const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
-          const pdfBlobLink = blobUrl(owner, repo, branch, pdfPath);
-          const qrBlob = await renderQrBlob(pdfBlobLink);
+          const pdfPageLink = pagesUrl(owner, repo, pdfPath);
+          const qrBlob = await renderQrBlob(pdfPageLink);
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
           log(`Upload concluido: ${safeName}`, "ok");
@@ -439,7 +442,7 @@
             data: new Date().toLocaleString("pt-BR"),
             arquivo: safeName,
             pasta: `${folder}/${dateFolder}`,
-            link: pdfBlobLink,
+            link: pdfPageLink,
           });
         }
         log("Remessa finalizada.", "ok");
