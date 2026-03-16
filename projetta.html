@@ -157,6 +157,13 @@
           <label for="pdfs">Arquivos PDF para upload</label>
           <input id="pdfs" type="file" accept=".pdf,application/pdf" multiple />
         </div>
+        <div class="field" style="margin-top:8px;">
+          <label for="autoUpload">Publicacao automatica</label>
+          <select id="autoUpload">
+            <option value="on" selected>Ligado (publicar ao selecionar)</option>
+            <option value="off">Desligado (manual no botao)</option>
+          </select>
+        </div>
         <ul id="listaArquivos"></ul>
         <div class="actions">
           <button id="btnEnviar" type="button">Enviar PDF + QR para GitHub</button>
@@ -202,6 +209,7 @@
       btnEnviar: document.getElementById("btnEnviar"),
       btnAtualizar: document.getElementById("btnAtualizar"),
       btnLimparLog: document.getElementById("btnLimparLog"),
+      autoUpload: document.getElementById("autoUpload"),
       status: document.getElementById("status"),
       tbodyArquivos: document.getElementById("tbodyArquivos"),
     };
@@ -390,10 +398,13 @@
       }
     };
 
-    el.pdfs.addEventListener("change", syncFileListSelected);
-    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
+    let uploadEmAndamento = false;
 
-    el.btnEnviar.addEventListener("click", async () => {
+    const enviarSelecionados = async (origem = "manual") => {
+      if (uploadEmAndamento) {
+        log("Ja existe uma publicacao em andamento.", "err");
+        return;
+      }
       const owner = el.owner.value.trim();
       const repo = el.repo.value.trim();
       const branch = el.branch.value.trim() || "main";
@@ -405,8 +416,10 @@
       if (!owner || !repo || !token) return log("Preencha owner, repositorio e token.", "err");
       if (!files.length) return log("Selecione pelo menos um PDF.", "err");
 
+      uploadEmAndamento = true;
       el.btnEnviar.disabled = true;
       try {
+        log(`Iniciando publicacao (${origem}) de ${files.length} arquivo(s)...`);
         for (const f of files) {
           const safeName = sanitize(f.name);
           const fileNoExt = safeName.replace(/\.pdf$/i, "");
@@ -428,9 +441,19 @@
       } catch (err) {
         log(err.message, "err");
       } finally {
+        uploadEmAndamento = false;
         el.btnEnviar.disabled = false;
       }
+    };
+
+    el.pdfs.addEventListener("change", async () => {
+      syncFileListSelected();
+      if (el.autoUpload.value === "on") {
+        await enviarSelecionados("automatico");
+      }
     });
+    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
+    el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
 
     const atualizarLista = async () => {
       const owner = el.owner.value.trim();
