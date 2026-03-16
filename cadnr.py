@@ -2822,6 +2822,26 @@ class App(tk.Tk):
         except Exception:
             return ""
 
+    @staticmethod
+    def _url_site_consulta_para_arquivo(caminho_arquivo):
+        pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
+        pages_base = str(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", "") or "").strip().rstrip("/")
+        if not pages_base:
+            pages_base = "https://elizangela2805.github.io/documentos"
+        if not pages_base:
+            return ""
+        try:
+            caminho = Path(str(caminho_arquivo or "")).expanduser()
+            if not caminho.is_absolute():
+                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
+            if not repo_path:
+                return ""
+            pdf_query = parse.quote(repo_path, safe="")
+            return f"{pages_base}/index.html?pdf={pdf_query}"
+        except Exception:
+            return ""
+
     def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False):
         config = self._obter_config_qr_github()
         if not config:
@@ -3638,9 +3658,9 @@ class App(tk.Tk):
         self._abrir_url_no_chrome(url_html)
 
     @staticmethod
-    def _obter_arquivo_pdf_livre(pasta_destino, nome_base):
+    def _obter_arquivo_pdf_livre(pasta_destino, nome_base, reutilizar_existente=False):
         candidato = pasta_destino / f"{nome_base}.pdf"
-        if not candidato.exists():
+        if reutilizar_existente or not candidato.exists():
             return candidato
         i = 1
         while True:
@@ -4170,6 +4190,9 @@ class App(tk.Tk):
             permitir_inexistente=bool(permitir_arquivo_inexistente),
         )
         if url_github:
+            url_consulta = self._url_site_consulta_para_arquivo(caminho)
+            if url_consulta:
+                return url_consulta
             return url_github
         url_pages = self._url_github_pages_para_arquivo(caminho)
         if url_pages:
@@ -4220,12 +4243,12 @@ class App(tk.Tk):
             qr = qrcode.QRCode(
                 version=None,
                 error_correction=qrcode.constants.ERROR_CORRECT_M,
-                box_size=8,
-                border=2,
+                box_size=10,
+                border=4,
             )
             qr.add_data(payload)
             qr.make(fit=True)
-            img = qr.make_image(fill_color="black", back_color="white")
+            img = qr.make_image()
             img.save(str(destino_qr))
             return self._normalizar_caminho_documento_db(destino_qr)
         except Exception:
@@ -5731,24 +5754,19 @@ class App(tk.Tk):
             for item in self.outros_docs_imprimir
             if item.get("empresa_id") == empresa_funcionario
         ]
+        def _chave_outro_documento(item_doc):
+            tipo = str(item_doc.get("tipo", "") or "").strip().casefold()
+            caminho = self._normalizar_caminho_documento_db(item_doc.get("caminho", ""))
+            caminho_norm = str(caminho or "").strip().replace("\\", "/").casefold()
+            return (item_doc.get("empresa_id"), tipo, caminho_norm)
+
         # Inclui automaticamente os documentos elegiveis da aba OUTROS DOCUMENTOS
         # (incluindo Carteirinha vinculada a NR), sem depender do botao ADICIONAR.
         outros_automaticos = self._coletar_outros_documentos_disponiveis(empresa_funcionario, funcionario)
-        chaves = {
-            (
-                item.get("empresa_id"),
-                str(item.get("tipo", "") or "").strip(),
-                str(item.get("caminho", "") or "").strip(),
-            )
-            for item in outros_selecionados
-        }
+        chaves = {_chave_outro_documento(item) for item in outros_selecionados}
         adicionou_auto = False
         for item_auto in outros_automaticos:
-            chave = (
-                item_auto.get("empresa_id"),
-                str(item_auto.get("tipo", "") or "").strip(),
-                str(item_auto.get("caminho", "") or "").strip(),
-            )
+            chave = _chave_outro_documento(item_auto)
             if chave in chaves:
                 continue
             chaves.add(chave)
@@ -5784,7 +5802,12 @@ class App(tk.Tk):
             base_dir = Path(__file__).resolve().parent
             funcao_selecionada = str(funcionario.get("funcao", "") or "").strip()
             nr35_selecionada = self._nr_35_selecionada()
+            vistos_doc = set()
             for item in outros_selecionados:
+                chave_item = _chave_outro_documento(item)
+                if chave_item in vistos_doc:
+                    continue
+                vistos_doc.add(chave_item)
                 self._ultimo_qr_embutido_docx = False
                 tipo_doc = str(item.get("tipo", "") or "").strip() or "OUTRO DOCUMENTO"
                 tipo_norm = tipo_doc.casefold()
@@ -5824,7 +5847,11 @@ class App(tk.Tk):
                     f"{origem.stem} {nome_func_arquivo}",
                     origem.stem or tipo_doc,
                 )
-                destino_pdf = self._obter_arquivo_pdf_livre(pasta_destino, nome_base)
+                destino_pdf = self._obter_arquivo_pdf_livre(
+                    pasta_destino,
+                    nome_base,
+                    reutilizar_existente=True,
+                )
                 ext = origem.suffix.lower()
                 tipo_carteirinha = tipo_norm == "carteirinha"
                 if ext == ".pdf":
@@ -5971,6 +5998,7 @@ class App(tk.Tk):
                 pdf_destino = self._obter_arquivo_pdf_livre(
                     pasta_destino,
                     f"{nome_nr} {nome_func_arquivo}",
+                    reutilizar_existente=True,
                 )
                 if self._converter_docx_para_pdf(docx_path, pdf_destino):
                     limpou_meta, _ = self._limpar_metadados_pdf(pdf_destino)
@@ -6003,7 +6031,11 @@ class App(tk.Tk):
                         messagebox.showinfo("IMPRIMIR", f"PDF(s) gerado(s) com sucesso:\n{lista}")
                 return
 
-            pdf_destino = self._obter_arquivo_pdf_livre(pasta_destino, f"NR {nome_limpo}")
+            pdf_destino = self._obter_arquivo_pdf_livre(
+                pasta_destino,
+                f"NR {nome_limpo}",
+                reutilizar_existente=True,
+            )
             try:
                 self._escrever_pdf_texto(
                     pdf_destino,
@@ -6480,12 +6512,12 @@ class App(tk.Tk):
                             qr = qrcode.QRCode(
                                 version=None,
                                 error_correction=qrcode.constants.ERROR_CORRECT_M,
-                                box_size=8,
-                                border=2,
+                                box_size=10,
+                                border=4,
                             )
                             qr.add_data(payload_qr)
                             qr.make(fit=True)
-                            img = qr.make_image(fill_color="black", back_color="white")
+                            img = qr.make_image()
                             img.save(str(caminho_tmp_qr))
                             self._ultimo_qr_embutido_docx = bool(
                                 self._inserir_qrcode_em_carteirinha_docx(
