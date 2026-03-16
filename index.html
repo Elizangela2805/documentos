@@ -257,6 +257,7 @@
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const consultaUrl = (path) => `${PAGES_BASE_FIXED}/index.html?pdf=${encodeURIComponent(normFolder(path))}`;
+    const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
@@ -326,6 +327,77 @@
         throw new Error(`Exclusao falhou (${path}): ${res.status} ${data.message || ""}`);
       }
       return true;
+    };
+
+    const githubGetJsonFile = async (owner, repo, branch, path, token) => {
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(branch)}`;
+      const res = await fetch(url, { headers: authHeaders(token) });
+      if (res.status === 404) return { sha: "", data: null };
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Falha ao ler indice (${path}): ${res.status} ${data.message || ""}`);
+      }
+      const body = await res.json();
+      const sha = String(body.sha || "");
+      const txt = atob(String(body.content || "").replace(/\n/g, ""));
+      let data = null;
+      try { data = JSON.parse(txt); } catch { data = null; }
+      return { sha, data };
+    };
+
+    const githubPutJsonFile = async (owner, repo, branch, path, token, jsonObj, message) => {
+      const atual = await githubGetJsonFile(owner, repo, branch, path, token);
+      const payload = {
+        message,
+        branch,
+        content: btoa(unescape(encodeURIComponent(JSON.stringify(jsonObj, null, 2)))),
+      };
+      if (atual.sha) payload.sha = atual.sha;
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}`;
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: { ...authHeaders(token), "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Falha ao salvar indice (${path}): ${res.status} ${data.message || ""}`);
+      }
+      return res.json();
+    };
+
+    const salvarIndiceRemoto = async (items) => {
+      const owner = el.owner.value.trim();
+      const repo = el.repo.value.trim();
+      const branch = el.branch.value.trim() || "main";
+      const token = el.token.value.trim();
+      if (!owner || !repo || !token) return;
+      const now = new Date().toISOString();
+      const payload = {
+        updated_at: now,
+        total: items.length,
+        items: items.map((it) => ({
+          path: it.path,
+          nome: (it.path || "").split("/").pop(),
+          funcionario: extrairFuncionarioDoPath(it.path),
+          consulta: consultaUrl(it.path),
+        })),
+      };
+      await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, "Atualiza indice de documentos");
+    };
+
+    const carregarIndicePublico = async () => {
+      try {
+        const res = await fetch(pagesUrl("", "", REPO_INDEX_PATH), { cache: "no-cache" });
+        if (!res.ok) return [];
+        const body = await res.json();
+        const items = Array.isArray(body?.items) ? body.items : [];
+        return items
+          .filter((x) => x && typeof x.path === "string" && x.path.toLowerCase().endsWith(".pdf"))
+          .map((x) => ({ path: x.path, type: "blob" }));
+      } catch {
+        return [];
+      }
     };
 
     const renderQrBlob = (text) => new Promise((resolve, reject) => {
@@ -399,6 +471,15 @@
       return all.filter((i) => i.path.toLowerCase().endsWith(".pdf"));
     };
 
+    const extrairFuncionarioDoPath = (path) => {
+      const root = normFolder(el.folder.value);
+      const rel = root && String(path || "").startsWith(`${root}/`)
+        ? String(path || "").slice(root.length + 1)
+        : String(path || "");
+      const partes = rel.split("/");
+      return partes.length > 1 ? partes[0] : "Sem pasta";
+    };
+
     const mountFuncionarios = (items) => {
       if (!items.length) {
         el.listaFuncionarios.innerHTML = `<div class="small">Nenhum PDF encontrado na pasta configurada.</div>`;
@@ -407,9 +488,7 @@
       const root = normFolder(el.folder.value);
       const grupos = new Map();
       for (const it of items) {
-        const rel = root && it.path.startsWith(`${root}/`) ? it.path.slice(root.length + 1) : it.path;
-        const partes = rel.split("/");
-        const funcionario = partes.length > 1 ? partes[0] : "Sem pasta";
+        const funcionario = extrairFuncionarioDoPath(it.path);
         if (!grupos.has(funcionario)) grupos.set(funcionario, []);
         grupos.get(funcionario).push(it);
       }
@@ -591,7 +670,13 @@
       if (!owner || !repo) return log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
       el.btnAtualizar.disabled = true;
       try {
-        const items = await listRepoPdfs(owner, repo, branch, folder, token);
+        let items = await listRepoPdfs(owner, repo, branch, folder, token);
+        if (!items.length) {
+          const idx = await carregarIndicePublico();
+          if (idx.length) items = idx;
+        } else {
+          try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
+        }
         mountFuncionarios(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
