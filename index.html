@@ -106,6 +106,37 @@
     }
     .muted-link { color: #0f4c81; text-decoration: none; }
     .muted-link:hover { text-decoration: underline; }
+    .funcionarios-list { margin-top: 8px; }
+    .funcionario-item {
+      border: 1px solid #d9e2ec;
+      border-radius: 10px;
+      background: #f8fbff;
+      margin-bottom: 8px;
+    }
+    .funcionario-item summary {
+      cursor: pointer;
+      font-weight: 700;
+      padding: 10px 12px;
+      list-style: none;
+    }
+    .funcionario-item summary::-webkit-details-marker { display: none; }
+    .funcionario-item summary::before {
+      content: "▶";
+      display: inline-block;
+      margin-right: 8px;
+      transition: transform .15s ease;
+      color: #35506b;
+    }
+    .funcionario-item[open] summary::before { transform: rotate(90deg); }
+    .funcionario-docs {
+      border-top: 1px solid #d9e2ec;
+      padding: 8px 12px 12px;
+    }
+    .funcionario-docs ul {
+      margin: 0;
+      padding-left: 18px;
+    }
+    .funcionario-docs li { margin: 4px 0; }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
@@ -171,15 +202,10 @@
     </div>
 
     <div class="panel">
-      <h2 style="margin:0;font-size:1.1rem;">Documentos publicados no site</h2>
-      <table>
-        <thead>
-          <tr><th>Arquivo</th><th>Pasta</th><th>Link</th><th>QR</th></tr>
-        </thead>
-        <tbody id="tbodyArquivos">
-          <tr><td colspan="4" class="small">Nenhum arquivo carregado ainda.</td></tr>
-        </tbody>
-      </table>
+      <h2 style="margin:0;font-size:1.1rem;">Funcionarios e documentos emitidos</h2>
+      <div id="listaFuncionarios" class="funcionarios-list">
+        <div class="small">Nenhum documento carregado ainda.</div>
+      </div>
     </div>
 
     <div class="panel">
@@ -214,7 +240,7 @@
       btnLimparHistorico: document.getElementById("btnLimparHistorico"),
       autoUpload: document.getElementById("autoUpload"),
       status: document.getElementById("status"),
-      tbodyArquivos: document.getElementById("tbodyArquivos"),
+      listaFuncionarios: document.getElementById("listaFuncionarios"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
     };
 
@@ -228,6 +254,7 @@
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
+    const consultaUrl = (path) => `${PAGES_BASE_FIXED}/index.html?pdf=${encodeURIComponent(normFolder(path))}`;
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
@@ -348,33 +375,48 @@
       return pdfs.sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
     };
 
-    const mountTable = (items) => {
+    const mountFuncionarios = (items) => {
       if (!items.length) {
-        el.tbodyArquivos.innerHTML = `<tr><td colspan="4" class="small">Nenhum PDF encontrado na pasta configurada.</td></tr>`;
+        el.listaFuncionarios.innerHTML = `<div class="small">Nenhum PDF encontrado na pasta configurada.</div>`;
         return;
       }
-      el.tbodyArquivos.innerHTML = "";
+      const root = normFolder(el.folder.value);
+      const grupos = new Map();
       for (const it of items) {
-        const tr = document.createElement("tr");
-        const fileName = it.path.split("/").pop();
-        const folder = it.path.includes("/") ? it.path.slice(0, it.path.lastIndexOf("/")) : "";
-        const linkBlob = blobUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
-        const linkRaw = rawUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
-        const linkPage = pagesUrl(el.owner.value.trim(), el.repo.value.trim(), it.path);
-        const qrCell = document.createElement("td");
-        const qrWrap = document.createElement("div");
-        qrWrap.className = "qr-preview";
-        drawQrInline(qrWrap, linkPage);
-        qrCell.appendChild(qrWrap);
-        tr.innerHTML = `
-          <td><strong>${fileName}</strong></td>
-          <td class="small">${folder || "-"}</td>
-          <td><a class="muted-link" href="${linkPage}" target="_blank" rel="noopener">Abrir no site (consulta)</a><br/>
-          <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir pagina de origem</a><br/>
-          <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir arquivo PDF</a></td>
-        `;
-        tr.appendChild(qrCell);
-        el.tbodyArquivos.appendChild(tr);
+        const rel = root && it.path.startsWith(`${root}/`) ? it.path.slice(root.length + 1) : it.path;
+        const partes = rel.split("/");
+        const funcionario = partes.length > 1 ? partes[0] : "Sem pasta";
+        if (!grupos.has(funcionario)) grupos.set(funcionario, []);
+        grupos.get(funcionario).push(it);
+      }
+      const nomes = [...grupos.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
+      el.listaFuncionarios.innerHTML = "";
+      for (const nome of nomes) {
+        const docs = grupos.get(nome).sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
+        const details = document.createElement("details");
+        details.className = "funcionario-item";
+        const summary = document.createElement("summary");
+        summary.textContent = `${nome} (${docs.length})`;
+        details.appendChild(summary);
+
+        const body = document.createElement("div");
+        body.className = "funcionario-docs";
+        const ul = document.createElement("ul");
+        for (const doc of docs) {
+          const fileName = doc.path.split("/").pop();
+          const li = document.createElement("li");
+          const a = document.createElement("a");
+          a.className = "muted-link";
+          a.target = "_blank";
+          a.rel = "noopener";
+          a.href = consultaUrl(doc.path);
+          a.textContent = `↗ ${fileName}`;
+          li.appendChild(a);
+          ul.appendChild(li);
+        }
+        body.appendChild(ul);
+        details.appendChild(body);
+        el.listaFuncionarios.appendChild(details);
       }
     };
 
@@ -454,7 +496,8 @@
           const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
           const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
           const pdfPageLink = pagesUrl(owner, repo, pdfPath);
-          const qrBlob = await renderQrBlob(pdfPageLink);
+          const qrLink = consultaUrl(pdfPath);
+          const qrBlob = await renderQrBlob(qrLink);
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
           log(`Upload concluido: ${safeName}`, "ok");
@@ -462,7 +505,7 @@
             data: new Date().toLocaleString("pt-BR"),
             arquivo: safeName,
             pasta: `${folder}/${dateFolder}`,
-            link: pdfPageLink,
+            link: qrLink,
           });
         }
         log("Remessa finalizada.", "ok");
@@ -485,10 +528,10 @@
       el.btnAtualizar.disabled = true;
       try {
         const items = await listRepoPdfs(owner, repo, branch, folder, token);
-        mountTable(items);
+        mountFuncionarios(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
-        mountTable([]);
+        mountFuncionarios([]);
         log(err.message, "err");
       } finally {
         el.btnAtualizar.disabled = false;
@@ -508,8 +551,19 @@
     el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
     el.btnAtualizar.addEventListener("click", atualizarLista);
 
+    const redirecionarConsultaQr = () => {
+      const p = new URLSearchParams(window.location.search);
+      const pdfParam = String(p.get("pdf") || "").trim();
+      if (!pdfParam) return;
+      const pdfPath = normFolder(decodeURIComponent(pdfParam));
+      if (!pdfPath || !pdfPath.toLowerCase().endsWith(".pdf")) return;
+      const destino = pagesUrl(el.owner.value.trim(), el.repo.value.trim(), pdfPath);
+      window.location.replace(destino);
+    };
+
     syncFileListSelected();
     renderHistorico();
+    redirecionarConsultaQr();
   </script>
 </body>
 </html>
