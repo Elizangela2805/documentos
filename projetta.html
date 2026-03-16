@@ -95,8 +95,6 @@
     }
     th { background: #f0f6fb; }
     .small { color: var(--muted); font-size: .8rem; }
-    .ok { color: var(--good); font-weight: 700; }
-    .err { color: var(--danger); font-weight: 700; }
     .qr-preview {
       display: inline-block;
       padding: 6px;
@@ -108,17 +106,14 @@
     }
     .muted-link { color: #0f4c81; text-decoration: none; }
     .muted-link:hover { text-decoration: underline; }
-    @media (max-width: 900px) {
-      .grid { grid-template-columns: 1fr; }
-      th, td { font-size: .82rem; }
-    }
+    @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
     <div class="panel">
       <h1>Projetta - Hospedagem de PDF com QR Code</h1>
-      <p>Upload dos PDFs do projeto, envio para GitHub e geracao de QR apontando para o link publico do arquivo.</p>
+      <p>Upload dos PDFs do projeto, envio para GitHub e geracao de QR para link publico.</p>
 
       <div class="grid">
         <div class="field">
@@ -176,21 +171,28 @@
     </div>
 
     <div class="panel">
-      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-        <h2 style="margin:0;font-size:1.1rem;">PDFs hospedados no repositório</h2>
-        <div class="small">Link do QR sempre aponta para `github.com/.../blob/...`</div>
-      </div>
+      <h2 style="margin:0;font-size:1.1rem;">PDFs hospedados no repositório</h2>
       <table>
         <thead>
-          <tr>
-            <th>Arquivo</th>
-            <th>Pasta</th>
-            <th>Link</th>
-            <th>QR</th>
-          </tr>
+          <tr><th>Arquivo</th><th>Pasta</th><th>Link</th><th>QR</th></tr>
         </thead>
         <tbody id="tbodyArquivos">
           <tr><td colspan="4" class="small">Nenhum arquivo carregado ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <h2 style="margin:0;font-size:1.1rem;">Documentos salvos no site (historico local)</h2>
+        <button id="btnLimparHistorico" class="warn" type="button">Limpar historico</button>
+      </div>
+      <table>
+        <thead>
+          <tr><th>Data/Hora</th><th>Arquivo</th><th>Pasta</th><th>Link</th></tr>
+        </thead>
+        <tbody id="tbodyHistorico">
+          <tr><td colspan="4" class="small">Nenhum documento salvo localmente ainda.</td></tr>
         </tbody>
       </table>
     </div>
@@ -209,11 +211,14 @@
       btnEnviar: document.getElementById("btnEnviar"),
       btnAtualizar: document.getElementById("btnAtualizar"),
       btnLimparLog: document.getElementById("btnLimparLog"),
+      btnLimparHistorico: document.getElementById("btnLimparHistorico"),
       autoUpload: document.getElementById("autoUpload"),
       status: document.getElementById("status"),
       tbodyArquivos: document.getElementById("tbodyArquivos"),
+      tbodyHistorico: document.getElementById("tbodyHistorico"),
     };
 
+    const LS_KEY = "projetta_upload_history_v1";
     const nowStamp = () => new Date().toISOString().slice(0, 10);
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
@@ -242,9 +247,7 @@
       const bytes = new Uint8Array(await blob.arrayBuffer());
       let out = "";
       const step = 0x8000;
-      for (let i = 0; i < bytes.length; i += step) {
-        out += String.fromCharCode(...bytes.subarray(i, i + step));
-      }
+      for (let i = 0; i < bytes.length; i += step) out += String.fromCharCode(...bytes.subarray(i, i + step));
       return btoa(out);
     };
 
@@ -262,11 +265,7 @@
 
     const githubUpload = async (owner, repo, branch, path, fileBlob, token, message) => {
       const sha = await githubGetSha(owner, repo, branch, path, token);
-      const payload = {
-        message,
-        branch,
-        content: await toBase64(fileBlob),
-      };
+      const payload = { message, branch, content: await toBase64(fileBlob) };
       if (sha) payload.sha = sha;
       const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}`;
       const res = await fetch(url, {
@@ -293,12 +292,8 @@
           const canvas = host.querySelector("canvas");
           const img = host.querySelector("img");
           let blob = null;
-          if (canvas) {
-            blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
-          } else if (img && img.src.startsWith("data:image/")) {
-            const resp = await fetch(img.src);
-            blob = await resp.blob();
-          }
+          if (canvas) blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+          else if (img && img.src.startsWith("data:image/")) blob = await (await fetch(img.src)).blob();
           if (!blob) throw new Error("Nao foi possivel gerar PNG do QR.");
           resolve(blob);
         } catch (err) {
@@ -344,40 +339,16 @@
         const folder = it.path.includes("/") ? it.path.slice(0, it.path.lastIndexOf("/")) : "";
         const linkBlob = blobUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
         const linkRaw = rawUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
-
         const qrCell = document.createElement("td");
         const qrWrap = document.createElement("div");
         qrWrap.className = "qr-preview";
         drawQrInline(qrWrap, linkBlob);
         qrCell.appendChild(qrWrap);
-        const dl = document.createElement("a");
-        dl.className = "muted-link";
-        dl.href = "#";
-        dl.textContent = "Baixar QR";
-        dl.style.display = "block";
-        dl.style.marginTop = "6px";
-        dl.addEventListener("click", async (ev) => {
-          ev.preventDefault();
-          try {
-            const qrBlob = await renderQrBlob(linkBlob);
-            const a = document.createElement("a");
-            a.href = URL.createObjectURL(qrBlob);
-            a.download = `${fileName.replace(/\.pdf$/i, "")}_qrcode.png`;
-            a.click();
-            URL.revokeObjectURL(a.href);
-          } catch (err) {
-            log(`Falha ao baixar QR de ${fileName}: ${err.message}`, "err");
-          }
-        });
-        qrCell.appendChild(dl);
-
         tr.innerHTML = `
           <td><strong>${fileName}</strong></td>
           <td class="small">${folder || "-"}</td>
-          <td>
-            <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir pagina GitHub</a><br/>
-            <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir PDF bruto</a>
-          </td>
+          <td><a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir página GitHub</a><br/>
+          <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir PDF bruto</a></td>
         `;
         tr.appendChild(qrCell);
         el.tbodyArquivos.appendChild(tr);
@@ -398,13 +369,48 @@
       }
     };
 
+    const carregarHistorico = () => {
+      try {
+        const raw = localStorage.getItem(LS_KEY);
+        const parsed = raw ? JSON.parse(raw) : [];
+        return Array.isArray(parsed) ? parsed : [];
+      } catch {
+        return [];
+      }
+    };
+
+    const salvarHistorico = (items) => localStorage.setItem(LS_KEY, JSON.stringify(items || []));
+
+    const renderHistorico = () => {
+      const items = carregarHistorico();
+      if (!items.length) {
+        el.tbodyHistorico.innerHTML = `<tr><td colspan="4" class="small">Nenhum documento salvo localmente ainda.</td></tr>`;
+        return;
+      }
+      el.tbodyHistorico.innerHTML = "";
+      for (const it of items) {
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="small">${it.data || "-"}</td>
+          <td><strong>${it.arquivo || "-"}</strong></td>
+          <td class="small">${it.pasta || "-"}</td>
+          <td><a class="muted-link" href="${it.link || "#"}" target="_blank" rel="noopener">Abrir</a></td>
+        `;
+        el.tbodyHistorico.appendChild(tr);
+      }
+    };
+
+    const adicionarHistorico = (item) => {
+      const items = carregarHistorico();
+      items.unshift(item);
+      salvarHistorico(items.slice(0, 500));
+      renderHistorico();
+    };
+
     let uploadEmAndamento = false;
 
     const enviarSelecionados = async (origem = "manual") => {
-      if (uploadEmAndamento) {
-        log("Ja existe uma publicacao em andamento.", "err");
-        return;
-      }
+      if (uploadEmAndamento) return log("Ja existe uma publicacao em andamento.", "err");
       const owner = el.owner.value.trim();
       const repo = el.repo.value.trim();
       const branch = el.branch.value.trim() || "main";
@@ -412,7 +418,6 @@
       const folder = normFolder(el.folder.value);
       const dateFolder = sanitize(el.dateFolder.value || nowStamp());
       const files = [...el.pdfs.files].filter((f) => /\.pdf$/i.test(f.name));
-
       if (!owner || !repo || !token) return log("Preencha owner, repositorio e token.", "err");
       if (!files.length) return log("Selecione pelo menos um PDF.", "err");
 
@@ -426,15 +431,16 @@
           const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
           const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
           const pdfBlobLink = blobUrl(owner, repo, branch, pdfPath);
-
-          log(`Gerando QR: ${safeName}`);
           const qrBlob = await renderQrBlob(pdfBlobLink);
-
-          log(`Enviando PDF: ${pdfPath}`);
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
-          log(`Enviando QR: ${qrPath}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
           log(`Upload concluido: ${safeName}`, "ok");
+          adicionarHistorico({
+            data: new Date().toLocaleString("pt-BR"),
+            arquivo: safeName,
+            pasta: `${folder}/${dateFolder}`,
+            link: pdfBlobLink,
+          });
         }
         log("Remessa finalizada.", "ok");
         await atualizarLista();
@@ -446,28 +452,15 @@
       }
     };
 
-    el.pdfs.addEventListener("change", async () => {
-      syncFileListSelected();
-      if (el.autoUpload.value === "on") {
-        await enviarSelecionados("automatico");
-      }
-    });
-    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
-    el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
-
     const atualizarLista = async () => {
       const owner = el.owner.value.trim();
       const repo = el.repo.value.trim();
       const branch = el.branch.value.trim() || "main";
       const folder = normFolder(el.folder.value);
       const token = el.token.value.trim();
-      if (!owner || !repo) {
-        log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
-        return;
-      }
+      if (!owner || !repo) return log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
       el.btnAtualizar.disabled = true;
       try {
-        log(`Listando PDFs hospedados em ${folder || "/"}...`);
         const items = await listRepoPdfs(owner, repo, branch, folder, token);
         mountTable(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
@@ -479,8 +472,21 @@
       }
     };
 
+    el.pdfs.addEventListener("change", async () => {
+      syncFileListSelected();
+      if (el.autoUpload.value === "on") await enviarSelecionados("automatico");
+    });
+    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
+    el.btnLimparHistorico.addEventListener("click", () => {
+      salvarHistorico([]);
+      renderHistorico();
+      log("Historico local limpo.");
+    });
+    el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
     el.btnAtualizar.addEventListener("click", atualizarLista);
+
     syncFileListSelected();
+    renderHistorico();
   </script>
 </body>
 </html>
