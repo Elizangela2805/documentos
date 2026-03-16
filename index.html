@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Projetta Host PDF + QR</title>
+  <title>Projetta - Site de Uploads e Consulta QR</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
@@ -112,12 +112,12 @@
 <body>
   <div class="wrap">
     <div class="panel">
-      <h1>Projetta - Hospedagem de PDF com QR Code</h1>
-      <p>Upload dos PDFs do projeto, envio para GitHub e geracao de QR para link publico.</p>
+      <h1>Projetta - Upload de PDF e Conferencia por QR Code</h1>
+      <p>Publique os PDFs gerados no site, gere QR automaticamente e obtenha links para consulta dos documentos.</p>
 
       <div class="grid">
         <div class="field">
-          <label for="repoUrl">Repositorio GitHub (URL completa)</label>
+          <label for="repoUrl">Repositorio de publicacao (URL completa)</label>
           <input id="repoUrl" value="https://github.com/Elizangela2805/documentos.git" readonly />
         </div>
         <div class="field">
@@ -143,7 +143,7 @@
       </div>
 
       <div class="field" style="margin-top:10px;">
-        <label for="token">GitHub Token (repo)</label>
+        <label for="token">Token de publicacao</label>
         <input id="token" type="password" placeholder="ghp_..." />
       </div>
 
@@ -161,8 +161,8 @@
         </div>
         <ul id="listaArquivos"></ul>
         <div class="actions">
-          <button id="btnEnviar" type="button">Enviar PDF + QR para GitHub</button>
-          <button id="btnAtualizar" class="alt" type="button">Atualizar lista de PDFs hospedados</button>
+          <button id="btnEnviar" type="button">Enviar PDF + QR para o Site</button>
+          <button id="btnAtualizar" class="alt" type="button">Atualizar lista de documentos publicados</button>
           <button id="btnLimparLog" class="warn" type="button">Limpar log</button>
         </div>
       </div>
@@ -171,7 +171,7 @@
     </div>
 
     <div class="panel">
-      <h2 style="margin:0;font-size:1.1rem;">PDFs hospedados no repositório</h2>
+      <h2 style="margin:0;font-size:1.1rem;">Documentos publicados no site</h2>
       <table>
         <thead>
           <tr><th>Arquivo</th><th>Pasta</th><th>Link</th><th>QR</th></tr>
@@ -350,9 +350,9 @@
         tr.innerHTML = `
           <td><strong>${fileName}</strong></td>
           <td class="small">${folder || "-"}</td>
-          <td><a class="muted-link" href="${linkPage}" target="_blank" rel="noopener">Abrir na página</a><br/>
-          <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir página GitHub</a><br/>
-          <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir PDF bruto</a></td>
+          <td><a class="muted-link" href="${linkPage}" target="_blank" rel="noopener">Abrir no site (consulta)</a><br/>
+          <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir pagina de origem</a><br/>
+          <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir arquivo PDF</a></td>
         `;
         tr.appendChild(qrCell);
         el.tbodyArquivos.appendChild(tr);
