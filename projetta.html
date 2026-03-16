@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Projetta Host PDF + QR</title>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    :root {
+      --bg: #eef4f8;
+      --panel: #ffffff;
+      --ink: #102a43;
+      --muted: #486581;
+      --line: #c8d6e5;
+      --brand: #0f4c81;
+      --brand2: #117864;
+      --good: #0f7b45;
+      --danger: #c0392b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      color: var(--ink);
+      font-family: "Segoe UI", Tahoma, sans-serif;
+      background:
+        radial-gradient(circle at 10% 15%, #d9eeff 0%, transparent 35%),
+        radial-gradient(circle at 90% 10%, #d8f7e6 0%, transparent 35%),
+        var(--bg);
+    }
+    .wrap { max-width: 1120px; margin: 20px auto; padding: 14px; }
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      box-shadow: 0 12px 30px rgba(16, 42, 67, 0.12);
+      margin-bottom: 12px;
+    }
+    h1 { margin: 0 0 8px; font-size: 1.5rem; }
+    p { margin: 0 0 10px; color: var(--muted); }
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(180px, 1fr));
+      gap: 10px;
+    }
+    .field { display: flex; flex-direction: column; gap: 6px; }
+    label { font-size: .86rem; font-weight: 700; color: #334e68; }
+    input, button, textarea, select {
+      border: 1px solid var(--line);
+      border-radius: 9px;
+      padding: 10px;
+      font: inherit;
+      background: #fff;
+    }
+    input:focus, textarea:focus {
+      outline: 2px solid #9dd2ff;
+      border-color: #4f9ed8;
+    }
+    .actions { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    button {
+      cursor: pointer;
+      color: #fff;
+      border: 0;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+    }
+    button.alt { background: linear-gradient(135deg, #44546a, #303e52); }
+    button.warn { background: linear-gradient(135deg, #b54708, #93370d); }
+    button:disabled { opacity: .65; cursor: not-allowed; }
+    .box {
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: #f8fbff;
+      padding: 12px;
+      margin-top: 10px;
+    }
+    .status {
+      width: 100%;
+      min-height: 180px;
+      margin-top: 10px;
+      resize: vertical;
+      background: #0f172a;
+      color: #f8fafc;
+      font-family: Consolas, Menlo, monospace;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    table { width: 100%; border-collapse: collapse; margin-top: 8px; }
+    th, td {
+      text-align: left;
+      border-bottom: 1px solid #d9e2ec;
+      padding: 8px 6px;
+      font-size: .88rem;
+      vertical-align: top;
+    }
+    th { background: #f0f6fb; }
+    .small { color: var(--muted); font-size: .8rem; }
+    .ok { color: var(--good); font-weight: 700; }
+    .err { color: var(--danger); font-weight: 700; }
+    .qr-preview {
+      display: inline-block;
+      padding: 6px;
+      border: 1px solid #d9e2ec;
+      border-radius: 8px;
+      background: #fff;
+      min-width: 112px;
+      min-height: 112px;
+    }
+    .muted-link { color: #0f4c81; text-decoration: none; }
+    .muted-link:hover { text-decoration: underline; }
+    @media (max-width: 900px) {
+      .grid { grid-template-columns: 1fr; }
+      th, td { font-size: .82rem; }
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="panel">
+      <h1>Projetta - Hospedagem de PDF com QR Code</h1>
+      <p>Upload dos PDFs do projeto, envio para GitHub e geracao de QR apontando para o link publico do arquivo.</p>
+
+      <div class="grid">
+        <div class="field">
+          <label for="repoUrl">Repositorio GitHub (URL completa)</label>
+          <input id="repoUrl" value="https://github.com/Elizangela2805/documentos.git" readonly />
+        </div>
+        <div class="field">
+          <label for="owner">Owner</label>
+          <input id="owner" value="Elizangela2805" />
+        </div>
+        <div class="field">
+          <label for="repo">Repositorio</label>
+          <input id="repo" value="documentos" />
+        </div>
+        <div class="field">
+          <label for="branch">Branch</label>
+          <input id="branch" value="main" />
+        </div>
+        <div class="field">
+          <label for="folder">Pasta de hospedagem</label>
+          <input id="folder" value="_pdf_gerados/projetta" />
+        </div>
+        <div class="field">
+          <label for="dateFolder">Subpasta da remessa</label>
+          <input id="dateFolder" />
+        </div>
+      </div>
+
+      <div class="field" style="margin-top:10px;">
+        <label for="token">GitHub Token (repo)</label>
+        <input id="token" type="password" placeholder="ghp_..." />
+      </div>
+
+      <div class="box">
+        <div class="field">
+          <label for="pdfs">Arquivos PDF para upload</label>
+          <input id="pdfs" type="file" accept=".pdf,application/pdf" multiple />
+        </div>
+        <ul id="listaArquivos"></ul>
+        <div class="actions">
+          <button id="btnEnviar" type="button">Enviar PDF + QR para GitHub</button>
+          <button id="btnAtualizar" class="alt" type="button">Atualizar lista de PDFs hospedados</button>
+          <button id="btnLimparLog" class="warn" type="button">Limpar log</button>
+        </div>
+      </div>
+
+      <textarea id="status" class="status" readonly></textarea>
+    </div>
+
+    <div class="panel">
+      <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
+        <h2 style="margin:0;font-size:1.1rem;">PDFs hospedados no repositório</h2>
+        <div class="small">Link do QR sempre aponta para `github.com/.../blob/...`</div>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Arquivo</th>
+            <th>Pasta</th>
+            <th>Link</th>
+            <th>QR</th>
+          </tr>
+        </thead>
+        <tbody id="tbodyArquivos">
+          <tr><td colspan="4" class="small">Nenhum arquivo carregado ainda.</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    const el = {
+      owner: document.getElementById("owner"),
+      repo: document.getElementById("repo"),
+      branch: document.getElementById("branch"),
+      folder: document.getElementById("folder"),
+      dateFolder: document.getElementById("dateFolder"),
+      token: document.getElementById("token"),
+      pdfs: document.getElementById("pdfs"),
+      listaArquivos: document.getElementById("listaArquivos"),
+      btnEnviar: document.getElementById("btnEnviar"),
+      btnAtualizar: document.getElementById("btnAtualizar"),
+      btnLimparLog: document.getElementById("btnLimparLog"),
+      status: document.getElementById("status"),
+      tbodyArquivos: document.getElementById("tbodyArquivos"),
+    };
+
+    const nowStamp = () => new Date().toISOString().slice(0, 10);
+    const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
+    const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
+    const normFolder = (s) => String(s || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+    const branchEsc = (branch) => encodeURIComponent(branch);
+    const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
+    const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
+    const log = (msg, type = "") => {
+      const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
+      el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
+      el.status.scrollTop = el.status.scrollHeight;
+    };
+
+    if (!el.dateFolder.value.trim()) el.dateFolder.value = nowStamp();
+
+    const authHeaders = (token) => {
+      const h = {
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28",
+      };
+      if (token) h["Authorization"] = `Bearer ${token}`;
+      return h;
+    };
+
+    const toBase64 = async (blob) => {
+      const bytes = new Uint8Array(await blob.arrayBuffer());
+      let out = "";
+      const step = 0x8000;
+      for (let i = 0; i < bytes.length; i += step) {
+        out += String.fromCharCode(...bytes.subarray(i, i + step));
+      }
+      return btoa(out);
+    };
+
+    const githubGetSha = async (owner, repo, branch, path, token) => {
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}?ref=${encodeURIComponent(branch)}`;
+      const res = await fetch(url, { headers: authHeaders(token) });
+      if (res.status === 404) return "";
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Falha ao consultar SHA (${path}): ${res.status} ${data.message || ""}`);
+      }
+      const data = await res.json();
+      return data.sha || "";
+    };
+
+    const githubUpload = async (owner, repo, branch, path, fileBlob, token, message) => {
+      const sha = await githubGetSha(owner, repo, branch, path, token);
+      const payload = {
+        message,
+        branch,
+        content: await toBase64(fileBlob),
+      };
+      if (sha) payload.sha = sha;
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}`;
+      const res = await fetch(url, {
+        method: "PUT",
+        headers: { ...authHeaders(token), "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Upload falhou (${path}): ${res.status} ${data.message || ""}`);
+      }
+      return res.json();
+    };
+
+    const renderQrBlob = (text) => new Promise((resolve, reject) => {
+      if (!window.QRCode) return reject(new Error("Biblioteca QRCode indisponivel."));
+      const host = document.createElement("div");
+      host.style.position = "fixed";
+      host.style.left = "-9999px";
+      document.body.appendChild(host);
+      new QRCode(host, { text, width: 360, height: 360, correctLevel: QRCode.CorrectLevel.M });
+      setTimeout(async () => {
+        try {
+          const canvas = host.querySelector("canvas");
+          const img = host.querySelector("img");
+          let blob = null;
+          if (canvas) {
+            blob = await new Promise((res) => canvas.toBlob(res, "image/png"));
+          } else if (img && img.src.startsWith("data:image/")) {
+            const resp = await fetch(img.src);
+            blob = await resp.blob();
+          }
+          if (!blob) throw new Error("Nao foi possivel gerar PNG do QR.");
+          resolve(blob);
+        } catch (err) {
+          reject(err);
+        } finally {
+          host.remove();
+        }
+      }, 80);
+    });
+
+    const drawQrInline = (container, link) => {
+      container.innerHTML = "";
+      new QRCode(container, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
+    };
+
+    const listRepoPdfs = async (owner, repo, branch, rootFolder, token) => {
+      const url = `https://api.github.com/repos/${owner}/${repo}/git/trees/${encodeURIComponent(branch)}?recursive=1`;
+      const res = await fetch(url, { headers: authHeaders(token) });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Falha ao listar repositorio: ${res.status} ${data.message || ""}`);
+      }
+      const data = await res.json();
+      const rootNorm = normFolder(rootFolder);
+      const basePrefix = rootNorm ? `${rootNorm}/` : "";
+      const tree = Array.isArray(data.tree) ? data.tree : [];
+      return tree
+        .filter((i) => i && i.type === "blob" && typeof i.path === "string")
+        .filter((i) => i.path.toLowerCase().endsWith(".pdf"))
+        .filter((i) => !rootNorm || i.path.startsWith(basePrefix))
+        .sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
+    };
+
+    const mountTable = (items) => {
+      if (!items.length) {
+        el.tbodyArquivos.innerHTML = `<tr><td colspan="4" class="small">Nenhum PDF encontrado na pasta configurada.</td></tr>`;
+        return;
+      }
+      el.tbodyArquivos.innerHTML = "";
+      for (const it of items) {
+        const tr = document.createElement("tr");
+        const fileName = it.path.split("/").pop();
+        const folder = it.path.includes("/") ? it.path.slice(0, it.path.lastIndexOf("/")) : "";
+        const linkBlob = blobUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
+        const linkRaw = rawUrl(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim(), it.path);
+
+        const qrCell = document.createElement("td");
+        const qrWrap = document.createElement("div");
+        qrWrap.className = "qr-preview";
+        drawQrInline(qrWrap, linkBlob);
+        qrCell.appendChild(qrWrap);
+        const dl = document.createElement("a");
+        dl.className = "muted-link";
+        dl.href = "#";
+        dl.textContent = "Baixar QR";
+        dl.style.display = "block";
+        dl.style.marginTop = "6px";
+        dl.addEventListener("click", async (ev) => {
+          ev.preventDefault();
+          try {
+            const qrBlob = await renderQrBlob(linkBlob);
+            const a = document.createElement("a");
+            a.href = URL.createObjectURL(qrBlob);
+            a.download = `${fileName.replace(/\.pdf$/i, "")}_qrcode.png`;
+            a.click();
+            URL.revokeObjectURL(a.href);
+          } catch (err) {
+            log(`Falha ao baixar QR de ${fileName}: ${err.message}`, "err");
+          }
+        });
+        qrCell.appendChild(dl);
+
+        tr.innerHTML = `
+          <td><strong>${fileName}</strong></td>
+          <td class="small">${folder || "-"}</td>
+          <td>
+            <a class="muted-link" href="${linkBlob}" target="_blank" rel="noopener">Abrir pagina GitHub</a><br/>
+            <a class="muted-link" href="${linkRaw}" target="_blank" rel="noopener">Abrir PDF bruto</a>
+          </td>
+        `;
+        tr.appendChild(qrCell);
+        el.tbodyArquivos.appendChild(tr);
+      }
+    };
+
+    const syncFileListSelected = () => {
+      const files = [...el.pdfs.files].filter((f) => /\.pdf$/i.test(f.name));
+      el.listaArquivos.innerHTML = "";
+      if (!files.length) {
+        el.listaArquivos.innerHTML = "<li class='small'>Nenhum PDF selecionado.</li>";
+        return;
+      }
+      for (const f of files) {
+        const li = document.createElement("li");
+        li.textContent = `${f.name} (${Math.round(f.size / 1024)} KB)`;
+        el.listaArquivos.appendChild(li);
+      }
+    };
+
+    el.pdfs.addEventListener("change", syncFileListSelected);
+    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
+
+    el.btnEnviar.addEventListener("click", async () => {
+      const owner = el.owner.value.trim();
+      const repo = el.repo.value.trim();
+      const branch = el.branch.value.trim() || "main";
+      const token = el.token.value.trim();
+      const folder = normFolder(el.folder.value);
+      const dateFolder = sanitize(el.dateFolder.value || nowStamp());
+      const files = [...el.pdfs.files].filter((f) => /\.pdf$/i.test(f.name));
+
+      if (!owner || !repo || !token) return log("Preencha owner, repositorio e token.", "err");
+      if (!files.length) return log("Selecione pelo menos um PDF.", "err");
+
+      el.btnEnviar.disabled = true;
+      try {
+        for (const f of files) {
+          const safeName = sanitize(f.name);
+          const fileNoExt = safeName.replace(/\.pdf$/i, "");
+          const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
+          const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
+          const pdfBlobLink = blobUrl(owner, repo, branch, pdfPath);
+
+          log(`Gerando QR: ${safeName}`);
+          const qrBlob = await renderQrBlob(pdfBlobLink);
+
+          log(`Enviando PDF: ${pdfPath}`);
+          await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
+          log(`Enviando QR: ${qrPath}`);
+          await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
+          log(`Upload concluido: ${safeName}`, "ok");
+        }
+        log("Remessa finalizada.", "ok");
+        await atualizarLista();
+      } catch (err) {
+        log(err.message, "err");
+      } finally {
+        el.btnEnviar.disabled = false;
+      }
+    });
+
+    const atualizarLista = async () => {
+      const owner = el.owner.value.trim();
+      const repo = el.repo.value.trim();
+      const branch = el.branch.value.trim() || "main";
+      const folder = normFolder(el.folder.value);
+      const token = el.token.value.trim();
+      if (!owner || !repo) {
+        log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
+        return;
+      }
+      el.btnAtualizar.disabled = true;
+      try {
+        log(`Listando PDFs hospedados em ${folder || "/"}...`);
+        const items = await listRepoPdfs(owner, repo, branch, folder, token);
+        mountTable(items);
+        log(`Total de PDFs listados: ${items.length}`, "ok");
+      } catch (err) {
+        mountTable([]);
+        log(err.message, "err");
+      } finally {
+        el.btnAtualizar.disabled = false;
+      }
+    };
+
+    el.btnAtualizar.addEventListener("click", atualizarLista);
+    syncFileListSelected();
+  </script>
+</body>
+</html>
