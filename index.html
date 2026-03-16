@@ -278,6 +278,12 @@
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const consultaUrl = (path) => `${PAGES_BASE_FIXED}/index.html?pdf=${encodeURIComponent(normFolder(path))}`;
+    const linkPublicoPdf = (owner, repo, branch, path) => {
+      const p = normFolder(path);
+      if (!p) return "#";
+      // Link publico direto do arquivo, estilo "drive": abre em nova aba sem rota intermediaria.
+      return rawUrl(owner, repo, branch, p);
+    };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
@@ -675,7 +681,7 @@
           a.className = "muted-link";
           a.target = "_blank";
           a.rel = "noopener";
-          a.href = consultaUrl(doc.path);
+          a.href = linkPublicoPdf(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim() || "main", doc.path);
           a.textContent = `↗ ${fileName}`;
           li.appendChild(a);
           ul.appendChild(li);
@@ -813,7 +819,7 @@
           const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
           const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
           const pdfPageLink = pagesUrl(owner, repo, pdfPath);
-          const qrLink = consultaUrl(pdfPath);
+          const qrLink = linkPublicoPdf(owner, repo, branch, pdfPath);
           const qrBlob = await renderQrBlob(qrLink);
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);

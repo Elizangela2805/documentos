@@ -2849,6 +2849,25 @@ class App(tk.Tk):
             return ""
 
     @staticmethod
+    def _url_github_raw_para_arquivo(caminho_arquivo):
+        repo, branch = App._obter_repo_branch_github_preferencial()
+        pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
+        if not repo:
+            return ""
+        try:
+            caminho = Path(str(caminho_arquivo or "")).expanduser()
+            if not caminho.is_absolute():
+                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
+            if not repo_path:
+                return ""
+            arquivo_url = parse.quote(repo_path, safe="/")
+            branch_url = parse.quote(str(branch or "main"), safe="")
+            return f"https://raw.githubusercontent.com/{repo}/{branch_url}/{arquivo_url}"
+        except Exception:
+            return ""
+
+    @staticmethod
     def _url_site_consulta_para_arquivo(caminho_arquivo):
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
         pages_base = App._normalizar_pages_base(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", ""))
@@ -3696,9 +3715,11 @@ class App(tk.Tk):
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
             if caminho.suffix.lower() != ".pdf":
                 continue
-            url = self._url_site_consulta_para_arquivo(caminho)
+            url = self._url_github_pages_para_arquivo(caminho)
             if not url:
-                url = self._url_github_pages_para_arquivo(caminho)
+                url = self._url_github_raw_para_arquivo(caminho)
+            if not url:
+                url = self._url_site_consulta_para_arquivo(caminho)
             if not url:
                 continue
             chave = str(url).strip()
@@ -4189,6 +4210,22 @@ class App(tk.Tk):
         caminho_norm = self._normalizar_caminho_documento_db(caminho)
         if not caminho_norm:
             return
+        try:
+            base_repo = Path(__file__).resolve().parent.resolve()
+            caminho_abs = Path(str(caminho_norm)).expanduser()
+            if not caminho_abs.is_absolute():
+                caminho_abs = (base_repo / caminho_abs).resolve()
+            dentro_repo = True
+            try:
+                caminho_abs.relative_to(base_repo)
+            except Exception:
+                dentro_repo = False
+            if (not dentro_repo) and caminho_abs.suffix.lower() == ".pdf":
+                espelhado = self._espelhar_arquivo_no_repo_local(caminho_abs)
+                if espelhado:
+                    caminho_norm = espelhado
+        except Exception:
+            pass
         caminhos_git = [caminho_norm]
         item = {
             "caminho": caminho_norm,
@@ -4429,10 +4466,6 @@ class App(tk.Tk):
         caminho = Path(caminho_txt).expanduser()
         if not caminho.is_absolute():
             caminho = (Path(__file__).resolve().parent / caminho).resolve()
-        # Gera sempre link web de consulta para o PDF, independente do resultado do upload.
-        url_consulta = self._url_site_consulta_para_arquivo(caminho)
-        if url_consulta:
-            return url_consulta
         url_github = self._url_github_qr_para_arquivo(
             caminho,
             permitir_inexistente=bool(permitir_arquivo_inexistente),
@@ -4442,6 +4475,13 @@ class App(tk.Tk):
         url_pages = self._url_github_pages_para_arquivo(caminho)
         if url_pages:
             return url_pages
+        url_raw = self._url_github_raw_para_arquivo(caminho)
+        if url_raw:
+            return url_raw
+        # Compatibilidade com QR legado baseado em rota de consulta.
+        url_consulta = self._url_site_consulta_para_arquivo(caminho)
+        if url_consulta:
+            return url_consulta
         url_blob = self._url_github_blob_para_arquivo(caminho)
         if url_blob:
             return url_blob
