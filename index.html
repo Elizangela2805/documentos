@@ -66,6 +66,7 @@
     }
     button.alt { background: linear-gradient(135deg, #44546a, #303e52); }
     button.warn { background: linear-gradient(135deg, #b54708, #93370d); }
+    button.small-btn { padding: 6px 10px; font-size: .78rem; }
     button:disabled { opacity: .65; cursor: not-allowed; }
     .box {
       border: 1px dashed var(--line);
@@ -309,6 +310,23 @@
       return res.json();
     };
 
+    const githubDeleteFile = async (owner, repo, branch, path, token, message) => {
+      const sha = await githubGetSha(owner, repo, branch, path, token);
+      if (!sha) return false;
+      const url = `https://api.github.com/repos/${owner}/${repo}/contents/${encodeURI(path)}`;
+      const payload = { message, branch, sha };
+      const res = await fetch(url, {
+        method: "DELETE",
+        headers: { ...authHeaders(token), "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      });
+      if (!res.ok) {
+        const data = await res.json().catch(() => ({}));
+        throw new Error(`Exclusao falhou (${path}): ${res.status} ${data.message || ""}`);
+      }
+      return true;
+    };
+
     const renderQrBlob = (text) => new Promise((resolve, reject) => {
       if (!window.QRCode) return reject(new Error("Biblioteca QRCode indisponivel."));
       const host = document.createElement("div");
@@ -338,7 +356,7 @@
       new QRCode(container, { text: link, width: 100, height: 100, correctLevel: QRCode.CorrectLevel.M });
     };
 
-    const listRepoPdfs = async (owner, repo, branch, rootFolder, token) => {
+    const listRepoFiles = async (owner, repo, branch, rootFolder, token) => {
       const rootNorm = normFolder(rootFolder);
 
       const listPath = async (path) => {
@@ -359,7 +377,7 @@
         let out = [];
         for (const item of items) {
           if (!item || typeof item.path !== "string") continue;
-          if (item.type === "file" && item.path.toLowerCase().endsWith(".pdf")) {
+          if (item.type === "file") {
             out.push({ path: item.path, type: "blob" });
             continue;
           }
@@ -373,6 +391,11 @@
 
       const pdfs = await walk(rootNorm);
       return pdfs.sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
+    };
+
+    const listRepoPdfs = async (owner, repo, branch, rootFolder, token) => {
+      const all = await listRepoFiles(owner, repo, branch, rootFolder, token);
+      return all.filter((i) => i.path.toLowerCase().endsWith(".pdf"));
     };
 
     const mountFuncionarios = (items) => {
@@ -393,6 +416,7 @@
       el.listaFuncionarios.innerHTML = "";
       for (const nome of nomes) {
         const docs = grupos.get(nome).sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
+        const funcionarioPath = root ? `${root}/${nome}` : nome;
         const details = document.createElement("details");
         details.className = "funcionario-item";
         const summary = document.createElement("summary");
@@ -401,6 +425,45 @@
 
         const body = document.createElement("div");
         body.className = "funcionario-docs";
+        const acoes = document.createElement("div");
+        acoes.style.marginBottom = "8px";
+        const btnExcluirFunc = document.createElement("button");
+        btnExcluirFunc.type = "button";
+        btnExcluirFunc.className = "warn small-btn";
+        btnExcluirFunc.textContent = "Excluir funcionario";
+        btnExcluirFunc.addEventListener("click", async (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          const owner = el.owner.value.trim();
+          const repo = el.repo.value.trim();
+          const branch = el.branch.value.trim() || "main";
+          const token = el.token.value.trim();
+          if (!owner || !repo || !token) {
+            log("Preencha owner, repositorio e token para excluir.", "err");
+            return;
+          }
+          const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
+          if (!ok) return;
+          btnExcluirFunc.disabled = true;
+          try {
+            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
+            if (!files.length) {
+              log(`Nenhum arquivo encontrado para ${nome}.`);
+              return;
+            }
+            for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
+              await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
+            }
+            log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
+            await atualizarLista();
+          } catch (err) {
+            log(err.message, "err");
+          } finally {
+            btnExcluirFunc.disabled = false;
+          }
+        });
+        acoes.appendChild(btnExcluirFunc);
+        body.appendChild(acoes);
         const ul = document.createElement("ul");
         for (const doc of docs) {
           const fileName = doc.path.split("/").pop();
