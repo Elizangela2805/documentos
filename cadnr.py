@@ -19,6 +19,7 @@ import unicodedata
 import hashlib
 import socket
 import threading
+import time
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -758,10 +759,16 @@ class App(tk.Tk):
         ).grid(row=0, column=1, sticky="w", padx=(8, 0))
         ttk.Button(
             footer_imprimir,
+            text="Abrir Links PDF",
+            command=self._abrir_links_pdfs_publicados,
+            width=20,
+        ).grid(row=0, column=2, sticky="w", padx=(8, 0))
+        ttk.Button(
+            footer_imprimir,
             text="Salvar Tudo",
             command=self._gerar_pdf_nr_imprimir,
             width=20,
-        ).grid(row=0, column=2, sticky="e")
+        ).grid(row=0, column=3, sticky="e")
 
         engrenagem_wrap = ttk.Frame(aba_engrenagem)
         engrenagem_wrap.pack(fill="both", expand=True)
@@ -2693,6 +2700,15 @@ class App(tk.Tk):
         return f"{partes[0]}/{partes[1]}"
 
     @staticmethod
+    def _normalizar_pages_base(base_txt):
+        base = str(base_txt or "").strip()
+        if not base:
+            return ""
+        base = re.sub(r"/+$", "", base)
+        base = re.sub(r"/index\.html$", "", base, flags=re.IGNORECASE)
+        return base
+
+    @staticmethod
     def _obter_repo_branch_github_preferencial():
         repo_padrao = "Elizangela2805/documentos"
         branch_padrao = "main"
@@ -2762,7 +2778,7 @@ class App(tk.Tk):
         repo = str(self.github_repo or "").strip() or "Elizangela2805/documentos"
         branch = str(self.github_branch or "").strip() or "main"
         pasta = str(self.github_dir or "").strip().strip("/")
-        pages_base = str(self.github_pages_base or "").strip() or "https://elizangela2805.github.io/documentos"
+        pages_base = self._normalizar_pages_base(self.github_pages_base) or "https://elizangela2805.github.io/documentos"
         token = str(self.github_token or "").strip()
         os.environ["CADNR_QR_GITHUB_REPO"] = repo
         os.environ["CADNR_QR_GITHUB_BRANCH"] = branch
@@ -2810,7 +2826,7 @@ class App(tk.Tk):
     def _url_github_pages_para_arquivo(caminho_arquivo):
         repo, _branch = App._obter_repo_branch_github_preferencial()
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
-        pages_base = str(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", "") or "").strip().rstrip("/")
+        pages_base = App._normalizar_pages_base(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", ""))
         if not pages_base:
             pages_base = "https://elizangela2805.github.io/documentos"
         if not pages_base:
@@ -2830,7 +2846,7 @@ class App(tk.Tk):
     @staticmethod
     def _url_site_consulta_para_arquivo(caminho_arquivo):
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
-        pages_base = str(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", "") or "").strip().rstrip("/")
+        pages_base = App._normalizar_pages_base(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", ""))
         if not pages_base:
             pages_base = "https://elizangela2805.github.io/documentos"
         if not pages_base:
@@ -3437,7 +3453,7 @@ class App(tk.Tk):
             self.github_repo = repo_norm
             self.github_branch = branch_txt
             self.github_dir = dir_txt or "_pdf_gerados"
-            self.github_pages_base = pages_txt.rstrip("/")
+            self.github_pages_base = self._normalizar_pages_base(pages_txt)
             self.github_token = token_txt
             self._aplicar_configuracao_github_ambiente()
             self._salvar_dados()
@@ -3642,6 +3658,52 @@ class App(tk.Tk):
         except Exception:
             pass
         messagebox.showinfo(titulo, msg)
+
+    def _abrir_links_pdfs_publicados(self):
+        urls = []
+        vistos = set()
+        for item in self.documentos_salvos:
+            if not isinstance(item, dict):
+                continue
+            caminho_txt = self._normalizar_caminho_documento_db(item.get("caminho", ""))
+            if not caminho_txt:
+                continue
+            caminho = Path(caminho_txt).expanduser()
+            if not caminho.is_absolute():
+                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            if caminho.suffix.lower() != ".pdf":
+                continue
+            url = self._url_site_consulta_para_arquivo(caminho)
+            if not url:
+                url = self._url_github_pages_para_arquivo(caminho)
+            if not url:
+                continue
+            chave = str(url).strip()
+            if not chave or chave in vistos:
+                continue
+            vistos.add(chave)
+            urls.append(chave)
+
+        if not urls:
+            messagebox.showwarning("Links PDF", "Nenhum link de PDF foi gerado.")
+            return
+
+        total_abertas = 0
+        limite = 30
+        for url in urls[:limite]:
+            try:
+                if self._abrir_url_no_chrome(url):
+                    total_abertas += 1
+            except Exception:
+                continue
+
+        msg = (
+            f"Links gerados: {len(urls)}\n"
+            f"Abas abertas: {total_abertas}"
+        )
+        if len(urls) > limite:
+            msg += f"\n\nForam abertas as primeiras {limite} abas."
+        messagebox.showinfo("Links PDF", msg)
 
     def _abrir_projetta_html_no_chrome(self):
         base = Path(__file__).resolve().parent
@@ -4261,7 +4323,21 @@ class App(tk.Tk):
 
         destino = pasta_desktop / arquivo.name
         destino.parent.mkdir(parents=True, exist_ok=True)
-        shutil.copy2(arquivo, destino)
+        ultima_exc = None
+        # Alguns arquivos PDF ficam bloqueados por poucos instantes apos geracao/conversao.
+        for _ in range(8):
+            try:
+                shutil.copy2(arquivo, destino)
+                return
+            except PermissionError as exc:
+                ultima_exc = exc
+            except OSError as exc:
+                ultima_exc = exc
+                if getattr(exc, "winerror", None) != 32:
+                    raise
+            time.sleep(0.25)
+        if ultima_exc is not None:
+            raise ultima_exc
 
     def _sincronizar_pdf_na_area_de_trabalho(self, caminho_pdf, caminho_qr=""):
         try:
@@ -8058,10 +8134,7 @@ class App(tk.Tk):
             self.github_repo = repo_norm or "Elizangela2805/documentos"
             self.github_branch = str(github_config.get("branch", "") or "").strip() or "main"
             self.github_dir = str(github_config.get("dir", "") or "").strip().strip("/") or "_pdf_gerados"
-            self.github_pages_base = (
-                str(github_config.get("pages_base", "") or "").strip().rstrip("/")
-                or "https://elizangela2805.github.io/documentos"
-            )
+            self.github_pages_base = self._normalizar_pages_base(github_config.get("pages_base", "")) or "https://elizangela2805.github.io/documentos"
             self.github_token = str(github_config.get("token", "") or "").strip()
         self._aplicar_configuracao_github_ambiente()
 
