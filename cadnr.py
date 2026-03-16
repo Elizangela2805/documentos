@@ -2960,7 +2960,10 @@ class App(tk.Tk):
             with request.urlopen(req_put, timeout=30) as resp:
                 dados = json.loads(resp.read().decode("utf-8"))
             content = dados.get("content", {}) if isinstance(dados, dict) else {}
-            url = self._url_github_pages_para_arquivo(caminho)
+            # Prioriza link publico direto (raw), mais confiavel para abrir PDF.
+            url = self._url_github_raw_para_arquivo(caminho)
+            if not url:
+                url = self._url_github_pages_para_arquivo(caminho)
             if not url:
                 url = str(content.get("download_url", "") or "").strip()
             if not url:
