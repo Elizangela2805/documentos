@@ -139,12 +139,14 @@
       padding-left: 18px;
     }
     .funcionario-docs li { margin: 4px 0; }
+    .admin-panel { display: none; }
+    .admin-panel.is-admin { display: block; }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="panel">
+    <div class="panel admin-panel" id="painelAdmin">
       <h1>Projetta - Upload de PDF e Conferencia por QR Code</h1>
       <p>Publique os PDFs gerados no site, gere QR automaticamente e obtenha links para consulta dos documentos.</p>
 
@@ -210,7 +212,7 @@
       </div>
     </div>
 
-    <div class="panel">
+    <div class="panel admin-panel" id="painelHistorico">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
         <h2 style="margin:0;font-size:1.1rem;">Documentos salvos no site (historico local)</h2>
         <button id="btnLimparHistorico" class="warn" type="button">Limpar historico</button>
@@ -227,6 +229,15 @@
   </div>
 
   <script>
+    const query = new URLSearchParams(window.location.search);
+    const isAdminMode = query.get("admin") === "1";
+    if (isAdminMode) {
+      const pAdmin = document.getElementById("painelAdmin");
+      const pHist = document.getElementById("painelHistorico");
+      if (pAdmin) pAdmin.classList.add("is-admin");
+      if (pHist) pHist.classList.add("is-admin");
+    }
+
     const el = {
       owner: document.getElementById("owner"),
       repo: document.getElementById("repo"),
@@ -528,46 +539,48 @@
 
         const body = document.createElement("div");
         body.className = "funcionario-docs";
-        const acoes = document.createElement("div");
-        acoes.style.marginBottom = "8px";
-        const btnExcluirFunc = document.createElement("button");
-        btnExcluirFunc.type = "button";
-        btnExcluirFunc.className = "warn small-btn";
-        btnExcluirFunc.textContent = "Excluir funcionario";
-        btnExcluirFunc.addEventListener("click", async (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          const owner = el.owner.value.trim();
-          const repo = el.repo.value.trim();
-          const branch = el.branch.value.trim() || "main";
-          const token = el.token.value.trim();
-          if (!owner || !repo || !token) {
-            log("Preencha owner, repositorio e token para excluir.", "err");
-            return;
-          }
-          const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
-          if (!ok) return;
-          btnExcluirFunc.disabled = true;
-          try {
-            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
-            if (!files.length) {
-              log(`Nenhum arquivo encontrado para ${nome}.`);
+        if (isAdminMode) {
+          const acoes = document.createElement("div");
+          acoes.style.marginBottom = "8px";
+          const btnExcluirFunc = document.createElement("button");
+          btnExcluirFunc.type = "button";
+          btnExcluirFunc.className = "warn small-btn";
+          btnExcluirFunc.textContent = "Excluir funcionario";
+          btnExcluirFunc.addEventListener("click", async (ev) => {
+            ev.preventDefault();
+            ev.stopPropagation();
+            const owner = el.owner.value.trim();
+            const repo = el.repo.value.trim();
+            const branch = el.branch.value.trim() || "main";
+            const token = el.token.value.trim();
+            if (!owner || !repo || !token) {
+              log("Preencha owner, repositorio e token para excluir.", "err");
               return;
             }
-            for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
-              await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
+            const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
+            if (!ok) return;
+            btnExcluirFunc.disabled = true;
+            try {
+              const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
+              if (!files.length) {
+                log(`Nenhum arquivo encontrado para ${nome}.`);
+                return;
+              }
+              for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
+                await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
+              }
+              await removerFuncionarioDoIndiceRemoto(nome);
+              log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
+              await atualizarLista();
+            } catch (err) {
+              log(err.message, "err");
+            } finally {
+              btnExcluirFunc.disabled = false;
             }
-            await removerFuncionarioDoIndiceRemoto(nome);
-            log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
-            await atualizarLista();
-          } catch (err) {
-            log(err.message, "err");
-          } finally {
-            btnExcluirFunc.disabled = false;
-          }
-        });
-        acoes.appendChild(btnExcluirFunc);
-        body.appendChild(acoes);
+          });
+          acoes.appendChild(btnExcluirFunc);
+          body.appendChild(acoes);
+        }
         const ul = document.createElement("ul");
         for (const doc of docs) {
           const fileName = doc.path.split("/").pop();
@@ -711,18 +724,20 @@
       }
     };
 
-    el.pdfs.addEventListener("change", async () => {
-      syncFileListSelected();
-      if (el.autoUpload.value === "on") await enviarSelecionados("automatico");
-    });
-    el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
-    el.btnLimparHistorico.addEventListener("click", () => {
-      salvarHistorico([]);
-      renderHistorico();
-      log("Historico local limpo.");
-    });
-    el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
-    el.btnAtualizar.addEventListener("click", atualizarLista);
+    if (isAdminMode) {
+      el.pdfs.addEventListener("change", async () => {
+        syncFileListSelected();
+        if (el.autoUpload.value === "on") await enviarSelecionados("automatico");
+      });
+      el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
+      el.btnLimparHistorico.addEventListener("click", () => {
+        salvarHistorico([]);
+        renderHistorico();
+        log("Historico local limpo.");
+      });
+      el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
+      el.btnAtualizar.addEventListener("click", atualizarLista);
+    }
 
     const redirecionarConsultaQr = () => {
       const p = new URLSearchParams(window.location.search);
@@ -734,8 +749,11 @@
       window.location.replace(destino);
     };
 
-    syncFileListSelected();
-    renderHistorico();
+    if (isAdminMode) {
+      syncFileListSelected();
+      renderHistorico();
+    }
+    atualizarLista();
     redirecionarConsultaQr();
   </script>
 </body>
