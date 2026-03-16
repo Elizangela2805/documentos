@@ -539,48 +539,46 @@
 
         const body = document.createElement("div");
         body.className = "funcionario-docs";
-        if (isAdminMode) {
-          const acoes = document.createElement("div");
-          acoes.style.marginBottom = "8px";
-          const btnExcluirFunc = document.createElement("button");
-          btnExcluirFunc.type = "button";
-          btnExcluirFunc.className = "warn small-btn";
-          btnExcluirFunc.textContent = "Excluir funcionario";
-          btnExcluirFunc.addEventListener("click", async (ev) => {
-            ev.preventDefault();
-            ev.stopPropagation();
-            const owner = el.owner.value.trim();
-            const repo = el.repo.value.trim();
-            const branch = el.branch.value.trim() || "main";
-            const token = el.token.value.trim();
-            if (!owner || !repo || !token) {
-              log("Preencha owner, repositorio e token para excluir.", "err");
+        const acoes = document.createElement("div");
+        acoes.style.marginBottom = "8px";
+        const btnExcluirFunc = document.createElement("button");
+        btnExcluirFunc.type = "button";
+        btnExcluirFunc.className = "warn small-btn";
+        btnExcluirFunc.textContent = "Excluir funcionario";
+        btnExcluirFunc.addEventListener("click", async (ev) => {
+          ev.preventDefault();
+          ev.stopPropagation();
+          const owner = el.owner.value.trim();
+          const repo = el.repo.value.trim();
+          const branch = el.branch.value.trim() || "main";
+          const token = el.token.value.trim();
+          if (!owner || !repo || !token) {
+            log("Preencha owner, repositorio e token para excluir.", "err");
+            return;
+          }
+          const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
+          if (!ok) return;
+          btnExcluirFunc.disabled = true;
+          try {
+            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
+            if (!files.length) {
+              log(`Nenhum arquivo encontrado para ${nome}.`);
               return;
             }
-            const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
-            if (!ok) return;
-            btnExcluirFunc.disabled = true;
-            try {
-              const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
-              if (!files.length) {
-                log(`Nenhum arquivo encontrado para ${nome}.`);
-                return;
-              }
-              for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
-                await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
-              }
-              await removerFuncionarioDoIndiceRemoto(nome);
-              log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
-              await atualizarLista();
-            } catch (err) {
-              log(err.message, "err");
-            } finally {
-              btnExcluirFunc.disabled = false;
+            for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
+              await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
             }
-          });
-          acoes.appendChild(btnExcluirFunc);
-          body.appendChild(acoes);
-        }
+            await removerFuncionarioDoIndiceRemoto(nome);
+            log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
+            await atualizarLista();
+          } catch (err) {
+            log(err.message, "err");
+          } finally {
+            btnExcluirFunc.disabled = false;
+          }
+        });
+        acoes.appendChild(btnExcluirFunc);
+        body.appendChild(acoes);
         const ul = document.createElement("ul");
         for (const doc of docs) {
           const fileName = doc.path.split("/").pop();
