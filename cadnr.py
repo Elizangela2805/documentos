@@ -649,6 +649,10 @@ class App(tk.Tk):
         self._qr_token_map = {}
         self._qr_github_cache = {}
         self._qr_github_ultimo_erro = ""
+        self.github_repo = "Elizangela2805/documentos"
+        self.github_branch = "main"
+        self.github_pages_base = "https://elizangela2805.github.io/documentos"
+        self.github_token = ""
         self._migrar_pastas_documentos_legadas()
 
         container = ttk.Frame(self, padding=16)
@@ -790,6 +794,13 @@ class App(tk.Tk):
             command=self._abrir_configuracao_assinatura_digital,
             width=19,
         ).grid(row=0, column=4, padx=(6, 0), pady=4)
+        ttk.Button(
+            botoes,
+            text="CONFIG GITHUB",
+            style="Success.TButton",
+            command=self._abrir_configuracao_github,
+            width=19,
+        ).grid(row=0, column=5, padx=(6, 0), pady=4)
 
         filtros = ttk.Frame(aba_cadnr)
         filtros.pack(anchor="w", fill="x", pady=(16, 0))
@@ -909,6 +920,7 @@ class App(tk.Tk):
         ).grid(row=2, column=3, sticky="w", pady=(8, 0))
 
         self._carregar_dados()
+        self._aplicar_configuracao_github_ambiente()
         if self._limpar_nr_nao_usadas_no_projeto():
             self._salvar_dados()
         self._garantir_pastas_empresas()
@@ -2450,8 +2462,9 @@ class App(tk.Tk):
 
     @staticmethod
     def _obter_pasta_saida(nome_limpo):
-        base_repo = Path(__file__).resolve().parent
-        pasta_destino = base_repo / "_pdf_gerados" / nome_limpo
+        # Salva fora do diretorio do repositorio Git local.
+        desktop_base = App._obter_desktop_base()
+        pasta_destino = desktop_base / "CADNR_Publicados" / nome_limpo
         pasta_destino.mkdir(parents=True, exist_ok=True)
         return pasta_destino
 
@@ -2740,6 +2753,19 @@ class App(tk.Tk):
             "raw_base": raw_base,
             "pages_base": pages_base,
         }
+
+    def _aplicar_configuracao_github_ambiente(self):
+        repo = str(self.github_repo or "").strip() or "Elizangela2805/documentos"
+        branch = str(self.github_branch or "").strip() or "main"
+        pages_base = str(self.github_pages_base or "").strip() or "https://elizangela2805.github.io/documentos"
+        token = str(self.github_token or "").strip()
+        os.environ["CADNR_QR_GITHUB_REPO"] = repo
+        os.environ["CADNR_QR_GITHUB_BRANCH"] = branch
+        os.environ["CADNR_QR_GITHUB_PAGES_BASE"] = pages_base.rstrip("/")
+        if token:
+            os.environ["CADNR_QR_GITHUB_TOKEN"] = token
+        elif "CADNR_QR_GITHUB_TOKEN" in os.environ:
+            del os.environ["CADNR_QR_GITHUB_TOKEN"]
 
     @staticmethod
     def _montar_caminho_repo_qr_github(caminho_pdf, pasta_repo=""):
@@ -3292,6 +3318,82 @@ class App(tk.Tk):
             self._aviso_assinatura_exibido = False
             self._salvar_dados()
             messagebox.showinfo("Assinatura Digital", "Configuracao salva com sucesso.")
+            popup.destroy()
+
+        ttk.Button(botoes, text="Cancelar", command=popup.destroy).grid(row=0, column=0, padx=(0, 8))
+        ttk.Button(botoes, text="Salvar", command=salvar_config).grid(row=0, column=1)
+
+        popup.ajustar_tamanho()
+
+    def _abrir_configuracao_github(self):
+        popup = CadastroPopup(self, "Config GitHub")
+        popup.columnconfigure(0, weight=1)
+
+        r = 0
+        popup.secao("Publicacao automatica e QR (GitHub Pages)", r)
+
+        r += 1
+        f_token = ttk.Frame(popup)
+        f_token.grid(row=r, column=0, sticky="ew", padx=12)
+        f_token.columnconfigure(1, weight=1)
+        ttk.Label(f_token, text="Token:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        token_var = tk.StringVar(value=str(self.github_token or os.environ.get("CADNR_QR_GITHUB_TOKEN", "") or ""))
+        ttk.Entry(f_token, textvariable=token_var, show="*").grid(row=0, column=1, sticky="ew")
+
+        r += 1
+        f_repo = ttk.Frame(popup)
+        f_repo.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
+        f_repo.columnconfigure(1, weight=1)
+        ttk.Label(f_repo, text="Repo:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        repo_var = tk.StringVar(value=str(self.github_repo or "Elizangela2805/documentos"))
+        ttk.Entry(f_repo, textvariable=repo_var).grid(row=0, column=1, sticky="ew")
+
+        r += 1
+        f_branch = ttk.Frame(popup)
+        f_branch.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
+        f_branch.columnconfigure(1, weight=1)
+        ttk.Label(f_branch, text="Branch:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        branch_var = tk.StringVar(value=str(self.github_branch or "main"))
+        ttk.Entry(f_branch, textvariable=branch_var).grid(row=0, column=1, sticky="ew")
+
+        r += 1
+        f_pages = ttk.Frame(popup)
+        f_pages.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
+        f_pages.columnconfigure(1, weight=1)
+        ttk.Label(f_pages, text="Base Pages:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        pages_var = tk.StringVar(value=str(self.github_pages_base or "https://elizangela2805.github.io/documentos"))
+        ttk.Entry(f_pages, textvariable=pages_var).grid(row=0, column=1, sticky="ew")
+
+        r += 1
+        aviso = ttk.Label(
+            popup,
+            text="Essas configuracoes sao usadas para upload automatico dos PDFs e links de QR.",
+        )
+        aviso.grid(row=r, column=0, sticky="w", padx=12, pady=(8, 0))
+
+        r += 1
+        botoes = ttk.Frame(popup)
+        botoes.grid(row=r, column=0, sticky="e", padx=12, pady=(12, 12))
+
+        def salvar_config():
+            repo_txt = str(repo_var.get() or "").strip() or "Elizangela2805/documentos"
+            branch_txt = str(branch_var.get() or "").strip() or "main"
+            pages_txt = str(pages_var.get() or "").strip() or "https://elizangela2805.github.io/documentos"
+            token_txt = str(token_var.get() or "").strip()
+            repo_norm = self._normalizar_repo_github(repo_txt)
+            if not repo_norm:
+                messagebox.showerror("Config GitHub", "Repositorio invalido. Use formato dono/repositorio.")
+                return
+            if not pages_txt.lower().startswith("http://") and not pages_txt.lower().startswith("https://"):
+                messagebox.showerror("Config GitHub", "Base Pages invalida. Informe URL iniciando com http(s).")
+                return
+            self.github_repo = repo_norm
+            self.github_branch = branch_txt
+            self.github_pages_base = pages_txt.rstrip("/")
+            self.github_token = token_txt
+            self._aplicar_configuracao_github_ambiente()
+            self._salvar_dados()
+            messagebox.showinfo("Config GitHub", "Configuracao salva com sucesso.")
             popup.destroy()
 
         ttk.Button(botoes, text="Cancelar", command=popup.destroy).grid(row=0, column=0, padx=(0, 8))
@@ -3891,85 +3993,11 @@ class App(tk.Tk):
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
             if caminho.suffix.lower() != ".pdf" or not caminho.exists() or not caminho.is_file():
                 return
-
-            repo_dir = Path(__file__).resolve().parent
-            try:
-                caminho_rel = caminho.resolve().relative_to(repo_dir.resolve())
-            except Exception:
-                return
-
-            caminhos_rel = [str(caminho_rel)]
-            qr_txt = str(caminho_qr or "").strip()
-            if qr_txt:
-                qr = Path(qr_txt).expanduser()
-                if not qr.is_absolute():
-                    qr = (repo_dir / qr).resolve()
-                try:
-                    qr_rel = qr.resolve().relative_to(repo_dir.resolve())
-                    if qr.exists() and qr.is_file():
-                        caminhos_rel.append(str(qr_rel))
-                except Exception:
-                    pass
-
-            check_repo = subprocess.run(
-                ["git", "-C", str(repo_dir), "rev-parse", "--is-inside-work-tree"],
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            if check_repo.returncode != 0:
-                return
-
-            add_proc = subprocess.run(
-                ["git", "-C", str(repo_dir), "add", "--", *caminhos_rel],
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=20,
-            )
-            if add_proc.returncode != 0:
-                self._avisar_falha_git_sync(add_proc.stderr or add_proc.stdout)
-                return
-
-            commit_msg = f"PDF automatico: {caminho.stem}"
-            commit_proc = subprocess.run(
-                ["git", "-C", str(repo_dir), "commit", "-m", commit_msg, "--", *caminhos_rel],
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=30,
-            )
-            if commit_proc.returncode != 0:
-                saida_commit = f"{commit_proc.stdout}\n{commit_proc.stderr}".lower()
-                if "nothing to commit" in saida_commit or "no changes added to commit" in saida_commit:
-                    return
-                self._avisar_falha_git_sync(commit_proc.stderr or commit_proc.stdout)
-                return
-
-            branch_proc = subprocess.run(
-                ["git", "-C", str(repo_dir), "rev-parse", "--abbrev-ref", "HEAD"],
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=10,
-            )
-            branch = ""
-            if branch_proc.returncode == 0:
-                branch = str(branch_proc.stdout or "").strip()
-
-            push_cmd = ["git", "-C", str(repo_dir), "push", "origin"]
-            if branch and branch.upper() != "HEAD":
-                push_cmd.append(branch)
-            push_proc = subprocess.run(
-                push_cmd,
-                check=False,
-                capture_output=True,
-                text=True,
-                timeout=60,
-            )
-            if push_proc.returncode != 0:
-                self._avisar_falha_git_sync(push_proc.stderr or push_proc.stdout)
+            # Publica o PDF no repositorio remoto (GitHub Pages) via API.
+            url_publicada = self._url_github_qr_para_arquivo(caminho)
+            if not url_publicada:
+                detalhe = str(self._qr_github_ultimo_erro or "").strip() or "falha ao publicar no GitHub Pages"
+                self._avisar_falha_git_sync(detalhe)
         except Exception as exc:
             self._avisar_falha_git_sync(exc)
             return
@@ -7435,6 +7463,7 @@ class App(tk.Tk):
         documentos = dados.get("documentos", [])
         documentos_salvos = dados.get("documentos_salvos", [])
         assinatura_digital = dados.get("assinatura_digital", {})
+        github_config = dados.get("github_config", {})
         if not isinstance(empresas, list) or not isinstance(funcionarios, list):
             return
 
@@ -7704,6 +7733,17 @@ class App(tk.Tk):
                         }
                     )
             self.assinatura_digital_certificados = certs_validos
+        if isinstance(github_config, dict):
+            repo_txt = str(github_config.get("repo", "") or "").strip()
+            repo_norm = self._normalizar_repo_github(repo_txt)
+            self.github_repo = repo_norm or "Elizangela2805/documentos"
+            self.github_branch = str(github_config.get("branch", "") or "").strip() or "main"
+            self.github_pages_base = (
+                str(github_config.get("pages_base", "") or "").strip().rstrip("/")
+                or "https://elizangela2805.github.io/documentos"
+            )
+            self.github_token = str(github_config.get("token", "") or "").strip()
+        self._aplicar_configuracao_github_ambiente()
 
     def _salvar_dados(self):
         self._sincronizar_vinculo_funcionarios_empresas()
@@ -7786,6 +7826,13 @@ class App(tk.Tk):
                 "pfx2": str(self.assinatura_digital_pfx2 or "").strip(),
                 "senha2": str(self.assinatura_digital_senha2 or ""),
                 "certificados": self.assinatura_digital_certificados,
+            },
+            "github_config": {
+                "repo": str(self.github_repo or "").strip() or "Elizangela2805/documentos",
+                "branch": str(self.github_branch or "").strip() or "main",
+                "pages_base": str(self.github_pages_base or "").strip().rstrip("/")
+                or "https://elizangela2805.github.io/documentos",
+                "token": str(self.github_token or "").strip(),
             },
         }
         try:
