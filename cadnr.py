@@ -643,6 +643,7 @@ class App(tk.Tk):
         self._aviso_assinatura_exibido = False
         self._aviso_git_sync_exibido = False
         self._aviso_desktop_sync_exibido = False
+        self._aviso_git_auto_exibido = False
         self._qr_http_server = None
         self._qr_http_thread = None
         self._qr_http_base_url = ""
@@ -654,6 +655,10 @@ class App(tk.Tk):
         self.github_dir = "_pdf_gerados"
         self.github_pages_base = "https://elizangela2805.github.io/documentos"
         self.github_token = ""
+        self._git_auto_commit_habilitado = True
+        self._git_auto_commit_lock = threading.Lock()
+        self._git_auto_commit_pendentes = set()
+        self._git_auto_commit_thread = None
 
         container = ttk.Frame(self, padding=16)
         container.pack(fill="both", expand=True)
@@ -3965,6 +3970,128 @@ class App(tk.Tk):
         except OSError:
             return
 
+    def _avisar_falha_git_auto(self, detalhe):
+        if self._aviso_git_auto_exibido:
+            return
+        self._aviso_git_auto_exibido = True
+        detalhe_txt = str(detalhe or "").strip() or "erro nao identificado"
+        messagebox.showwarning(
+            "Git Auto",
+            "Nao foi possivel executar commit + push automatico.\n"
+            f"Detalhe: {detalhe_txt}",
+        )
+
+    def _normalizar_caminho_git_relativo(self, caminho):
+        base = Path(__file__).resolve().parent.resolve()
+        p = Path(str(caminho or "")).expanduser()
+        if not p.is_absolute():
+            p = (base / p).resolve()
+        try:
+            rel = p.resolve().relative_to(base)
+            return str(rel).replace("\\", "/")
+        except Exception:
+            return ""
+
+    def _enfileirar_git_auto_commit(self, caminhos):
+        if not self._git_auto_commit_habilitado:
+            return
+        itens = caminhos if isinstance(caminhos, (list, tuple, set)) else [caminhos]
+        normalizados = set()
+        for item in itens:
+            rel = self._normalizar_caminho_git_relativo(item)
+            if rel:
+                normalizados.add(rel)
+        if not normalizados:
+            return
+        with self._git_auto_commit_lock:
+            self._git_auto_commit_pendentes.update(normalizados)
+            thread_ativa = self._git_auto_commit_thread is not None and self._git_auto_commit_thread.is_alive()
+            if thread_ativa:
+                return
+            self._git_auto_commit_thread = threading.Thread(
+                target=self._worker_git_auto_commit,
+                daemon=True,
+            )
+            self._git_auto_commit_thread.start()
+
+    def _worker_git_auto_commit(self):
+        repo_dir = Path(__file__).resolve().parent
+        while True:
+            with self._git_auto_commit_lock:
+                if not self._git_auto_commit_pendentes:
+                    self._git_auto_commit_thread = None
+                    return
+                lote = sorted(self._git_auto_commit_pendentes)
+                self._git_auto_commit_pendentes.clear()
+
+            try:
+                proc_repo = subprocess.run(
+                    ["git", "-C", str(repo_dir), "rev-parse", "--is-inside-work-tree"],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=12,
+                )
+                if proc_repo.returncode != 0 or str(proc_repo.stdout or "").strip().lower() != "true":
+                    continue
+
+                add_cmd = ["git", "-C", str(repo_dir), "add", "--", *lote]
+                proc_add = subprocess.run(
+                    add_cmd,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=30,
+                )
+                if proc_add.returncode != 0:
+                    raise RuntimeError((proc_add.stderr or proc_add.stdout or "git add falhou").strip())
+
+                diff_cmd = ["git", "-C", str(repo_dir), "diff", "--cached", "--name-only", "--", *lote]
+                proc_diff = subprocess.run(
+                    diff_cmd,
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=20,
+                )
+                if proc_diff.returncode != 0:
+                    raise RuntimeError((proc_diff.stderr or proc_diff.stdout or "git diff falhou").strip())
+                alterados = [ln.strip() for ln in str(proc_diff.stdout or "").splitlines() if ln.strip()]
+                if not alterados:
+                    continue
+
+                foco = alterados[0]
+                msg = f"Auto save docs: {foco}"
+                proc_commit = subprocess.run(
+                    ["git", "-C", str(repo_dir), "commit", "-m", msg, "--", *alterados],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=40,
+                )
+                if proc_commit.returncode != 0:
+                    saida = (proc_commit.stderr or proc_commit.stdout or "").strip()
+                    if "nothing to commit" in saida.lower():
+                        continue
+                    raise RuntimeError(saida or "git commit falhou")
+
+                proc_push = subprocess.run(
+                    ["git", "-C", str(repo_dir), "push"],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=60,
+                )
+                if proc_push.returncode != 0:
+                    raise RuntimeError((proc_push.stderr or proc_push.stdout or "git push falhou").strip())
+
+            except Exception as exc:
+                try:
+                    self.after(0, lambda e=exc: self._avisar_falha_git_auto(e))
+                except Exception:
+                    pass
+                continue
+
     def _registrar_documento_salvo(
         self,
         caminho,
@@ -3977,6 +4104,7 @@ class App(tk.Tk):
         caminho_norm = self._normalizar_caminho_documento_db(caminho)
         if not caminho_norm:
             return
+        caminhos_git = [caminho_norm]
         item = {
             "caminho": caminho_norm,
             "origem": str(origem or "sistema"),
@@ -3988,6 +4116,7 @@ class App(tk.Tk):
         qr_caminho = self._gerar_qrcode_documento_salvo(caminho_norm, item["tipo_documento"])
         if qr_caminho:
             item["qrcode"] = qr_caminho
+            caminhos_git.append(qr_caminho)
             caminho_pdf = Path(str(caminho_norm or "")).expanduser()
             if not caminho_pdf.is_absolute():
                 caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
@@ -4049,8 +4178,10 @@ class App(tk.Tk):
         for idx, existente in enumerate(self.documentos_salvos):
             if str(existente.get("caminho", "") or "").strip() == caminho_norm:
                 self.documentos_salvos[idx] = item
+                self._enfileirar_git_auto_commit(caminhos_git)
                 return
         self.documentos_salvos.append(item)
+        self._enfileirar_git_auto_commit(caminhos_git)
 
     def _avisar_falha_git_sync(self, detalhe):
         if self._aviso_git_sync_exibido:
