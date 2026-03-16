@@ -226,7 +226,8 @@
     const branchEsc = (branch) => encodeURIComponent(branch);
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
-    const pagesUrl = (owner, repo, path) => `https://${String(owner || "").toLowerCase()}.github.io/${repo}/${encodeURI(path)}`;
+    const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
+    const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;

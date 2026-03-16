@@ -2731,9 +2731,7 @@ class App(tk.Tk):
             raw_base = f"https://raw.githubusercontent.com/{repo}/{branch}"
         pages_base = str(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", "") or "").strip().rstrip("/")
         if not pages_base:
-            partes = [p for p in str(repo).split("/") if p]
-            if len(partes) >= 2:
-                pages_base = f"https://{partes[0].lower()}.github.io/{partes[1]}"
+            pages_base = "https://elizangela2805.github.io/documentos"
         return {
             "token": token,
             "repo": repo,
@@ -2782,9 +2780,7 @@ class App(tk.Tk):
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
         pages_base = str(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", "") or "").strip().rstrip("/")
         if not pages_base:
-            partes = [p for p in str(repo).split("/") if p]
-            if len(partes) >= 2:
-                pages_base = f"https://{partes[0].lower()}.github.io/{partes[1]}"
+            pages_base = "https://elizangela2805.github.io/documentos"
         if not pages_base:
             return ""
         try:
