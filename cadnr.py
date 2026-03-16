@@ -2796,7 +2796,12 @@ class App(tk.Tk):
             rel = Path(caminho_pdf).resolve().relative_to(base)
             rel_txt = str(rel).replace("\\", "/")
         except Exception:
-            rel_txt = Path(caminho_pdf).name
+            try:
+                p = Path(caminho_pdf).resolve()
+                parent = str(p.parent.name or "").strip()
+                rel_txt = f"{parent}/{p.name}" if parent else p.name
+            except Exception:
+                rel_txt = Path(caminho_pdf).name
         rel_txt = rel_txt.lstrip("/").replace("../", "").replace("..\\", "")
         pasta = str(pasta_repo or "").strip().strip("/")
         if pasta:
@@ -2961,6 +2966,24 @@ class App(tk.Tk):
         except Exception as exc:
             self._qr_github_ultimo_erro = f"Publicacao PUT falhou: {exc}"
         return ""
+
+    def _espelhar_arquivo_no_repo_local(self, caminho_arquivo):
+        try:
+            origem = Path(str(caminho_arquivo or "")).expanduser()
+            if not origem.is_absolute():
+                origem = (Path(__file__).resolve().parent / origem).resolve()
+            if not origem.exists() or not origem.is_file():
+                return ""
+            base = Path(__file__).resolve().parent.resolve()
+            repo_path = self._montar_caminho_repo_qr_github(origem, os.environ.get("CADNR_QR_GITHUB_DIR", ""))
+            if not repo_path:
+                return ""
+            destino = (base / Path(repo_path)).resolve()
+            destino.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(origem, destino)
+            return self._normalizar_caminho_documento_db(destino)
+        except Exception:
+            return ""
 
     def _url_github_qr_para_arquivo(self, caminho_arquivo, permitir_inexistente=False):
         caminho = Path(str(caminho_arquivo or "")).expanduser()
@@ -4377,6 +4400,20 @@ class App(tk.Tk):
                     if caminho_qr_arq.exists() and caminho_qr_arq.is_file():
                         self._publicar_arquivo_no_site(caminho_qr_arq)
             if not url_publicada:
+                # Fallback: espelha no repositorio local e deixa o Git Auto publicar.
+                caminhos_fallback = []
+                rel_pdf = self._espelhar_arquivo_no_repo_local(caminho)
+                if rel_pdf:
+                    caminhos_fallback.append(rel_pdf)
+                qr_txt = str(caminho_qr or "").strip()
+                if qr_txt:
+                    rel_qr = self._espelhar_arquivo_no_repo_local(qr_txt)
+                    if rel_qr:
+                        caminhos_fallback.append(rel_qr)
+                if caminhos_fallback:
+                    self._enfileirar_git_auto_commit(caminhos_fallback)
+                    self._qr_github_ultimo_erro = ""
+                    return
                 detalhe = str(self._qr_github_ultimo_erro or "").strip() or "falha ao publicar no site"
                 if avisar_falha:
                     self._avisar_falha_git_sync(detalhe)
@@ -4392,14 +4429,15 @@ class App(tk.Tk):
         caminho = Path(caminho_txt).expanduser()
         if not caminho.is_absolute():
             caminho = (Path(__file__).resolve().parent / caminho).resolve()
+        # Gera sempre link web de consulta para o PDF, independente do resultado do upload.
+        url_consulta = self._url_site_consulta_para_arquivo(caminho)
+        if url_consulta:
+            return url_consulta
         url_github = self._url_github_qr_para_arquivo(
             caminho,
             permitir_inexistente=bool(permitir_arquivo_inexistente),
         )
         if url_github:
-            url_consulta = self._url_site_consulta_para_arquivo(caminho)
-            if url_consulta:
-                return url_consulta
             return url_github
         url_pages = self._url_github_pages_para_arquivo(caminho)
         if url_pages:
