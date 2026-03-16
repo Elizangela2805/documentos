@@ -214,15 +214,20 @@
 
     <div class="panel admin-panel" id="painelHistorico">
       <div style="display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap;">
-        <h2 style="margin:0;font-size:1.1rem;">Documentos salvos no site (historico local)</h2>
+        <h2 style="margin:0;font-size:1.1rem;">Documentos no banco local (IndexedDB)</h2>
         <button id="btnLimparHistorico" class="warn" type="button">Limpar historico</button>
+      </div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px;">
+        <input id="filtroFuncionarioDb" type="text" placeholder="Filtrar por funcionario" style="max-width:280px;" />
+        <button id="btnFiltrarHistorico" class="alt" type="button">Filtrar</button>
+        <button id="btnLimparFiltroHistorico" class="alt" type="button">Limpar filtro</button>
       </div>
       <table>
         <thead>
-          <tr><th>Data/Hora</th><th>Arquivo</th><th>Pasta</th><th>Link</th></tr>
+          <tr><th>Data/Hora</th><th>Funcionario</th><th>Arquivo</th><th>Pasta</th><th>Link</th><th>Acoes</th></tr>
         </thead>
         <tbody id="tbodyHistorico">
-          <tr><td colspan="4" class="small">Nenhum documento salvo localmente ainda.</td></tr>
+          <tr><td colspan="6" class="small">Nenhum documento salvo localmente ainda.</td></tr>
         </tbody>
       </table>
     </div>
@@ -251,13 +256,18 @@
       btnAtualizar: document.getElementById("btnAtualizar"),
       btnLimparLog: document.getElementById("btnLimparLog"),
       btnLimparHistorico: document.getElementById("btnLimparHistorico"),
+      filtroFuncionarioDb: document.getElementById("filtroFuncionarioDb"),
+      btnFiltrarHistorico: document.getElementById("btnFiltrarHistorico"),
+      btnLimparFiltroHistorico: document.getElementById("btnLimparFiltroHistorico"),
       autoUpload: document.getElementById("autoUpload"),
       status: document.getElementById("status"),
       listaFuncionarios: document.getElementById("listaFuncionarios"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
     };
 
-    const LS_KEY = "projetta_upload_history_v1";
+    const DB_NAME = "projetta_pdf_db";
+    const DB_VERSION = 1;
+    const STORE_PDFS = "pdfs";
     const nowStamp = () => new Date().toISOString().slice(0, 10);
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
@@ -273,6 +283,56 @@
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
       el.status.scrollTop = el.status.scrollHeight;
+    };
+
+    const openDb = () => new Promise((resolve, reject) => {
+      if (!window.indexedDB) return reject(new Error("IndexedDB indisponivel neste navegador."));
+      const req = indexedDB.open(DB_NAME, DB_VERSION);
+      req.onupgradeneeded = () => {
+        const db = req.result;
+        if (!db.objectStoreNames.contains(STORE_PDFS)) {
+          const st = db.createObjectStore(STORE_PDFS, { keyPath: "id" });
+          st.createIndex("path", "path", { unique: false });
+          st.createIndex("funcionario", "funcionario", { unique: false });
+          st.createIndex("criado_em", "criado_em", { unique: false });
+        }
+      };
+      req.onsuccess = () => resolve(req.result);
+      req.onerror = () => reject(req.error || new Error("Falha ao abrir banco local."));
+    });
+
+    const dbPutPdf = async (registro) => {
+      const db = await openDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PDFS, "readwrite");
+        tx.objectStore(STORE_PDFS).put(registro);
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error("Falha ao salvar PDF no banco local."));
+      });
+      db.close();
+    };
+
+    const dbListPdfs = async () => {
+      const db = await openDb();
+      const rows = await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PDFS, "readonly");
+        const req = tx.objectStore(STORE_PDFS).getAll();
+        req.onsuccess = () => resolve(Array.isArray(req.result) ? req.result : []);
+        req.onerror = () => reject(req.error || new Error("Falha ao consultar banco local."));
+      });
+      db.close();
+      return rows.sort((a, b) => String(b?.criado_em || "").localeCompare(String(a?.criado_em || "")));
+    };
+
+    const dbClearPdfs = async () => {
+      const db = await openDb();
+      await new Promise((resolve, reject) => {
+        const tx = db.transaction(STORE_PDFS, "readwrite");
+        tx.objectStore(STORE_PDFS).clear();
+        tx.oncomplete = () => resolve();
+        tx.onerror = () => reject(tx.error || new Error("Falha ao limpar banco local."));
+      });
+      db.close();
     };
 
     if (!el.dateFolder.value.trim()) el.dateFolder.value = nowStamp();
@@ -640,42 +700,93 @@
       }
     };
 
-    const carregarHistorico = () => {
-      try {
-        const raw = localStorage.getItem(LS_KEY);
-        const parsed = raw ? JSON.parse(raw) : [];
-        return Array.isArray(parsed) ? parsed : [];
-      } catch {
-        return [];
+    const abrirBlobEmNovaAba = (blob, nomeArquivo) => {
+      if (!(blob instanceof Blob)) throw new Error("PDF local nao encontrado no banco.");
+      const url = URL.createObjectURL(blob);
+      const win = window.open(url, "_blank", "noopener");
+      if (!win) {
+        const a = document.createElement("a");
+        a.href = url;
+        a.target = "_blank";
+        a.rel = "noopener";
+        a.click();
       }
+      setTimeout(() => URL.revokeObjectURL(url), 30000);
+      return nomeArquivo;
     };
 
-    const salvarHistorico = (items) => localStorage.setItem(LS_KEY, JSON.stringify(items || []));
+    const baixarBlob = (blob, nomeArquivo) => {
+      if (!(blob instanceof Blob)) throw new Error("PDF local nao encontrado no banco.");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = nomeArquivo || "documento.pdf";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
+    };
 
-    const renderHistorico = () => {
-      const items = carregarHistorico();
+    const renderHistorico = async () => {
+      let items = [];
+      try {
+        items = await dbListPdfs();
+      } catch (err) {
+        log(err.message, "err");
+      }
+      const filtro = String(el.filtroFuncionarioDb?.value || "").trim().toLowerCase();
+      if (filtro) {
+        items = items.filter((it) => String(it?.funcionario || "").toLowerCase().includes(filtro));
+      }
       if (!items.length) {
-        el.tbodyHistorico.innerHTML = `<tr><td colspan="4" class="small">Nenhum documento salvo localmente ainda.</td></tr>`;
+        el.tbodyHistorico.innerHTML = `<tr><td colspan="6" class="small">Nenhum PDF salvo no banco local para o filtro informado.</td></tr>`;
         return;
       }
       el.tbodyHistorico.innerHTML = "";
-      for (const it of items) {
+      for (const it of items.slice(0, 500)) {
         const tr = document.createElement("tr");
+        const funcionario = it.funcionario || extrairFuncionarioDoPath(it.path || "");
         tr.innerHTML = `
-          <td class="small">${it.data || "-"}</td>
+          <td class="small">${it.data_br || "-"}</td>
+          <td class="small">${funcionario || "-"}</td>
           <td><strong>${it.arquivo || "-"}</strong></td>
           <td class="small">${it.pasta || "-"}</td>
-          <td><a class="muted-link" href="${it.link || "#"}" target="_blank" rel="noopener">Abrir</a></td>
+          <td><a class="muted-link" href="${it.link || "#"}" target="_blank" rel="noopener">Abrir site</a></td>
+          <td></td>
         `;
+        const tdAcoes = tr.lastElementChild;
+        const btnAbrirLocal = document.createElement("button");
+        btnAbrirLocal.type = "button";
+        btnAbrirLocal.className = "alt small-btn";
+        btnAbrirLocal.textContent = "Abrir local";
+        btnAbrirLocal.addEventListener("click", () => {
+          try {
+            abrirBlobEmNovaAba(it.blob_pdf, it.arquivo || "documento.pdf");
+            log(`PDF local aberto: ${it.arquivo || "-"}`, "ok");
+          } catch (err) {
+            log(err.message, "err");
+          }
+        });
+        const btnBaixarLocal = document.createElement("button");
+        btnBaixarLocal.type = "button";
+        btnBaixarLocal.className = "alt small-btn";
+        btnBaixarLocal.style.marginLeft = "6px";
+        btnBaixarLocal.textContent = "Baixar";
+        btnBaixarLocal.addEventListener("click", () => {
+          try {
+            baixarBlob(it.blob_pdf, it.arquivo || "documento.pdf");
+            log(`PDF local baixado: ${it.arquivo || "-"}`, "ok");
+          } catch (err) {
+            log(err.message, "err");
+          }
+        });
+        tdAcoes.appendChild(btnAbrirLocal);
+        tdAcoes.appendChild(btnBaixarLocal);
         el.tbodyHistorico.appendChild(tr);
       }
     };
 
-    const adicionarHistorico = (item) => {
-      const items = carregarHistorico();
-      items.unshift(item);
-      salvarHistorico(items.slice(0, 500));
-      renderHistorico();
+    const adicionarHistorico = async (item) => {
+      const id = `${item.path || item.arquivo}_${item.criado_em || Date.now()}`;
+      await dbPutPdf({ ...item, id });
+      await renderHistorico();
     };
 
     let uploadEmAndamento = false;
@@ -707,11 +818,15 @@
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
           log(`Upload concluido: ${safeName}`, "ok");
-          adicionarHistorico({
-            data: new Date().toLocaleString("pt-BR"),
+          await adicionarHistorico({
+            criado_em: new Date().toISOString(),
+            data_br: new Date().toLocaleString("pt-BR"),
             arquivo: safeName,
             pasta: `${folder}/${dateFolder}`,
+            path: pdfPath,
+            funcionario: extrairFuncionarioDoPath(pdfPath),
             link: qrLink,
+            blob_pdf: f,
           });
         }
         log("Remessa finalizada.", "ok");
@@ -756,10 +871,21 @@
         if (el.autoUpload.value === "on") await enviarSelecionados("automatico");
       });
       el.btnLimparLog.addEventListener("click", () => { el.status.value = ""; });
-      el.btnLimparHistorico.addEventListener("click", () => {
-        salvarHistorico([]);
-        renderHistorico();
-        log("Historico local limpo.");
+      el.btnLimparHistorico.addEventListener("click", async () => {
+        await dbClearPdfs();
+        await renderHistorico();
+        log("Banco local de PDFs limpo.");
+      });
+      el.btnFiltrarHistorico.addEventListener("click", async () => { await renderHistorico(); });
+      el.btnLimparFiltroHistorico.addEventListener("click", async () => {
+        el.filtroFuncionarioDb.value = "";
+        await renderHistorico();
+      });
+      el.filtroFuncionarioDb.addEventListener("keydown", async (ev) => {
+        if (ev.key === "Enter") {
+          ev.preventDefault();
+          await renderHistorico();
+        }
       });
       el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
       el.btnAtualizar.addEventListener("click", atualizarLista);
