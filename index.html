@@ -962,18 +962,30 @@
       if (!owner || !repo) return log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
       el.btnAtualizar.disabled = true;
       try {
-        let items = await listRepoPdfs(owner, repo, branch, folder, token);
-        if (!items.length) {
-          const idx = await carregarIndicePublico();
-          if (idx.length) items = idx;
+        let items = [];
+        // Modo publico (sem admin/token): usa indice do Pages para evitar limite da API.
+        if (!isAdminMode && !token) {
+          items = await carregarIndicePublico();
         } else {
-          try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
+          items = await listRepoPdfs(owner, repo, branch, folder, token);
+          if (!items.length) {
+            const idx = await carregarIndicePublico();
+            if (idx.length) items = idx;
+          } else {
+            try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
+          }
         }
         mountFuncionarios(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
-        mountFuncionarios([]);
-        log(err.message, "err");
+        const idx = await carregarIndicePublico();
+        if (idx.length) {
+          mountFuncionarios(idx);
+          log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
+        } else {
+          mountFuncionarios([]);
+          log(err.message, "err");
+        }
       } finally {
         el.btnAtualizar.disabled = false;
       }
