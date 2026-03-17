@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-17T19:46:45Z",
-  "total": 4,
+  "updated_at": "2026-03-17T19:46:59Z",
+  "total": 5,
   "items": [
     {
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/NR 18 (120-guin Lucas Ferreira da Silva Santos.pdf",
@@ -41,6 +41,16 @@
       "route_documento": "fittestprojettalucasferreiradasilvasantos",
       "route_data": "17032026",
       "route": "lucasferreiradasilvasantos/fittestprojettalucasferreiradasilvasantos/17032026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/17032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "ossoldadorprojettalucasferreiradasilvasantos",
+      "route_data": "17032026",
+      "route": "lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/17032026"
     }
   ]
 }
