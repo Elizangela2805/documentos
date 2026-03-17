@@ -768,6 +768,13 @@
         const funcSlugAlvo = slugUrl(String(funcionarioNome || "").trim());
         const funcNomeAlvo = String(funcionarioNome || "").trim().toLowerCase();
         const empNomeAlvo = String(empresaNome || "").trim().toLowerCase();
+        const slugsAlvo = new Set(
+          (Array.isArray(docs) ? docs : []).map((d) => {
+            const rf = String(d?.route_funcionario || "").trim().toLowerCase();
+            return rf || extrairFuncionarioSlug(String(d?.path || ""));
+          }).filter(Boolean)
+        );
+        if (funcSlugAlvo) slugsAlvo.add(funcSlugAlvo);
 
         // Reforco: remove tambem PDFs adicionais do funcionario/empresa caso o indice esteja desatualizado.
         let extras = [];
@@ -776,6 +783,8 @@
           extras = todos.filter((it) => {
             const func = String(extrairFuncionarioDoPath(it.path, it) || "").trim().toLowerCase();
             const emp = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
+            const slugPath = String(extrairFuncionarioSlug(it.path) || "").trim().toLowerCase();
+            if (slugPath && slugsAlvo.has(slugPath)) return true;
             return func === String(funcionarioNome || "").trim().toLowerCase()
               && emp === String(empresaNome || "").trim().toLowerCase();
           }).map((it) => normFolder(it.path));
@@ -798,9 +807,11 @@
           const pathItem = normFolder(String(it?.path || ""));
           if (alvosPdf.has(pathItem)) return false;
           const routeFunc = String(it?.route_funcionario || "").trim().toLowerCase();
-          if (funcSlugAlvo && routeFunc && routeFunc === funcSlugAlvo) return false;
+          if (routeFunc && slugsAlvo.has(routeFunc)) return false;
           const funcItem = String(it?.funcionario || "").trim().toLowerCase();
           const empItem = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
+          const slugItem = String(extrairFuncionarioSlug(pathItem) || "").trim().toLowerCase();
+          if (slugItem && slugsAlvo.has(slugItem)) return false;
           if (funcItem && funcItem === funcNomeAlvo && (!empNomeAlvo || empItem === empNomeAlvo)) return false;
           return true;
         });
@@ -917,7 +928,12 @@
 
     const isGrupoFuncionarioInvalido = (nome) => {
       const n = String(nome || "").trim().toLowerCase();
-      return !n || n === "sem pasta" || n === "_pdf_gerados" || n === "_qrcodes";
+      return !n
+        || n === "sem pasta"
+        || n === "_pdf_gerados"
+        || n === "_qrcodes"
+        || n === "diag"
+        || n === "diagnostico";
     };
 
     const inferirFuncionarioDoNomeArquivo = (path, nomeHint = "") => {
@@ -967,6 +983,31 @@
         return t;
       }
       return inferirFuncionarioDoNomeArquivo(path, String(item?.nome || ""));
+    };
+
+    // Versao estrita para o site publico: nao infere funcionario pelo nome do arquivo.
+    // Isso evita "ressuscitar" funcionarios por PDFs soltos/legados (ex.: Sem pasta).
+    const extrairFuncionarioPublicoDoPath = (path, item = null) => {
+      const nomeItem = String(item?.funcionario || "").trim();
+      if (!isGrupoFuncionarioInvalido(nomeItem)) return nomeItem;
+      const root = normFolder(el.folder.value);
+      const pathNorm = normFolder(path);
+      const rel = root && pathNorm.startsWith(`${root}/`)
+        ? pathNorm.slice(root.length + 1)
+        : pathNorm;
+      let partes = rel.split("/").filter(Boolean);
+      if (partes.length && partes[0].toLowerCase() === "_pdf_gerados") partes = partes.slice(1);
+      for (const p of partes) {
+        const t = String(p || "").trim();
+        if (!t) continue;
+        if (/\.pdf$/i.test(t)) continue;
+        if (t.toLowerCase() === "_qrcodes") continue;
+        if (/^\d{8}$/.test(t)) continue;
+        if (/^\d{4}[-_/]\d{2}[-_/]\d{2}$/.test(t)) continue;
+        if (isGrupoFuncionarioInvalido(t)) continue;
+        return t;
+      }
+      return "";
     };
 
     const obterConfigEscrita = () => {
@@ -1080,7 +1121,9 @@
         }
       }
       for (const it of items) {
-        const funcionario = extrairFuncionarioDoPath(it.path, it);
+        const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").trim().toLowerCase();
+        if (nomeArq.startsWith("_diag_upload_")) continue;
+        const funcionario = extrairFuncionarioPublicoDoPath(it.path, it);
         if (isGrupoFuncionarioInvalido(funcionario)) continue;
         const empresa = extrairEmpresaDoItem(it);
         const empSlug = slugEmpresa(empresa);
