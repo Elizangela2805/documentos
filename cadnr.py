@@ -6689,7 +6689,7 @@ class App(tk.Tk):
                     empresa_id=funcionario.get("empresa_id"),
                     funcionario_id=funcionario.get("id"),
                     tipo_documento=tipo_doc,
-                    inserir_qr_pdf=not (tipo_carteirinha and bool(getattr(self, "_ultimo_qr_embutido_docx", False))),
+                    inserir_qr_pdf=True,
                 )
                 gerados.append(destino_pdf)
             return gerados, falhas
@@ -7259,45 +7259,9 @@ class App(tk.Tk):
                     return False, f"falha ao inserir LOGO3: {motivo_logo3}"
 
         if tipo_doc_norm == "carteirinha":
-            caminho_saida_ref = str(caminho_documento_saida or "").strip()
-            if caminho_saida_ref:
-                try:
-                    payload_qr = self._montar_payload_qrcode_documento(
-                        caminho_saida_ref,
-                        permitir_arquivo_inexistente=True,
-                    )
-                    if payload_qr:
-                        import qrcode
-
-                        tmp_qr = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
-                        tmp_qr.close()
-                        caminho_tmp_qr = Path(tmp_qr.name)
-                        try:
-                            qr = qrcode.QRCode(
-                                version=None,
-                                error_correction=qrcode.constants.ERROR_CORRECT_M,
-                                box_size=10,
-                                border=4,
-                            )
-                            qr.add_data(payload_qr)
-                            qr.make(fit=True)
-                            img = qr.make_image()
-                            img.save(str(caminho_tmp_qr))
-                            self._ultimo_qr_embutido_docx = bool(
-                                self._inserir_qrcode_em_carteirinha_docx(
-                                    destino_docx,
-                                    caminho_tmp_qr,
-                                    tamanho_cm=1.6,
-                                    margem_esquerda_cm=0.1,
-                                )
-                            )
-                        finally:
-                            try:
-                                caminho_tmp_qr.unlink(missing_ok=True)
-                            except OSError:
-                                pass
-                except Exception:
-                    self._ultimo_qr_embutido_docx = False
+            # Carteirinha segue o mesmo fluxo dos demais documentos:
+            # QR gerado no registro final e inserido no PDF.
+            self._ultimo_qr_embutido_docx = False
 
         return True, ""
 
