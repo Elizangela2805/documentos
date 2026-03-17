@@ -522,6 +522,9 @@
         .normalize("NFD")
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
+      if (stemNorm.includes("carteirinha")) {
+        return slugUrl(stemNorm) || "carteirinha";
+      }
       const mNr = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b/);
       if (mNr) {
         const num = String(mNr[1] || "");
@@ -572,11 +575,12 @@
     };
     const linkPublicoPdf = (_owner, _repo, _branch, path) => consultaUrl(path);
     const linkConsultaItem = (item) => {
-      const consulta = String(item?.consulta || "").trim();
-      if (consulta) return consulta;
+      const path = String(item?.path || "").trim();
+      if (path) return linkPublicoPdf("", "", "", path);
       const route = String(item?.route || "").trim();
       if (route) return `${PAGES_BASE_FIXED}/${route.replace(/^\/+/, "")}`;
-      return linkPublicoPdf("", "", "", String(item?.path || ""));
+      const consulta = String(item?.consulta || "").trim();
+      return consulta || `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const log = (msg, type = "") => {
@@ -1515,13 +1519,12 @@
     });
 
     const assinaturaRotaFromItem = (it) => {
-      const rf = String(it?.route_funcionario || "").trim().toLowerCase();
-      const rd = String(it?.route_documento || "").trim().toLowerCase();
-      const rt = String(it?.route_data || "").trim().toLowerCase();
-      if (rf && rd && rt) {
-        return { funcionario: rf, documento: rd, dataRef: rt };
-      }
-      return assinaturaRotaFromPath(normFolder(String(it?.path || "")));
+      const path = normFolder(String(it?.path || ""));
+      if (path) return assinaturaRotaFromPath(path);
+      const rf = String(it?.route_funcionario || "").trim().toLowerCase() || "funcionario";
+      const rd = String(it?.route_documento || "").trim().toLowerCase() || "documento";
+      const rt = String(it?.route_data || "").trim().toLowerCase() || dataHojeDdMmAaaa();
+      return { funcionario: rf, documento: rd, dataRef: rt };
     };
 
     const selecionarDocumentoPorRota = (rota, itens) => {

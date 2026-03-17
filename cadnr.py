@@ -3028,6 +3028,9 @@ class App(tk.Tk):
         stem_ascii = unicodedata.normalize("NFKD", stem)
         stem_ascii = "".join(ch for ch in stem_ascii if not unicodedata.combining(ch))
         stem_ascii = stem_ascii.lower()
+        if "carteirinha" in stem_ascii:
+            slug_cart = App._slug_url_texto(stem_ascii)
+            return slug_cart or "carteirinha"
         m_nr = re.search(r"\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b", stem_ascii)
         if m_nr:
             numero = str(m_nr.group(1) or "").strip()
