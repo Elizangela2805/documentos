@@ -749,7 +749,7 @@ class App(tk.Tk):
 
         notebook.add(aba_cadnr, text="CADNR")
         notebook.add(aba_outros_documentos, text="OUTROS DOCUMENTOS")
-        notebook.add(aba_imprimir, text="IMPRIMIR")
+        notebook.add(aba_imprimir, text="DOWNLOAD")
         notebook.add(aba_cadastros, text="CADASTROS")
         notebook.add(aba_engrenagem, text="⚙")
 
@@ -1380,9 +1380,17 @@ class App(tk.Tk):
         return linhas
 
     def _limpar_areas_selecao_salvar_tudo(self):
-        for item in self.nr_certificados:
+        for idx, item in enumerate(self.nr_certificados):
             item["imprimir_adicionado"] = False
             item["imprimir"] = False
+            item["reciclagem"] = False
+            if idx < len(getattr(self, "nr_certificados_widgets", [])):
+                widget_item = self.nr_certificados_widgets[idx]
+                if widget_item and widget_item.get("reciclagem_var") is not None:
+                    try:
+                        widget_item["reciclagem_var"].set(False)
+                    except Exception:
+                        pass
         self._atualizar_lista_nr_imprimir()
 
         self.outros_docs_imprimir = []
@@ -1424,7 +1432,7 @@ class App(tk.Tk):
             return
         selecao = self.lista_nr_imprimir.curselection()
         if not selecao:
-            messagebox.showwarning("IMPRIMIR", "Selecione um documento na lista para excluir.")
+            messagebox.showwarning("DOWNLOAD", "Selecione um documento na lista para excluir.")
             return
         idx_lista = int(selecao[0])
         indices_adicionados = self._indices_nr_imprimir_adicionados()
@@ -1626,7 +1634,13 @@ class App(tk.Tk):
         self._salvar_dados()
 
     def _adicionar_nr_imprimir(self):
+        ja_adicionados = {
+            idx
+            for idx, item in enumerate(self.nr_certificados)
+            if bool(item.get("imprimir_adicionado", False))
+        }
         total_marcadas = 0
+        novos_adicionados = 0
         for idx, item in enumerate(self.nr_certificados_widgets):
             if not item:
                 continue
@@ -1635,11 +1649,23 @@ class App(tk.Tk):
             self.nr_certificados[idx]["imprimir_adicionado"] = marcado
             if marcado:
                 total_marcadas += 1
+                if idx not in ja_adicionados:
+                    novos_adicionados += 1
         if total_marcadas == 0:
             messagebox.showwarning("CERTIFICADOS", "Selecione ao menos uma NR antes de adicionar.")
             return
         self._atualizar_lista_nr_imprimir()
         self._salvar_dados()
+        if novos_adicionados > 0:
+            messagebox.showinfo(
+                "CERTIFICADOS",
+                f"{novos_adicionados} documento(s) adicionados na aba DOWNLOAD.",
+            )
+        else:
+            messagebox.showinfo(
+                "CERTIFICADOS",
+                "Os documentos selecionados ja estavam na aba DOWNLOAD.",
+            )
 
     def _selecionar_tudo_nr(self):
         for idx, item in enumerate(self.nr_certificados_widgets):
@@ -6459,7 +6485,7 @@ class App(tk.Tk):
         funcionario = self._funcionario_ativo_para_documento()
         if funcionario is None:
             messagebox.showwarning(
-                "IMPRIMIR",
+                "DOWNLOAD",
                 "Selecione um funcionario em CADNR ou CADASTROS.",
             )
             return
@@ -6498,7 +6524,7 @@ class App(tk.Tk):
             self._atualizar_lista_outros_docs_imprimir()
         if not linhas and not outros_selecionados:
             messagebox.showwarning(
-                "IMPRIMIR",
+                "DOWNLOAD",
                 "Nenhuma NR selecionada em CERTIFICADOS e nenhum OUTRO DOCUMENTO adicionado.",
             )
             return
@@ -6510,7 +6536,7 @@ class App(tk.Tk):
         try:
             pasta_destino = self._obter_pasta_saida(nome_limpo)
         except OSError:
-            messagebox.showerror("IMPRIMIR", "Nao foi possivel criar a pasta de saida no projeto.")
+            messagebox.showerror("DOWNLOAD", "Nao foi possivel criar a pasta de saida no projeto.")
             return
 
         def _limpar_lista_imprimir():
@@ -6705,16 +6731,16 @@ class App(tk.Tk):
                     if falhas_outros:
                         lista_falhas = "\n".join(falhas_outros)
                         messagebox.showwarning(
-                            "IMPRIMIR",
+                            "DOWNLOAD",
                             f"PDF(s) gerado(s):\n{lista}\n\nFalhas:\n{lista_falhas}",
                         )
                     else:
-                        messagebox.showinfo("IMPRIMIR", f"PDF(s) gerado(s) com sucesso:\n{lista}")
+                        messagebox.showinfo("DOWNLOAD", f"PDF(s) gerado(s) com sucesso:\n{lista}")
                     return
                 if falhas_outros:
                     lista_falhas = "\n".join(falhas_outros)
                     messagebox.showwarning(
-                        "IMPRIMIR",
+                        "DOWNLOAD",
                         f"Nenhum arquivo foi gerado.\n\nFalhas:\n{lista_falhas}",
                     )
                 return
@@ -6754,16 +6780,16 @@ class App(tk.Tk):
                 _limpar_lista_imprimir()
                 lista = "\n".join(str(p) for p in pdfs_gerados + outros_pdfs)
                 if len(pdfs_gerados) == 1 and not outros_pdfs:
-                    messagebox.showinfo("IMPRIMIR", f"PDF gerado com sucesso:\n{pdfs_gerados[0]}")
+                    messagebox.showinfo("DOWNLOAD", f"PDF gerado com sucesso:\n{pdfs_gerados[0]}")
                 else:
                     if falhas_outros:
                         lista_falhas = "\n".join(falhas_outros)
                         messagebox.showwarning(
-                            "IMPRIMIR",
+                            "DOWNLOAD",
                             f"PDF(s) gerado(s):\n{lista}\n\nFalhas:\n{lista_falhas}",
                         )
                     else:
-                        messagebox.showinfo("IMPRIMIR", f"PDF(s) gerado(s) com sucesso:\n{lista}")
+                        messagebox.showinfo("DOWNLOAD", f"PDF(s) gerado(s) com sucesso:\n{lista}")
                 return
 
             pdf_destino = self._obter_arquivo_pdf_livre(
@@ -6779,7 +6805,7 @@ class App(tk.Tk):
                 )
                 self._limpar_metadados_pdf(pdf_destino)
             except OSError:
-                messagebox.showerror("IMPRIMIR", "Nao foi possivel gerar o PDF.")
+                messagebox.showerror("DOWNLOAD", "Nao foi possivel gerar o PDF.")
                 return
             self._registrar_documento_salvo(
                 pdf_destino,
@@ -6795,7 +6821,7 @@ class App(tk.Tk):
         if falhas_outros:
             detalhe_outros = "\n\nFalhas em OUTROS DOCUMENTOS:\n" + "\n".join(falhas_outros)
         messagebox.showwarning(
-            "IMPRIMIR",
+            "DOWNLOAD",
             "Word nao encontrado para conversao.\n"
             f"Foi gerado PDF simplificado:\n{pdf_destino}\n\n"
             f"Detalhe: {self._ultima_falha_conversao or 'Nao identificado.'}{detalhe_outros}",
@@ -7377,19 +7403,39 @@ class App(tk.Tk):
         container = ttk.Frame(self.aba_outros_documentos)
         container.pack(fill="both", expand=True)
         container.columnconfigure(0, weight=1)
-        container.rowconfigure(0, weight=1)
+        container.rowconfigure(1, weight=1)
+
+        f_acoes_selecao = ttk.Frame(container)
+        f_acoes_selecao.grid(row=0, column=0, sticky="w", pady=(0, 8))
+        ttk.Button(
+            f_acoes_selecao,
+            text="SELECIONAR TUDO",
+            command=lambda: self._marcar_outros_documentos_todos(True),
+        ).grid(row=0, column=0, padx=(0, 8))
+        ttk.Button(
+            f_acoes_selecao,
+            text="DESMARCAR TUDO",
+            command=lambda: self._marcar_outros_documentos_todos(False),
+        ).grid(row=0, column=1)
 
         self.outros_docs_checklist_frame = ttk.Frame(container)
-        self.outros_docs_checklist_frame.grid(row=0, column=0, sticky="nsew")
+        self.outros_docs_checklist_frame.grid(row=1, column=0, sticky="nsew")
         self.outros_docs_checklist_frame.columnconfigure(0, weight=1)
 
         f_botoes = ttk.Frame(container)
-        f_botoes.grid(row=1, column=0, sticky="e", pady=(12, 0))
+        f_botoes.grid(row=2, column=0, sticky="e", pady=(12, 0))
         ttk.Button(
             f_botoes,
             text="ADICIONAR",
             command=self._adicionar_outros_documentos_imprimir,
         ).grid(row=0, column=0)
+
+    def _marcar_outros_documentos_todos(self, marcar):
+        for var in getattr(self, "outros_docs_check_vars", {}).values():
+            try:
+                var.set(bool(marcar))
+            except Exception:
+                pass
 
     def _listar_arquivos_outros_documentos(self, documento):
         if not isinstance(documento, dict):
@@ -7913,9 +7959,9 @@ class App(tk.Tk):
                 f"{len(selecionados_sem_vinculo)} sem vinculo com a funcao '{funcao_selecionada}' foram ignorados.",
             )
         elif adicionados > 0:
-            messagebox.showinfo("OUTROS DOCUMENTOS", f"{adicionados} documento(s) adicionados na aba IMPRIMIR.")
+            messagebox.showinfo("OUTROS DOCUMENTOS", f"{adicionados} documento(s) adicionados na aba DOWNLOAD.")
         else:
-            messagebox.showinfo("OUTROS DOCUMENTOS", "Os documentos selecionados ja estavam na aba IMPRIMIR.")
+            messagebox.showinfo("OUTROS DOCUMENTOS", "Os documentos selecionados ja estavam na aba DOWNLOAD.")
 
     def _atualizar_lista_outros_docs_imprimir(self):
         if not hasattr(self, "lista_outros_docs_imprimir"):
@@ -7932,7 +7978,7 @@ class App(tk.Tk):
             return
         selecao = self.lista_outros_docs_imprimir.curselection()
         if not selecao:
-            messagebox.showwarning("IMPRIMIR", "Selecione um documento para excluir.")
+            messagebox.showwarning("DOWNLOAD", "Selecione um documento para excluir.")
             return
         idx = int(selecao[0])
         if idx < 0 or idx >= len(self.outros_docs_imprimir):
@@ -9344,7 +9390,7 @@ class App(tk.Tk):
         select_empresa_doc.grid(row=0, column=1, sticky="ew")
 
         r += 1
-        popup.secao("Certificado", r)
+        popup.secao("Documento", r)
         r += 1
         f_cert = ttk.Frame(popup)
         f_cert.grid(row=r, column=0, sticky="ew", padx=12)
@@ -9357,7 +9403,7 @@ class App(tk.Tk):
 
         def escolher_certificado():
             caminho = filedialog.askopenfilename(
-                title="Selecionar documento de Certificado",
+                title="Selecionar documento",
                 filetypes=[
                     ("Documentos", "*.docx *.doc *.pdf"),
                     ("Todos os arquivos", "*.*"),
@@ -9369,6 +9415,38 @@ class App(tk.Tk):
         ttk.Button(f_cert, text="Procurar...", command=escolher_certificado).grid(
             row=0, column=2, padx=(8, 0)
         )
+
+        r += 1
+        f_tipo_doc = ttk.Frame(popup)
+        f_tipo_doc.grid(row=r, column=0, sticky="ew", padx=12, pady=(4, 0))
+        f_tipo_doc.columnconfigure(1, weight=1)
+        f_tipo_doc.columnconfigure(3, weight=1)
+        ttk.Label(f_tipo_doc, text="Categoria:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        categoria_documento_var = tk.StringVar(value="Certificado")
+        select_categoria_documento = ttk.Combobox(
+            f_tipo_doc,
+            state="readonly",
+            textvariable=categoria_documento_var,
+            values=["Certificado", "Outros documentos"],
+        )
+        select_categoria_documento.grid(row=0, column=1, sticky="ew")
+        ttk.Label(f_tipo_doc, text="Tipo:").grid(row=0, column=2, sticky="w", padx=(12, 8))
+        tipo_outro_documento_var = tk.StringVar(value=OUTROS_DOCUMENTOS_TIPOS[0] if OUTROS_DOCUMENTOS_TIPOS else "")
+        select_tipo_outro_documento = ttk.Combobox(
+            f_tipo_doc,
+            state="readonly",
+            textvariable=tipo_outro_documento_var,
+            values=OUTROS_DOCUMENTOS_TIPOS,
+        )
+        select_tipo_outro_documento.grid(row=0, column=3, sticky="ew")
+
+        def atualizar_tipo_documento_ui(*_args):
+            categoria = str(categoria_documento_var.get() or "").strip().casefold()
+            is_outro = categoria == "outros documentos"
+            select_tipo_outro_documento.configure(state="readonly" if is_outro else "disabled")
+            certificado_dias.configure(state="normal" if not is_outro else "disabled")
+
+        select_categoria_documento.bind("<<ComboboxSelected>>", atualizar_tipo_documento_ui, add="+")
 
         r += 1
         f_dias = ttk.Frame(popup)
@@ -9456,6 +9534,10 @@ class App(tk.Tk):
             certificado_dias.delete(0, tk.END)
             certificado_dias.insert(0, str(dias_valor))
             certificado_arquivo_var.set("")
+            categoria_documento_var.set("Certificado")
+            if OUTROS_DOCUMENTOS_TIPOS:
+                tipo_outro_documento_var.set(OUTROS_DOCUMENTOS_TIPOS[0])
+            atualizar_tipo_documento_ui()
 
         select_nr_dias.bind("<<ComboboxSelected>>", atualizar_info_nr, add="+")
         select_empresa_doc.bind("<<ComboboxSelected>>", atualizar_nr_por_empresa, add="+")
@@ -9711,8 +9793,20 @@ class App(tk.Tk):
             arquivo_salvo_rel = ""
 
             if arquivo_cert:
-                tipo_outro_detectado = self._detectar_tipo_outro_documento(Path(arquivo_cert).stem)
-                tipo_para_registro = tipo_outro_detectado or "Certificado"
+                categoria_sel = str(categoria_documento_var.get() or "").strip().casefold()
+                tipo_outro_manual = str(tipo_outro_documento_var.get() or "").strip()
+                if categoria_sel == "outros documentos":
+                    tipo_outro_detectado = tipo_outro_manual or self._detectar_tipo_outro_documento(Path(arquivo_cert).stem)
+                    if not tipo_outro_detectado:
+                        messagebox.showwarning(
+                            "Cadastro",
+                            "Selecione o tipo em OUTROS DOCUMENTOS.",
+                        )
+                        return
+                    tipo_para_registro = tipo_outro_detectado
+                else:
+                    tipo_outro_detectado = self._detectar_tipo_outro_documento(Path(arquivo_cert).stem)
+                    tipo_para_registro = tipo_outro_detectado or "Certificado"
                 try:
                     arquivo_salvo_rel = self._salvar_documento_no_projeto(
                         arquivo_cert,
@@ -9724,7 +9818,10 @@ class App(tk.Tk):
                     messagebox.showerror("Validacao", f"Nao foi possivel salvar o documento: {exc}")
                     return
 
-                tipo_outro_novo = tipo_outro_detectado
+                if categoria_sel == "outros documentos":
+                    tipo_outro_novo = tipo_para_registro
+                else:
+                    tipo_outro_novo = tipo_outro_detectado
                 if tipo_outro_novo:
                     atual_tipo = arquivos_outros.get(tipo_outro_novo, [])
                     if isinstance(atual_tipo, list):
@@ -9808,6 +9905,8 @@ class App(tk.Tk):
             self._carregar_outros_documentos_empresa_selecionada()
             atualizar_outros_por_empresa()
             certificado_arquivo_var.set("")
+            categoria_documento_var.set("Certificado")
+            atualizar_tipo_documento_ui()
             if tipo_outro_novo:
                 messagebox.showinfo(
                     "Cadastro",
@@ -9827,6 +9926,7 @@ class App(tk.Tk):
             atualizar_nr_por_empresa()
             atualizar_certificado_por_empresa()
             atualizar_outros_por_empresa()
+            atualizar_tipo_documento_ui()
         popup.ajustar_tamanho()
         select_empresa_doc.focus_set()
 

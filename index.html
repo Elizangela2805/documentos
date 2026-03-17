@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Projetta - Site de Uploads e Consulta QR</title>
+  <title>Projetta - Sistema de Consultas</title>
   <!-- rebuild trigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -28,7 +28,13 @@
         radial-gradient(circle at 90% 10%, #d8f7e6 0%, transparent 35%),
         var(--bg);
     }
-    .wrap { max-width: 1120px; margin: 20px auto; padding: 14px; }
+    .wrap {
+      max-width: 1120px;
+      margin: 20px auto;
+      padding: 14px;
+      padding-top: 150px;
+      padding-bottom: 96px;
+    }
     .panel {
       background: var(--panel);
       border: 1px solid var(--line);
@@ -48,7 +54,13 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      position: relative;
+      position: fixed;
+      top: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: min(1120px, calc(100vw - 20px));
+      z-index: 1200;
+      box-shadow: 0 10px 24px rgba(16, 42, 67, 0.14);
     }
     .site-header::before,
     .site-header::after {
@@ -90,6 +102,23 @@
       font-size: 1rem;
       color: #35506b;
       font-weight: 700;
+    }
+    .site-footer {
+      position: fixed;
+      left: 50%;
+      bottom: 10px;
+      transform: translateX(-50%);
+      width: min(1120px, calc(100vw - 20px));
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid #d9e2ec;
+      border-radius: 12px;
+      color: #486581;
+      font-size: .85rem;
+      text-align: center;
+      padding: 10px 14px;
+      z-index: 1200;
+      box-shadow: 0 8px 20px rgba(16, 42, 67, 0.12);
+      backdrop-filter: blur(2px);
     }
     .grid {
       display: grid;
@@ -206,6 +235,8 @@
       max-width: none;
       margin: 0;
       padding: 18px;
+      padding-top: 150px;
+      padding-bottom: 96px;
       min-height: 100vh;
       display: block;
     }
@@ -284,12 +315,19 @@
     }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
     @media (max-width: 700px) {
-      .wrap { margin: 8px auto; padding: 8px; }
+      .wrap {
+        margin: 8px auto;
+        padding: 8px;
+        padding-top: 130px;
+        padding-bottom: 94px;
+      }
       .panel { padding: 12px; border-radius: 10px; }
       .site-header {
         gap: 10px;
         padding: 10px 12px;
         align-items: center;
+        top: 8px;
+        width: calc(100vw - 14px);
       }
       .brand-logo { width: 132px; height: 56px; }
       .brand-lines { padding-left: 10px; border-left-width: 2px; }
@@ -301,7 +339,11 @@
       .funcionario-docs { padding: 8px 10px 10px; }
       .funcionario-docs ul { padding-left: 14px; }
       .funcionario-docs li { margin: 6px 0; }
-      body.document-mode .wrap { padding: 8px; }
+      body.document-mode .wrap {
+        padding: 8px;
+        padding-top: 130px;
+        padding-bottom: 94px;
+      }
       body.document-mode .panel.doc-view {
         padding: 8px;
         border-radius: 10px;
@@ -318,6 +360,12 @@
         width: 100%;
         text-align: center;
         padding: 12px 16px;
+      }
+      .site-footer {
+        bottom: 8px;
+        width: calc(100vw - 14px);
+        font-size: .78rem;
+        padding: 8px 10px;
       }
     }
     @media (max-width: 420px) {
@@ -336,6 +384,9 @@
         height: 62vh;
         min-height: 360px;
       }
+      .site-footer {
+        font-size: .73rem;
+      }
     }
   </style>
 </head>
@@ -344,7 +395,7 @@
     <div class="site-header" id="siteHeader">
       <img class="brand-logo" id="brandLogo" src="./_logos_empresas/1_Projetta.png" alt="Logo Projetta" />
       <div class="brand-lines">
-        <div class="brand-main">Sistema de Consulta</div>
+        <div class="brand-main">Sistema de Consultas</div>
         <div class="brand-sub">Projetta Engenharia</div>
       </div>
     </div>
@@ -358,7 +409,7 @@
     </div>
 
     <div class="panel admin-panel" id="painelAdmin">
-      <h1>Projetta - Upload de PDF e Conferencia por QR Code</h1>
+      <h1>Projetta - Sistema de Consultas</h1>
       <p>Publique os PDFs gerados no site, gere QR automaticamente e obtenha links para consulta dos documentos.</p>
 
       <div class="grid">
@@ -442,6 +493,9 @@
         </tbody>
       </table>
     </div>
+  </div>
+  <div class="site-footer">
+    &copy; Copyright 2026 - Projetta Engenharia CNPJ: 34.459.757/0001-60
   </div>
 
   <script>
