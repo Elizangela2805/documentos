@@ -982,7 +982,7 @@ class App(tk.Tk):
         ).grid(row=2, column=3, sticky="w", pady=(8, 0))
 
         self._carregar_dados()
-        self._desmarcar_tudo_nr(salvar=False, atualizar_ui=False)
+        self._desmarcar_tudo_nr(salvar=False, atualizar_ui=False, limpar_datas=True)
         self._atualizar_select_empresas(limpar_nr=False)
         self.after(120, self._pos_inicializacao_pesada)
         self.after(800, self._sincronizar_documentos_salvos_pendentes)
@@ -1689,9 +1689,12 @@ class App(tk.Tk):
                         widget_item["coluna_1"].delete(0, tk.END)
                     if widget_item and widget_item.get("coluna_2") is not None:
                         widget_item["coluna_2"].delete(0, tk.END)
+                    if widget_item and widget_item.get("reciclagem_var") is not None:
+                        widget_item["reciclagem_var"].set(False)
             if limpar_datas:
                 item["coluna_1"] = ""
                 item["coluna_2"] = ""
+                item["reciclagem"] = False
             item["imprimir"] = False
             item["imprimir_adicionado"] = False
         if atualizar_ui:
