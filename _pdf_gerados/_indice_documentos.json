@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-17T18:39:23Z",
-  "total": 10,
+  "updated_at": "2026-03-17T18:39:34Z",
+  "total": 11,
   "items": [
     {
       "path": "_pdf_gerados/anuencia (Projetta) Emerson Pereira de Oliveira.pdf",
@@ -77,6 +77,16 @@
       "route_documento": "nr11",
       "route_data": "17032026",
       "route": "lucasferreiradasilvasantos/nr11/17032026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/epi soldador Lucas Ferreira da Silva Santos.pdf",
+      "nome": "epi soldador Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/17032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "episoldadorlucasferreiradasilvasantos",
+      "route_data": "17032026",
+      "route": "lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/17032026"
     }
   ]
 }
