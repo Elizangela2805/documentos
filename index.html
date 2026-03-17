@@ -407,6 +407,11 @@
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
+    const obterOwnerRepoBranch = () => ({
+      owner: el.owner?.value?.trim() || "Elizangela2805",
+      repo: el.repo?.value?.trim() || "documentos",
+      branch: el.branch?.value?.trim() || "main",
+    });
     const consultaUrl = (path) => {
       const p = normFolder(path);
       if (!p) return `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
@@ -589,7 +594,7 @@
           .map((it) => ({
             path: it.path,
             nome: (it.path || "").split("/").pop(),
-            funcionario: extrairFuncionarioDoPath(it.path),
+            funcionario: extrairFuncionarioDoPath(it.path, it),
             consulta: consultaUrl(it.path),
           }))
           .filter((it) => !isGrupoFuncionarioInvalido(it.funcionario)),
@@ -722,7 +727,21 @@
       return !n || n === "sem pasta" || n === "_pdf_gerados" || n === "_qrcodes";
     };
 
-    const extrairFuncionarioDoPath = (path) => {
+    const inferirFuncionarioDoNomeArquivo = (path, nomeHint = "") => {
+      const nomeArquivo = String(nomeHint || normFolder(path).split("/").pop() || "").replace(/\.pdf$/i, "").trim();
+      if (!nomeArquivo) return "";
+      const aposParenteses = nomeArquivo.split(")").pop()?.trim() || "";
+      const candidato1 = aposParenteses || nomeArquivo;
+      const m1 = candidato1.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
+      if (m1 && m1[1]) return String(m1[1]).trim();
+      const m2 = nomeArquivo.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
+      if (m2 && m2[1]) return String(m2[1]).trim();
+      return "";
+    };
+
+    const extrairFuncionarioDoPath = (path, item = null) => {
+      const nomeItem = String(item?.funcionario || "").trim();
+      if (!isGrupoFuncionarioInvalido(nomeItem)) return nomeItem;
       const root = normFolder(el.folder.value);
       const pathNorm = normFolder(path);
       const rel = root && pathNorm.startsWith(`${root}/`)
@@ -733,13 +752,14 @@
       for (const p of partes) {
         const t = String(p || "").trim();
         if (!t) continue;
+        if (/\.pdf$/i.test(t)) continue;
         if (t.toLowerCase() === "_qrcodes") continue;
         if (/^\d{8}$/.test(t)) continue;
         if (/^\d{4}[-_/]\d{2}[-_/]\d{2}$/.test(t)) continue;
         if (isGrupoFuncionarioInvalido(t)) continue;
         return t;
       }
-      return "";
+      return inferirFuncionarioDoNomeArquivo(path, String(item?.nome || ""));
     };
 
     const obterConfigEscrita = () => {
@@ -762,7 +782,7 @@
       const root = normFolder(el.folder.value);
       const grupos = new Map();
       for (const it of items) {
-        const funcionario = extrairFuncionarioDoPath(it.path);
+        const funcionario = extrairFuncionarioDoPath(it.path, it);
         if (isGrupoFuncionarioInvalido(funcionario)) continue;
         if (!grupos.has(funcionario)) grupos.set(funcionario, []);
         grupos.get(funcionario).push(it);
@@ -1147,7 +1167,8 @@
       }
 
       const pdfPath = normFolder(candidato.path);
-      const pdfUrl = pagesUrl("", "", pdfPath);
+      const { owner, repo, branch } = obterOwnerRepoBranch();
+      const pdfUrl = rawUrl(owner, repo, branch, pdfPath);
       const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
       el.frameDocumento.src = pdfUrl;
       el.btnDownloadDocumento.href = pdfUrl;
