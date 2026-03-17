@@ -1533,8 +1533,7 @@
 
       const pdfPath = normFolder(candidato.path);
       const { owner, repo, branch } = obterOwnerRepoBranch();
-      const pdfUrl = rawUrl(owner, repo, branch, pdfPath);
-      const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
+      const pdfUrl = pagesUrl(owner, repo, pdfPath);
       try {
         const resPdf = await fetch(pdfUrl, { cache: "no-cache" });
         if (!resPdf.ok) throw new Error(`Falha ao carregar PDF (${resPdf.status}).`);
@@ -1550,7 +1549,7 @@
         el.frameDocumento.src = `${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`;
       }
       el.btnDownloadDocumento.href = pdfUrl;
-      el.btnDownloadDocumento.setAttribute("download", nomeArquivo);
+      el.btnDownloadDocumento.removeAttribute("download");
       return true;
     };
 
