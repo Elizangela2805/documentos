@@ -39,6 +39,58 @@
     }
     h1 { margin: 0 0 8px; font-size: 1.5rem; }
     p { margin: 0 0 10px; color: var(--muted); }
+    .site-header {
+      background: #ffffff;
+      border: 1px solid #d9e2ec;
+      border-radius: 12px;
+      padding: 12px 16px;
+      margin-bottom: 12px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+    }
+    .site-header::before,
+    .site-header::after {
+      content: "";
+      position: absolute;
+      left: 12px;
+      right: 12px;
+      border-top: 2px solid #d9e2ec;
+    }
+    .site-header::before { top: 8px; }
+    .site-header::after { bottom: 8px; }
+    .brand-logo {
+      width: 54px;
+      height: 54px;
+      border-radius: 10px;
+      border: 1px solid #d9e2ec;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      color: #0f4c81;
+      background: #f8fbff;
+      flex: 0 0 auto;
+      object-fit: contain;
+      z-index: 1;
+    }
+    .brand-lines {
+      border-left: 3px solid #d9e2ec;
+      padding-left: 12px;
+      line-height: 1.2;
+      z-index: 1;
+    }
+    .brand-main {
+      font-size: 1.45rem;
+      font-weight: 800;
+      letter-spacing: 0.01em;
+    }
+    .brand-sub {
+      font-size: 1rem;
+      color: #35506b;
+      font-weight: 700;
+    }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -151,9 +203,7 @@
       margin: 0;
       padding: 18px;
       min-height: 100vh;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: block;
     }
     body.document-mode .wrap .panel {
       display: none !important;
@@ -170,6 +220,7 @@
       padding: 14px;
       min-height: 0;
       background: #ffffff;
+      margin: 0 auto;
     }
     .doc-actions {
       display: flex;
@@ -200,11 +251,46 @@
       color: #334e68;
       padding: 14px;
     }
+    .empresa-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 12px;
+    }
+    .empresa-card {
+      display: block;
+      text-decoration: none;
+      color: var(--ink);
+      border: 1px solid #d9e2ec;
+      border-radius: 12px;
+      background: #f8fbff;
+      padding: 16px 14px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .empresa-card:hover {
+      border-color: #89bce5;
+      background: #eef7ff;
+    }
+    .empresa-back {
+      display: inline-block;
+      margin-bottom: 10px;
+      text-decoration: none;
+      color: #0f4c81;
+      font-weight: 700;
+    }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
+    <div class="site-header" id="siteHeader">
+      <img class="brand-logo" id="brandLogo" src="https://elizangela2805.github.io/documentos/_logos_empresas/1_Projetta.png" alt="Logo Projetta" />
+      <div class="brand-lines">
+        <div class="brand-main">Sistema de Consulta</div>
+        <div class="brand-sub">Projetta Engenharia</div>
+      </div>
+    </div>
+
     <div class="panel doc-view" id="painelDocumento">
       <iframe id="frameDocumento" class="doc-frame" title="Documento PDF"></iframe>
       <div class="doc-actions">
@@ -273,7 +359,7 @@
     </div>
 
     <div class="panel">
-      <h2 style="margin:0;font-size:1.1rem;">Funcionarios e documentos emitidos</h2>
+      <h2 id="tituloLista" style="margin:0;font-size:1.1rem;">Funcionarios e documentos emitidos</h2>
       <div id="listaFuncionarios" class="funcionarios-list">
         <div class="small">Nenhum documento carregado ainda.</div>
       </div>
@@ -308,6 +394,8 @@
       const pHist = document.getElementById("painelHistorico");
       if (pAdmin) pAdmin.classList.add("is-admin");
       if (pHist) pHist.classList.add("is-admin");
+      const header = document.getElementById("siteHeader");
+      if (header) header.style.display = "none";
     }
 
     const el = {
@@ -336,6 +424,9 @@
       msgDocumento: document.getElementById("msgDocumento"),
       painelAdmin: document.getElementById("painelAdmin"),
       painelHistorico: document.getElementById("painelHistorico"),
+      siteHeader: document.getElementById("siteHeader"),
+      brandLogo: document.getElementById("brandLogo"),
+      tituloLista: document.getElementById("tituloLista"),
     };
 
     const DB_NAME = "projetta_pdf_db";
@@ -406,6 +497,7 @@
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
+    const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco"];
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const obterOwnerRepoBranch = () => ({
       owner: el.owner?.value?.trim() || "Elizangela2805",
@@ -739,6 +831,20 @@
       return "";
     };
 
+    const slugEmpresa = (nome) => slugUrl(String(nome || "").trim());
+
+    const extrairEmpresaDoItem = (it) => {
+      const empItem = String(it?.empresa || "").trim();
+      if (empItem) return empItem;
+      const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").replace(/\.pdf$/i, "");
+      const mParen = nomeArq.match(/\(([^)]+)\)/g);
+      if (mParen && mParen.length) {
+        const ultima = String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim();
+        if (ultima) return ultima;
+      }
+      return "Projetta";
+    };
+
     const extrairFuncionarioDoPath = (path, item = null) => {
       const nomeItem = String(item?.funcionario || "").trim();
       if (!isGrupoFuncionarioInvalido(nomeItem)) return nomeItem;
@@ -862,6 +968,89 @@
         details.appendChild(body);
         el.listaFuncionarios.appendChild(details);
       }
+    };
+
+    const construirCatalogoEmpresas = (items) => {
+      const catalogo = new Map();
+      for (const nomePadrao of EMPRESAS_PADRAO) {
+        const slug = slugEmpresa(nomePadrao);
+        if (slug && !catalogo.has(slug)) {
+          catalogo.set(slug, { nome: nomePadrao, funcionarios: new Map() });
+        }
+      }
+      for (const it of items) {
+        const funcionario = extrairFuncionarioDoPath(it.path, it);
+        if (isGrupoFuncionarioInvalido(funcionario)) continue;
+        const empresa = extrairEmpresaDoItem(it);
+        const empSlug = slugEmpresa(empresa);
+        if (!empSlug) continue;
+        if (!catalogo.has(empSlug)) {
+          catalogo.set(empSlug, { nome: empresa, funcionarios: new Map() });
+        }
+        const grupoEmp = catalogo.get(empSlug);
+        if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
+        grupoEmp.funcionarios.get(funcionario).push(it);
+      }
+      return catalogo;
+    };
+
+    const renderHomeEmpresas = (catalogo) => {
+      const empresas = [...catalogo.entries()]
+        .map(([slug, data]) => ({ slug, nome: data.nome }))
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
+      el.tituloLista.textContent = "Empresas";
+      if (!empresas.length) {
+        el.listaFuncionarios.innerHTML = `<div class="small">Nenhuma empresa encontrada.</div>`;
+        return;
+      }
+      el.listaFuncionarios.innerHTML = `<div class="empresa-grid">${
+        empresas.map((e) => `<a class="empresa-card" href="?empresa=${encodeURIComponent(e.slug)}">${e.nome}</a>`).join("")
+      }</div>`;
+    };
+
+    const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
+      const grupoEmp = catalogo.get(empresaSlug);
+      if (!grupoEmp) {
+        el.tituloLista.textContent = "Empresas";
+        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
+        return;
+      }
+      el.tituloLista.textContent = grupoEmp.nome.toUpperCase();
+      const funcionarios = [...grupoEmp.funcionarios.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
+      if (!funcionarios.length) {
+        el.listaFuncionarios.innerHTML = `<a class="empresa-back" href="./">← Voltar para empresas</a><div class="small">Nenhum documento disponivel para esta empresa.</div>`;
+        return;
+      }
+      const blocos = [];
+      for (const nome of funcionarios) {
+        const docs = (grupoEmp.funcionarios.get(nome) || []).slice().sort((a, b) => String(a.path || "").localeCompare(String(b.path || ""), "pt-BR"));
+        const itemsHtml = docs.map((doc) => {
+          const fileName = String(doc?.nome || doc?.path || "").split("/").pop();
+          const href = linkPublicoPdf(el.owner.value.trim(), el.repo.value.trim(), el.branch.value.trim() || "main", doc.path);
+          return `<li><a class="muted-link" href="${href}" target="_blank" rel="noopener">↗ ${fileName}</a></li>`;
+        }).join("");
+        blocos.push(`
+          <details class="funcionario-item">
+            <summary>${nome} (${docs.length})</summary>
+            <div class="funcionario-docs">
+              <ul>${itemsHtml}</ul>
+            </div>
+          </details>
+        `);
+      }
+      const voltar = `<a class="empresa-back" href="./">← Voltar para empresas</a>`;
+      el.listaFuncionarios.innerHTML = `${voltar}${blocos.join("")}`;
+    };
+
+    const renderPublicoEmpresasFuncionarios = (items) => {
+      const catalogo = construirCatalogoEmpresas(items);
+      const p = new URLSearchParams(window.location.search);
+      const empresaSel = slugEmpresa(p.get("empresa") || "");
+      if (!empresaSel) {
+        renderHomeEmpresas(catalogo);
+        return;
+      }
+      renderEmpresaFuncionarios(empresaSel, catalogo);
     };
 
     const syncFileListSelected = () => {
@@ -1016,12 +1205,14 @@
             try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
           }
         }
-        mountFuncionarios(items);
+        if (isAdminMode) mountFuncionarios(items);
+        else renderPublicoEmpresasFuncionarios(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
         const idx = await carregarIndicePublico();
         if (idx.length) {
-          mountFuncionarios(idx);
+          if (isAdminMode) mountFuncionarios(idx);
+          else renderPublicoEmpresasFuncionarios(idx);
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
           mountFuncionarios([]);
