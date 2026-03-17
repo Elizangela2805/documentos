@@ -584,14 +584,17 @@
       const now = new Date().toISOString();
       const payload = {
         updated_at: now,
-        total: items.length,
-        items: items.map((it) => ({
-          path: it.path,
-          nome: (it.path || "").split("/").pop(),
-          funcionario: extrairFuncionarioDoPath(it.path),
-          consulta: consultaUrl(it.path),
-        })),
+        total: 0,
+        items: items
+          .map((it) => ({
+            path: it.path,
+            nome: (it.path || "").split("/").pop(),
+            funcionario: extrairFuncionarioDoPath(it.path),
+            consulta: consultaUrl(it.path),
+          }))
+          .filter((it) => !isGrupoFuncionarioInvalido(it.funcionario)),
       };
+      payload.total = payload.items.length;
       await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, "Atualiza indice de documentos");
     };
 
@@ -714,13 +717,29 @@
       return all.filter((i) => i.path.toLowerCase().endsWith(".pdf"));
     };
 
+    const isGrupoFuncionarioInvalido = (nome) => {
+      const n = String(nome || "").trim().toLowerCase();
+      return !n || n === "sem pasta" || n === "_pdf_gerados" || n === "_qrcodes";
+    };
+
     const extrairFuncionarioDoPath = (path) => {
       const root = normFolder(el.folder.value);
-      const rel = root && String(path || "").startsWith(`${root}/`)
-        ? String(path || "").slice(root.length + 1)
-        : String(path || "");
-      const partes = rel.split("/");
-      return partes.length > 1 ? partes[0] : "Sem pasta";
+      const pathNorm = normFolder(path);
+      const rel = root && pathNorm.startsWith(`${root}/`)
+        ? pathNorm.slice(root.length + 1)
+        : pathNorm;
+      let partes = rel.split("/").filter(Boolean);
+      if (partes.length && partes[0].toLowerCase() === "_pdf_gerados") partes = partes.slice(1);
+      for (const p of partes) {
+        const t = String(p || "").trim();
+        if (!t) continue;
+        if (t.toLowerCase() === "_qrcodes") continue;
+        if (/^\d{8}$/.test(t)) continue;
+        if (/^\d{4}[-_/]\d{2}[-_/]\d{2}$/.test(t)) continue;
+        if (isGrupoFuncionarioInvalido(t)) continue;
+        return t;
+      }
+      return "";
     };
 
     const obterConfigEscrita = () => {
@@ -744,8 +763,13 @@
       const grupos = new Map();
       for (const it of items) {
         const funcionario = extrairFuncionarioDoPath(it.path);
+        if (isGrupoFuncionarioInvalido(funcionario)) continue;
         if (!grupos.has(funcionario)) grupos.set(funcionario, []);
         grupos.get(funcionario).push(it);
+      }
+      if (!grupos.size) {
+        el.listaFuncionarios.innerHTML = `<div class="small">Nenhum PDF encontrado na pasta configurada.</div>`;
+        return;
       }
       const nomes = [...grupos.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
       el.listaFuncionarios.innerHTML = "";
@@ -778,22 +802,7 @@
           if (!ok) return;
           btnExcluirFunc.disabled = true;
           try {
-            let files = [];
-            if (nome === "Sem pasta") {
-              const extras = [];
-              for (const d of docs) {
-                const p = normFolder(d.path);
-                extras.push({ path: p, type: "blob" });
-                const base = p.replace(/\.pdf$/i, "");
-                const qr1 = `${root}/_qrcodes/${base.split("/").pop()}_qrcode.png`;
-                extras.push({ path: normFolder(qr1), type: "blob" });
-              }
-              const unicos = new Map();
-              for (const f of extras) unicos.set(normFolder(f.path), { path: normFolder(f.path), type: "blob" });
-              files = [...unicos.values()];
-            } else {
-              files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
-            }
+            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
             if (!files.length) {
               log(`Nenhum arquivo encontrado para ${nome}.`);
               return;
