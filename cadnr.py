@@ -656,6 +656,7 @@ class App(tk.Tk):
         self.github_dir = "_pdf_gerados"
         self.github_pages_base = "https://elizangela2805.github.io/documentos"
         self.github_token = ""
+        self._github_nojekyll_ok = set()
         self._git_auto_commit_habilitado = True
         self._git_auto_commit_lock = threading.Lock()
         self._git_auto_commit_pendentes = set()
@@ -3122,6 +3123,10 @@ class App(tk.Tk):
         config = self._obter_config_qr_github()
         if not config:
             return ""
+        try:
+            self._garantir_nojekyll_no_site(config)
+        except Exception:
+            pass
 
         caminho = Path(str(caminho_arquivo or "")).expanduser()
         if not caminho.is_absolute():
@@ -3221,6 +3226,77 @@ class App(tk.Tk):
         except Exception as exc:
             self._qr_github_ultimo_erro = f"Publicacao PUT falhou: {exc}"
         return ""
+
+    def _garantir_nojekyll_no_site(self, config=None):
+        cfg = config if isinstance(config, dict) else self._obter_config_qr_github()
+        if not cfg:
+            return False
+        repo = str(cfg.get("repo", "") or "").strip()
+        branch = str(cfg.get("branch", "") or "").strip() or "main"
+        token = str(cfg.get("token", "") or "").strip()
+        if not repo or not token:
+            return False
+
+        chave = f"{repo}@{branch}"
+        if chave in self._github_nojekyll_ok:
+            return True
+
+        api_nojekyll = f"https://api.github.com/repos/{repo}/contents/.nojekyll"
+        headers = {
+            "Authorization": f"Bearer {token}",
+            "Accept": "application/vnd.github+json",
+            "User-Agent": "CADNR/1.0",
+            "X-GitHub-Api-Version": "2022-11-28",
+        }
+        sha_existente = None
+        try:
+            req_get = request.Request(
+                f"{api_nojekyll}?ref={parse.quote(branch)}",
+                headers=headers,
+                method="GET",
+            )
+            with request.urlopen(req_get, timeout=20) as resp:
+                dados = json.loads(resp.read().decode("utf-8"))
+            sha_existente = str(dados.get("sha", "") or "").strip() or None
+        except error.HTTPError as exc:
+            if exc.code != 404:
+                self._qr_github_ultimo_erro = f".nojekyll GET HTTP {exc.code}"
+                return False
+        except Exception as exc:
+            self._qr_github_ultimo_erro = f".nojekyll GET falhou: {exc}"
+            return False
+
+        if sha_existente:
+            self._github_nojekyll_ok.add(chave)
+            return True
+
+        payload = {
+            "message": "CADNR setup: add .nojekyll for Pages static files",
+            "content": "",
+            "branch": branch,
+        }
+        try:
+            req_put = request.Request(
+                api_nojekyll,
+                headers=headers,
+                method="PUT",
+                data=json.dumps(payload).encode("utf-8"),
+            )
+            with request.urlopen(req_put, timeout=30):
+                pass
+            self._github_nojekyll_ok.add(chave)
+            return True
+        except error.HTTPError as exc:
+            detalhe = ""
+            try:
+                detalhe = exc.read().decode("utf-8", errors="ignore")
+            except Exception:
+                detalhe = ""
+            self._qr_github_ultimo_erro = f".nojekyll PUT HTTP {exc.code} {detalhe[:120].strip()}"
+            return False
+        except Exception as exc:
+            self._qr_github_ultimo_erro = f".nojekyll PUT falhou: {exc}"
+            return False
 
     def _espelhar_arquivo_no_repo_local(self, caminho_arquivo):
         try:
