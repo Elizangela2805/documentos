@@ -1045,6 +1045,28 @@
       dataRef: extrairDataSlug(path),
     });
 
+    const selecionarDocumentoPorRota = (rota, itens) => {
+      const lista = Array.isArray(itens) ? itens : [];
+      let melhor = null;
+      let melhorScore = -1;
+      for (const it of lista) {
+        const path = normFolder(String(it?.path || ""));
+        if (!path || !path.toLowerCase().endsWith(".pdf")) continue;
+        const r = assinaturaRotaFromPath(path);
+        if (r.documento !== rota.documento) continue;
+        let score = 10;
+        if (r.funcionario === rota.funcionario) score += 3;
+        if (r.dataRef === rota.dataRef) score += 2;
+        // Pequeno bonus para caminhos mais especificos (ex.: com pasta de funcionario/data).
+        score += Math.min(path.split("/").length, 6) * 0.01;
+        if (score > melhorScore) {
+          melhor = it;
+          melhorScore = score;
+        }
+      }
+      return melhor;
+    };
+
     const abrirModoDocumento = async () => {
       if (isAdminMode) return false;
       const rota = obterRotaDocumentoDaUrl();
@@ -1062,16 +1084,7 @@
       el.btnDownloadDocumento.style.display = "inline-block";
 
       const itens = await carregarIndicePublicoBruto();
-      const candidato = itens.find((it) => {
-        const path = normFolder(String(it?.path || ""));
-        if (!path || !path.toLowerCase().endsWith(".pdf")) return false;
-        const r = assinaturaRotaFromPath(path);
-        return (
-          r.funcionario === rota.funcionario
-          && r.documento === rota.documento
-          && r.dataRef === rota.dataRef
-        );
-      });
+      const candidato = selecionarDocumentoPorRota(rota, itens);
 
       if (!candidato || !candidato.path) {
         el.frameDocumento.style.display = "none";
