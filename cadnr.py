@@ -2518,6 +2518,13 @@ class App(tk.Tk):
         return "127.0.0.1"
 
     @staticmethod
+    def _deve_sincronizar_qr_pendentes():
+        # Por padrao, nao repete publicacao de documentos antigos no startup,
+        # evitando que arquivos removidos manualmente do site "voltem" a aparecer.
+        flag = str(os.environ.get("CADNR_QR_SYNC_PENDENTES", "0") or "").strip().lower()
+        return flag in {"1", "true", "on", "yes", "sim"}
+
+    @staticmethod
     def _abrir_url_no_chrome(url):
         url_txt = str(url or "").strip()
         if not url_txt:
@@ -4410,6 +4417,8 @@ class App(tk.Tk):
         )
 
     def _sincronizar_documentos_salvos_pendentes(self):
+        if not self._deve_sincronizar_qr_pendentes():
+            return
         vistos = set()
         for item in list(self.documentos_salvos):
             if not isinstance(item, dict):
