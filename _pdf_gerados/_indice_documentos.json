@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-17T17:06:21Z",
-  "total": 13,
+  "updated_at": "2026-03-17T17:06:35Z",
+  "total": 14,
   "items": [
     {
       "path": "_pdf_gerados/anuencia (Projetta) Emerson Pereira de Oliveira.pdf",
@@ -107,6 +107,16 @@
       "route_documento": "oscaldeireiroprojettajairpintogomes",
       "route_data": "17032026",
       "route": "jairpintogomes/oscaldeireiroprojettajairpintogomes/17032026"
+    },
+    {
+      "path": "_pdf_gerados/Jair Pinto Gomes/OS Soldador (Projetta) Jair Pinto Gomes.pdf",
+      "nome": "OS Soldador (Projetta) Jair Pinto Gomes.pdf",
+      "funcionario": "Jair Pinto Gomes",
+      "consulta": "https://elizangela2805.github.io/documentos/jairpintogomes/ossoldadorprojettajairpintogomes/17032026",
+      "route_funcionario": "jairpintogomes",
+      "route_documento": "ossoldadorprojettajairpintogomes",
+      "route_data": "17032026",
+      "route": "jairpintogomes/ossoldadorprojettajairpintogomes/17032026"
     }
   ]
 }
