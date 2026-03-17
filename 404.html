@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Redirecionando...</title>
+</head>
+<body>
+  <script>
+    (function () {
+      var base = "/documentos/";
+      var path = window.location.pathname || "/";
+      var rel = path.indexOf(base) === 0 ? path.slice(base.length) : path.replace(/^\/+/, "");
+      var target = base + "?route=" + encodeURIComponent(rel);
+      window.location.replace(target);
+    })();
+  </script>
+</body>
+</html>

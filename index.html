@@ -141,11 +141,66 @@
     .funcionario-docs li { margin: 4px 0; }
     .admin-panel { display: none; }
     .admin-panel.is-admin { display: block; }
+    .doc-view { display: none; }
+    .doc-view.is-active { display: block; }
+    body.document-mode {
+      background: #ffffff;
+    }
+    body.document-mode .wrap {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+    body.document-mode .panel.doc-view {
+      border: 0;
+      border-radius: 0;
+      box-shadow: none;
+      margin: 0;
+      padding: 10px;
+      min-height: 100vh;
+      background: #ffffff;
+    }
+    .doc-actions {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 10px;
+    }
+    .doc-download-btn {
+      display: inline-block;
+      text-decoration: none;
+      color: #fff;
+      border-radius: 9px;
+      padding: 10px 16px;
+      font-weight: 700;
+      background: linear-gradient(135deg, var(--brand), var(--brand2));
+    }
+    .doc-frame {
+      width: 100%;
+      height: calc(100vh - 72px);
+      border: 1px solid #d9e2ec;
+      border-radius: 10px;
+      background: #fff;
+    }
+    .doc-msg {
+      border: 1px dashed var(--line);
+      border-radius: 10px;
+      background: #f8fbff;
+      color: #334e68;
+      padding: 14px;
+    }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
   </style>
 </head>
 <body>
   <div class="wrap">
+    <div class="panel doc-view" id="painelDocumento">
+      <div class="doc-actions">
+        <a id="btnDownloadDocumento" class="doc-download-btn" href="#" target="_blank" rel="noopener">Download</a>
+      </div>
+      <iframe id="frameDocumento" class="doc-frame" title="Documento PDF"></iframe>
+      <div id="msgDocumento" class="doc-msg" style="display:none;"></div>
+    </div>
+
     <div class="panel admin-panel" id="painelAdmin">
       <h1>Projetta - Upload de PDF e Conferencia por QR Code</h1>
       <p>Publique os PDFs gerados no site, gere QR automaticamente e obtenha links para consulta dos documentos.</p>
@@ -263,6 +318,12 @@
       status: document.getElementById("status"),
       listaFuncionarios: document.getElementById("listaFuncionarios"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
+      painelDocumento: document.getElementById("painelDocumento"),
+      btnDownloadDocumento: document.getElementById("btnDownloadDocumento"),
+      frameDocumento: document.getElementById("frameDocumento"),
+      msgDocumento: document.getElementById("msgDocumento"),
+      painelAdmin: document.getElementById("painelAdmin"),
+      painelHistorico: document.getElementById("painelHistorico"),
     };
 
     const DB_NAME = "projetta_pdf_db";
@@ -272,18 +333,77 @@
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
     const normFolder = (s) => String(s || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+    const slugUrl = (s) => String(s || "")
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, "");
+    const dataHojeDdMmAaaa = () => {
+      const d = new Date();
+      const dd = String(d.getDate()).padStart(2, "0");
+      const mm = String(d.getMonth() + 1).padStart(2, "0");
+      const yyyy = String(d.getFullYear());
+      return `${dd}${mm}${yyyy}`;
+    };
+    const extrairDataSlug = (path) => {
+      const texto = String(path || "");
+      let m = texto.match(/(?:^|[^0-9])([0-3][0-9])[-_/]?([01][0-9])[-_/]?([0-9]{4})(?:[^0-9]|$)/);
+      if (m) return `${m[1]}${m[2]}${m[3]}`;
+      m = texto.match(/(?:^|[^0-9])([0-9]{4})[-_/]?([01][0-9])[-_/]?([0-3][0-9])(?:[^0-9]|$)/);
+      if (m) return `${m[3]}${m[2]}${m[1]}`;
+      return dataHojeDdMmAaaa();
+    };
+    const extrairDocumentoSlug = (path) => {
+      const p = normFolder(path);
+      const nomeArq = p.split("/").pop() || "";
+      const stem = nomeArq.replace(/\.pdf$/i, "");
+      const stemNorm = String(stem || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase();
+      const mNr = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b/);
+      if (mNr) {
+        const num = String(mNr[1] || "");
+        const suf = String(mNr[2] || "");
+        return `nr${num}${suf === "pta" ? "pta" : ""}`;
+      }
+      return slugUrl(stem) || "documento";
+    };
+    const extrairFuncionarioSlug = (path) => {
+      const p = normFolder(path);
+      const partes = p.split("/").filter(Boolean);
+      if (!partes.length) return "funcionario";
+      const semArquivo = /\.pdf$/i.test(partes[partes.length - 1]) ? partes.slice(0, -1) : partes.slice();
+      let dirs = semArquivo.slice();
+      if (dirs[0] && dirs[0].toLowerCase() === "_pdf_gerados") dirs = dirs.slice(1);
+      for (const parte of dirs) {
+        const t = String(parte || "").trim();
+        if (!t || t.toLowerCase() === "_qrcodes") continue;
+        if (/^[0-9]{8}$/.test(t)) continue;
+        if (/^[0-9]{4}[-_/][0-9]{2}[-_/][0-9]{2}$/.test(t)) continue;
+        const slug = slugUrl(t);
+        if (slug) return slug;
+      }
+      if (dirs.length) {
+        const slugUltimo = slugUrl(dirs[dirs.length - 1]);
+        if (slugUltimo) return slugUltimo;
+      }
+      return "funcionario";
+    };
     const branchEsc = (branch) => encodeURIComponent(branch);
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
-    const consultaUrl = (path) => `${PAGES_BASE_FIXED}/index.html?pdf=${encodeURIComponent(normFolder(path))}`;
-    const linkPublicoPdf = (owner, repo, branch, path) => {
+    const consultaUrl = (path) => {
       const p = normFolder(path);
-      if (!p) return "#";
-      // Link publico direto do arquivo, estilo "drive": abre em nova aba sem rota intermediaria.
-      return rawUrl(owner, repo, branch, p);
+      if (!p) return `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
+      const funcionario = encodeURIComponent(extrairFuncionarioSlug(p));
+      const documento = encodeURIComponent(extrairDocumentoSlug(p));
+      const dataRef = encodeURIComponent(extrairDataSlug(p));
+      return `${PAGES_BASE_FIXED}/${funcionario}/${documento}/${dataRef}`;
     };
+    const linkPublicoPdf = (_owner, _repo, _branch, path) => consultaUrl(path);
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
@@ -495,6 +615,17 @@
         return items
           .filter((x) => x && typeof x.path === "string" && x.path.toLowerCase().endsWith(".pdf"))
           .map((x) => ({ path: x.path, type: "blob" }));
+      } catch {
+        return [];
+      }
+    };
+
+    const carregarIndicePublicoBruto = async () => {
+      try {
+        const res = await fetch(pagesUrl("", "", REPO_INDEX_PATH), { cache: "no-cache" });
+        if (!res.ok) return [];
+        const body = await res.json();
+        return Array.isArray(body?.items) ? body.items : [];
       } catch {
         return [];
       }
@@ -721,15 +852,6 @@
       return nomeArquivo;
     };
 
-    const baixarBlob = (blob, nomeArquivo) => {
-      if (!(blob instanceof Blob)) throw new Error("PDF local nao encontrado no banco.");
-      const a = document.createElement("a");
-      a.href = URL.createObjectURL(blob);
-      a.download = nomeArquivo || "documento.pdf";
-      a.click();
-      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
-    };
-
     const renderHistorico = async () => {
       let items = [];
       try {
@@ -770,21 +892,7 @@
             log(err.message, "err");
           }
         });
-        const btnBaixarLocal = document.createElement("button");
-        btnBaixarLocal.type = "button";
-        btnBaixarLocal.className = "alt small-btn";
-        btnBaixarLocal.style.marginLeft = "6px";
-        btnBaixarLocal.textContent = "Baixar";
-        btnBaixarLocal.addEventListener("click", () => {
-          try {
-            baixarBlob(it.blob_pdf, it.arquivo || "documento.pdf");
-            log(`PDF local baixado: ${it.arquivo || "-"}`, "ok");
-          } catch (err) {
-            log(err.message, "err");
-          }
-        });
         tdAcoes.appendChild(btnAbrirLocal);
-        tdAcoes.appendChild(btnBaixarLocal);
         el.tbodyHistorico.appendChild(tr);
       }
     };
@@ -900,19 +1008,98 @@
     const redirecionarConsultaQr = () => {
       const p = new URLSearchParams(window.location.search);
       const pdfParam = String(p.get("pdf") || "").trim();
-      if (!pdfParam) return;
+      if (!pdfParam || isAdminMode) return;
       const pdfPath = normFolder(decodeURIComponent(pdfParam));
       if (!pdfPath || !pdfPath.toLowerCase().endsWith(".pdf")) return;
-      const destino = pagesUrl(el.owner.value.trim(), el.repo.value.trim(), pdfPath);
-      window.location.replace(destino);
+      const destino = consultaUrl(pdfPath);
+      try {
+        const u = new URL(destino);
+        window.history.replaceState({}, "", `${u.pathname}${u.search}${u.hash}`);
+      } catch {
+        window.location.replace(destino);
+      }
+    };
+
+    const obterRotaDocumentoDaUrl = () => {
+      const p = new URLSearchParams(window.location.search);
+      const rotaQuery = String(p.get("route") || "").trim();
+      let caminho = rotaQuery || window.location.pathname || "";
+      caminho = decodeURIComponent(caminho);
+      try { caminho = caminho.split("?")[0].split("#")[0]; } catch {}
+      caminho = String(caminho || "").replace(/^\/+|\/+$/g, "");
+      if (!caminho) return null;
+      const partes = caminho.split("/").filter(Boolean);
+      const idxBase = partes.findIndex((x) => String(x).toLowerCase() === "documentos");
+      const rota = idxBase >= 0 ? partes.slice(idxBase + 1) : partes;
+      if (rota.length < 3) return null;
+      return {
+        funcionario: String(rota[0] || "").toLowerCase(),
+        documento: String(rota[1] || "").toLowerCase(),
+        dataRef: String(rota[2] || "").toLowerCase(),
+      };
+    };
+
+    const assinaturaRotaFromPath = (path) => ({
+      funcionario: extrairFuncionarioSlug(path),
+      documento: extrairDocumentoSlug(path),
+      dataRef: extrairDataSlug(path),
+    });
+
+    const abrirModoDocumento = async () => {
+      if (isAdminMode) return false;
+      const rota = obterRotaDocumentoDaUrl();
+      if (!rota) return false;
+
+      const wrap = document.querySelector(".wrap");
+      const paineis = wrap ? [...wrap.querySelectorAll(".panel")] : [];
+      for (const p of paineis) {
+        if (p !== el.painelDocumento) p.style.display = "none";
+      }
+      document.body.classList.add("document-mode");
+      el.painelDocumento.classList.add("is-active");
+      el.msgDocumento.style.display = "none";
+      el.frameDocumento.style.display = "block";
+      el.btnDownloadDocumento.style.display = "inline-block";
+
+      const itens = await carregarIndicePublicoBruto();
+      const candidato = itens.find((it) => {
+        const path = normFolder(String(it?.path || ""));
+        if (!path || !path.toLowerCase().endsWith(".pdf")) return false;
+        const r = assinaturaRotaFromPath(path);
+        return (
+          r.funcionario === rota.funcionario
+          && r.documento === rota.documento
+          && r.dataRef === rota.dataRef
+        );
+      });
+
+      if (!candidato || !candidato.path) {
+        el.frameDocumento.style.display = "none";
+        el.btnDownloadDocumento.style.display = "none";
+        el.msgDocumento.style.display = "block";
+        el.msgDocumento.textContent = "Documento nao encontrado para esta rota.";
+        return true;
+      }
+
+      const pdfPath = normFolder(candidato.path);
+      const pdfUrl = pagesUrl("", "", pdfPath);
+      const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
+      el.frameDocumento.src = pdfUrl;
+      el.btnDownloadDocumento.href = pdfUrl;
+      el.btnDownloadDocumento.setAttribute("download", nomeArquivo);
+      return true;
     };
 
     if (isAdminMode) {
       syncFileListSelected();
       renderHistorico();
     }
-    atualizarLista();
-    redirecionarConsultaQr();
+    (async () => {
+      redirecionarConsultaQr();
+      const emModoDocumento = await abrirModoDocumento();
+      if (emModoDocumento) return;
+      atualizarLista();
+    })();
   </script>
 </body>
 </html>

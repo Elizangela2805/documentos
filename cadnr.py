@@ -2868,6 +2868,92 @@ class App(tk.Tk):
             return ""
 
     @staticmethod
+    def _slug_url_texto(texto):
+        base = unicodedata.normalize("NFKD", str(texto or ""))
+        base = "".join(ch for ch in base if not unicodedata.combining(ch))
+        return re.sub(r"[^a-z0-9]+", "", base.lower())
+
+    @staticmethod
+    def _extrair_data_slug_documento(repo_path, caminho_arquivo):
+        def _normalizar_data_match(grupo_a, grupo_b, grupo_c):
+            a = str(grupo_a or "")
+            b = str(grupo_b or "")
+            c = str(grupo_c or "")
+            if len(a) == 4:
+                return f"{c.zfill(2)}{b.zfill(2)}{a}"
+            return f"{a.zfill(2)}{b.zfill(2)}{c}"
+
+        texto_busca = " ".join(
+            [
+                str(repo_path or ""),
+                str(Path(str(caminho_arquivo or "")).stem or ""),
+            ]
+        )
+        m_data = re.search(r"(?<!\d)(\d{2})[-_/]?(\d{2})[-_/]?(\d{4})(?!\d)", texto_busca)
+        if not m_data:
+            m_data = re.search(r"(?<!\d)(\d{4})[-_/]?(\d{2})[-_/]?(\d{2})(?!\d)", texto_busca)
+        if m_data:
+            return _normalizar_data_match(m_data.group(1), m_data.group(2), m_data.group(3))
+        try:
+            caminho = Path(str(caminho_arquivo or "")).expanduser()
+            if caminho.exists():
+                dt = datetime.fromtimestamp(caminho.stat().st_mtime)
+                return dt.strftime("%d%m%Y")
+        except Exception:
+            pass
+        return datetime.now().strftime("%d%m%Y")
+
+    @staticmethod
+    def _extrair_documento_slug_documento(repo_path, caminho_arquivo):
+        stem = str(Path(str(repo_path or "")).stem or "").strip()
+        if not stem:
+            stem = str(Path(str(caminho_arquivo or "")).stem or "").strip()
+        stem_ascii = unicodedata.normalize("NFKD", stem)
+        stem_ascii = "".join(ch for ch in stem_ascii if not unicodedata.combining(ch))
+        stem_ascii = stem_ascii.lower()
+        m_nr = re.search(r"\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b", stem_ascii)
+        if m_nr:
+            numero = str(m_nr.group(1) or "").strip()
+            sufixo = str(m_nr.group(2) or "").strip()
+            if sufixo not in {"pta"}:
+                sufixo = ""
+            return f"nr{numero}{sufixo}"
+        slug = App._slug_url_texto(stem)
+        return slug or "documento"
+
+    @staticmethod
+    def _extrair_funcionario_slug_documento(repo_path, caminho_arquivo):
+        repo_norm = str(repo_path or "").replace("\\", "/").strip("/")
+        partes = [p for p in repo_norm.split("/") if p]
+        if partes and str(partes[0]).casefold() == "_pdf_gerados":
+            partes = partes[1:]
+        if partes and str(partes[-1]).lower().endswith(".pdf"):
+            partes = partes[:-1]
+
+        candidato = ""
+        for parte in partes:
+            parte_txt = str(parte or "").strip()
+            if not parte_txt:
+                continue
+            if re.fullmatch(r"\d{8}", parte_txt):
+                continue
+            if re.fullmatch(r"\d{4}[-_/]\d{2}[-_/]\d{2}", parte_txt):
+                continue
+            if parte_txt.lower() == "_qrcodes":
+                continue
+            candidato = parte_txt
+            break
+
+        if not candidato:
+            try:
+                caminho = Path(str(caminho_arquivo or "")).expanduser()
+                candidato = str(caminho.parent.name or "").strip()
+            except Exception:
+                candidato = ""
+        slug = App._slug_url_texto(candidato)
+        return slug or "funcionario"
+
+    @staticmethod
     def _url_site_consulta_para_arquivo(caminho_arquivo):
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
         pages_base = App._normalizar_pages_base(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", ""))
@@ -2882,8 +2968,10 @@ class App(tk.Tk):
             repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
             if not repo_path:
                 return ""
-            pdf_query = parse.quote(repo_path, safe="")
-            return f"{pages_base}/index.html?pdf={pdf_query}"
+            funcionario = parse.quote(App._extrair_funcionario_slug_documento(repo_path, caminho), safe="")
+            documento = parse.quote(App._extrair_documento_slug_documento(repo_path, caminho), safe="")
+            data_ref = parse.quote(App._extrair_data_slug_documento(repo_path, caminho), safe="")
+            return f"{pages_base}/{funcionario}/{documento}/{data_ref}"
         except Exception:
             return ""
 
@@ -2960,8 +3048,10 @@ class App(tk.Tk):
             with request.urlopen(req_put, timeout=30) as resp:
                 dados = json.loads(resp.read().decode("utf-8"))
             content = dados.get("content", {}) if isinstance(dados, dict) else {}
-            # Prioriza link publico direto (raw), mais confiavel para abrir PDF.
-            url = self._url_github_raw_para_arquivo(caminho)
+            # Prioriza rota amigavel no site (documento/data) para abrir em nova guia.
+            url = self._url_site_consulta_para_arquivo(caminho)
+            if not url:
+                url = self._url_github_raw_para_arquivo(caminho)
             if not url:
                 url = self._url_github_pages_para_arquivo(caminho)
             if not url:
@@ -3718,11 +3808,11 @@ class App(tk.Tk):
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
             if caminho.suffix.lower() != ".pdf":
                 continue
-            url = self._url_github_pages_para_arquivo(caminho)
+            url = self._url_site_consulta_para_arquivo(caminho)
+            if not url:
+                url = self._url_github_pages_para_arquivo(caminho)
             if not url:
                 url = self._url_github_raw_para_arquivo(caminho)
-            if not url:
-                url = self._url_site_consulta_para_arquivo(caminho)
             if not url:
                 continue
             chave = str(url).strip()
@@ -4469,22 +4559,26 @@ class App(tk.Tk):
         caminho = Path(caminho_txt).expanduser()
         if not caminho.is_absolute():
             caminho = (Path(__file__).resolve().parent / caminho).resolve()
+        # Padrao oficial de destino do QR: rota amigavel no site
+        # /nomedofuncionario/documento/data
+        url_consulta = self._url_site_consulta_para_arquivo(caminho)
         url_github = self._url_github_qr_para_arquivo(
             caminho,
             permitir_inexistente=bool(permitir_arquivo_inexistente),
         )
         if url_github:
+            # Mesmo com publicacao concluida, mantem o payload no formato de rota amigavel.
+            if url_consulta:
+                return url_consulta
             return url_github
+        if url_consulta:
+            return url_consulta
         url_pages = self._url_github_pages_para_arquivo(caminho)
         if url_pages:
             return url_pages
         url_raw = self._url_github_raw_para_arquivo(caminho)
         if url_raw:
             return url_raw
-        # Compatibilidade com QR legado baseado em rota de consulta.
-        url_consulta = self._url_site_consulta_para_arquivo(caminho)
-        if url_consulta:
-            return url_consulta
         url_blob = self._url_github_blob_para_arquivo(caminho)
         if url_blob:
             return url_blob
