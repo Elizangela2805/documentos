@@ -2812,6 +2812,11 @@ class App(tk.Tk):
         rel_txt = rel_txt.lstrip("/").replace("../", "").replace("..\\", "")
         pasta = str(pasta_repo or "").strip().strip("/")
         if pasta:
+            # Evita duplicar prefixo quando o caminho local ja esta dentro da pasta configurada.
+            rel_norm = rel_txt.lower()
+            pasta_norm = pasta.lower().strip("/")
+            if rel_norm == pasta_norm or rel_norm.startswith(f"{pasta_norm}/"):
+                return rel_txt
             return f"{pasta}/{rel_txt}"
         return rel_txt
 
@@ -2981,6 +2986,137 @@ class App(tk.Tk):
             return f"{pages_base}/{funcionario}/{documento}/{data_ref}"
         except Exception:
             return ""
+
+    @staticmethod
+    def _assinatura_rota_documento(repo_path, caminho_arquivo):
+        funcionario = App._extrair_funcionario_slug_documento(repo_path, caminho_arquivo)
+        documento = App._extrair_documento_slug_documento(repo_path, caminho_arquivo)
+        data_ref = App._extrair_data_slug_documento(repo_path, caminho_arquivo)
+        return {
+            "funcionario": str(funcionario or "").strip().lower(),
+            "documento": str(documento or "").strip().lower(),
+            "data_ref": str(data_ref or "").strip().lower(),
+        }
+
+    def _atualizar_indice_documento_site(self, caminho_pdf):
+        config = self._obter_config_qr_github()
+        if not config:
+            return False
+        try:
+            caminho = Path(str(caminho_pdf or "")).expanduser()
+            if not caminho.is_absolute():
+                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            if caminho.suffix.lower() != ".pdf" or not caminho.exists() or not caminho.is_file():
+                return False
+
+            repo_path = self._montar_caminho_repo_qr_github(caminho, config.get("pasta", ""))
+            if not repo_path:
+                return False
+            assinatura = self._assinatura_rota_documento(repo_path, caminho)
+            consulta = self._url_site_consulta_para_arquivo(caminho)
+
+            indice_rel = "_pdf_gerados/_indice_documentos.json"
+            api_indice = (
+                f"https://api.github.com/repos/{config['repo']}/contents/"
+                f"{parse.quote(indice_rel, safe='/')}"
+            )
+            headers = {
+                "Authorization": f"Bearer {config['token']}",
+                "Accept": "application/vnd.github+json",
+                "User-Agent": "CADNR/1.0",
+                "X-GitHub-Api-Version": "2022-11-28",
+            }
+
+            sha_indice = None
+            conteudo_atual = {}
+            try:
+                req_get = request.Request(
+                    f"{api_indice}?ref={parse.quote(config['branch'])}",
+                    headers=headers,
+                    method="GET",
+                )
+                with request.urlopen(req_get, timeout=20) as resp:
+                    dados_get = json.loads(resp.read().decode("utf-8"))
+                sha_indice = str(dados_get.get("sha", "") or "").strip() or None
+                conteudo_b64 = str(dados_get.get("content", "") or "").replace("\n", "")
+                if conteudo_b64:
+                    txt = base64.b64decode(conteudo_b64).decode("utf-8", errors="ignore")
+                    parsed = json.loads(txt)
+                    if isinstance(parsed, dict):
+                        conteudo_atual = parsed
+            except error.HTTPError as exc:
+                if exc.code != 404:
+                    self._qr_github_ultimo_erro = f"Indice GET HTTP {exc.code}"
+            except Exception as exc:
+                self._qr_github_ultimo_erro = f"Indice GET falhou: {exc}"
+
+            itens = conteudo_atual.get("items", []) if isinstance(conteudo_atual, dict) else []
+            if not isinstance(itens, list):
+                itens = []
+            repo_path_norm = str(repo_path or "").replace("\\", "/").strip("/")
+            nome_arquivo = str(Path(repo_path_norm).name or "").strip()
+            funcionario_exib = str(Path(repo_path_norm).parent.name or "").strip() or assinatura["funcionario"]
+            rota = f"{assinatura['funcionario']}/{assinatura['documento']}/{assinatura['data_ref']}"
+
+            novo_item = {
+                "path": repo_path_norm,
+                "nome": nome_arquivo,
+                "funcionario": funcionario_exib,
+                "consulta": consulta,
+                "route_funcionario": assinatura["funcionario"],
+                "route_documento": assinatura["documento"],
+                "route_data": assinatura["data_ref"],
+                "route": rota,
+            }
+
+            atualizou = False
+            for idx, item in enumerate(itens):
+                if not isinstance(item, dict):
+                    continue
+                path_item = str(item.get("path", "") or "").replace("\\", "/").strip("/")
+                if path_item == repo_path_norm:
+                    itens[idx] = {**item, **novo_item}
+                    atualizou = True
+                    break
+            if not atualizou:
+                itens.append(novo_item)
+
+            payload_indice = {
+                "updated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+                "total": len(itens),
+                "items": itens,
+            }
+            conteudo_novo_b64 = base64.b64encode(
+                json.dumps(payload_indice, ensure_ascii=False, indent=2).encode("utf-8")
+            ).decode("ascii")
+            payload_put = {
+                "message": f"CADNR indice update: {nome_arquivo or 'documento'}",
+                "content": conteudo_novo_b64,
+                "branch": config["branch"],
+            }
+            if sha_indice:
+                payload_put["sha"] = sha_indice
+
+            req_put = request.Request(
+                api_indice,
+                headers=headers,
+                method="PUT",
+                data=json.dumps(payload_put).encode("utf-8"),
+            )
+            with request.urlopen(req_put, timeout=30):
+                pass
+            return True
+        except error.HTTPError as exc:
+            detalhe = ""
+            try:
+                detalhe = exc.read().decode("utf-8", errors="ignore")
+            except Exception:
+                detalhe = ""
+            self._qr_github_ultimo_erro = f"Indice PUT HTTP {exc.code} {detalhe[:120].strip()}"
+            return False
+        except Exception as exc:
+            self._qr_github_ultimo_erro = f"Indice PUT falhou: {exc}"
+            return False
 
     def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False):
         config = self._obter_config_qr_github()
@@ -4531,6 +4667,7 @@ class App(tk.Tk):
             # Publica o PDF no repositorio remoto do site via API.
             url_publicada = self._publicar_arquivo_no_site(caminho)
             if url_publicada:
+                self._atualizar_indice_documento_site(caminho)
                 qr_txt = str(caminho_qr or "").strip()
                 if qr_txt:
                     caminho_qr_arq = Path(qr_txt).expanduser()

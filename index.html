@@ -1045,14 +1045,33 @@
       dataRef: extrairDataSlug(path),
     });
 
+    const assinaturaRotaFromItem = (it) => {
+      const rf = String(it?.route_funcionario || "").trim().toLowerCase();
+      const rd = String(it?.route_documento || "").trim().toLowerCase();
+      const rt = String(it?.route_data || "").trim().toLowerCase();
+      if (rf && rd && rt) {
+        return { funcionario: rf, documento: rd, dataRef: rt };
+      }
+      return assinaturaRotaFromPath(normFolder(String(it?.path || "")));
+    };
+
     const selecionarDocumentoPorRota = (rota, itens) => {
       const lista = Array.isArray(itens) ? itens : [];
+      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
+      const exato = lista.find((it) => {
+        const routeItem = String(it?.route || "").trim().toLowerCase();
+        if (routeItem) return routeItem === rotaKey;
+        const r = assinaturaRotaFromItem(it);
+        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
+      });
+      if (exato) return exato;
+
       let melhor = null;
       let melhorScore = -1;
       for (const it of lista) {
         const path = normFolder(String(it?.path || ""));
         if (!path || !path.toLowerCase().endsWith(".pdf")) continue;
-        const r = assinaturaRotaFromPath(path);
+        const r = assinaturaRotaFromItem(it);
         if (r.documento !== rota.documento) continue;
         let score = 10;
         if (r.funcionario === rota.funcionario) score += 3;
