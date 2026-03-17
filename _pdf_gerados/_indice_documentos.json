@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-17T19:46:22Z",
-  "total": 2,
+  "updated_at": "2026-03-17T19:46:33Z",
+  "total": 3,
   "items": [
     {
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/NR 18 (120-guin Lucas Ferreira da Silva Santos.pdf",
@@ -21,6 +21,16 @@
       "route_documento": "nr35",
       "route_data": "17032026",
       "route": "lucasferreiradasilvasantos/nr35/17032026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/anuenciaprojettalucasferreiradasilvasantos/17032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "anuenciaprojettalucasferreiradasilvasantos",
+      "route_data": "17032026",
+      "route": "lucasferreiradasilvasantos/anuenciaprojettalucasferreiradasilvasantos/17032026"
     }
   ]
 }
