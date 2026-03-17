@@ -1407,6 +1407,7 @@
       documento: extrairDocumentoSlug(path),
       dataRef: extrairDataSlug(path),
     });
+    let docBlobUrlAtual = "";
 
     const assinaturaRotaFromItem = (it) => {
       const rf = String(it?.route_funcionario || "").trim().toLowerCase();
@@ -1480,8 +1481,20 @@
       const { owner, repo, branch } = obterOwnerRepoBranch();
       const pdfUrl = rawUrl(owner, repo, branch, pdfPath);
       const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
-      const previewUrl = `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(pdfUrl)}`;
-      el.frameDocumento.src = previewUrl;
+      try {
+        const resPdf = await fetch(pdfUrl, { cache: "no-cache" });
+        if (!resPdf.ok) throw new Error(`Falha ao carregar PDF (${resPdf.status}).`);
+        const blobPdf = await resPdf.blob();
+        if (docBlobUrlAtual) {
+          try { URL.revokeObjectURL(docBlobUrlAtual); } catch {}
+          docBlobUrlAtual = "";
+        }
+        docBlobUrlAtual = URL.createObjectURL(blobPdf);
+        el.frameDocumento.src = `${docBlobUrlAtual}#toolbar=1&navpanes=0&scrollbar=1`;
+      } catch (_err) {
+        // Fallback para visualizacao direta quando o blob nao puder ser aberto.
+        el.frameDocumento.src = `${pdfUrl}#toolbar=1&navpanes=0&scrollbar=1`;
+      }
       el.btnDownloadDocumento.href = pdfUrl;
       el.btnDownloadDocumento.setAttribute("download", nomeArquivo);
       return true;
@@ -1491,6 +1504,12 @@
       syncFileListSelected();
       renderHistorico();
     }
+    window.addEventListener("beforeunload", () => {
+      if (docBlobUrlAtual) {
+        try { URL.revokeObjectURL(docBlobUrlAtual); } catch {}
+        docBlobUrlAtual = "";
+      }
+    });
     (async () => {
       redirecionarConsultaQr();
       const emModoDocumento = await abrirModoDocumento();
