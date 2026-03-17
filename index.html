@@ -175,7 +175,7 @@
     }
     .funcionario-item summary::-webkit-details-marker { display: none; }
     .funcionario-item summary::before {
-      content: "?";
+      content: "\25B6";
       display: inline-block;
       margin-right: 8px;
       transition: transform .15s ease;
@@ -1108,14 +1108,14 @@
       el.tituloLista.textContent = grupoEmp.nome.toUpperCase();
       const funcionarios = [...grupoEmp.funcionarios.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
       if (!funcionarios.length) {
-        el.listaFuncionarios.innerHTML = `<a class="empresa-back" href="./">? Voltar para empresas</a><div class="small">Nenhum documento disponivel para esta empresa.</div>`;
+        el.listaFuncionarios.innerHTML = `<a class="empresa-back" href="./">&larr; Voltar para empresas</a><div class="small">Nenhum documento disponivel para esta empresa.</div>`;
         return;
       }
       el.listaFuncionarios.innerHTML = "";
       const voltar = document.createElement("a");
       voltar.className = "empresa-back";
       voltar.href = "./";
-      voltar.textContent = "? Voltar para empresas";
+      voltar.textContent = "Voltar para empresas";
       el.listaFuncionarios.appendChild(voltar);
 
       for (const nome of funcionarios) {
@@ -1151,7 +1151,7 @@
           a.target = "_blank";
           a.rel = "noopener";
           a.href = linkConsultaItem(doc);
-          a.textContent = `? ${fileName}`;
+          a.textContent = `Abrir ${fileName}`;
           li.appendChild(a);
           ul.appendChild(li);
         }
@@ -1407,6 +1407,7 @@
       documento: extrairDocumentoSlug(path),
       dataRef: extrairDataSlug(path),
     });
+    let docBlobUrlAtual = "";
 
     const assinaturaRotaFromItem = (it) => {
       const rf = String(it?.route_funcionario || "").trim().toLowerCase();
@@ -1478,10 +1479,26 @@
 
       const pdfPath = normFolder(candidato.path);
       const { owner, repo, branch } = obterOwnerRepoBranch();
-      const pdfUrl = pagesUrl(owner, repo, pdfPath);
+      const pdfUrl = rawUrl(owner, repo, branch, pdfPath);
       const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
-      el.frameDocumento.src = pdfUrl;
-      el.btnDownloadDocumento.href = rawUrl(owner, repo, branch, pdfPath);
+      try {
+        const resPdf = await fetch(pdfUrl, { cache: "no-cache" });
+        if (!resPdf.ok) throw new Error(`Falha ao carregar PDF (${resPdf.status}).`);
+        const blobPdf = await resPdf.blob();
+        if (docBlobUrlAtual) {
+          try { URL.revokeObjectURL(docBlobUrlAtual); } catch {}
+          docBlobUrlAtual = "";
+        }
+        docBlobUrlAtual = URL.createObjectURL(blobPdf);
+        el.frameDocumento.src = docBlobUrlAtual;
+      } catch (err) {
+        el.frameDocumento.style.display = "none";
+        el.btnDownloadDocumento.style.display = "none";
+        el.msgDocumento.style.display = "block";
+        el.msgDocumento.textContent = String(err?.message || "Falha ao abrir documento.");
+        return true;
+      }
+      el.btnDownloadDocumento.href = pdfUrl;
       el.btnDownloadDocumento.setAttribute("download", nomeArquivo);
       return true;
     };
@@ -1490,6 +1507,12 @@
       syncFileListSelected();
       renderHistorico();
     }
+    window.addEventListener("beforeunload", () => {
+      if (docBlobUrlAtual) {
+        try { URL.revokeObjectURL(docBlobUrlAtual); } catch {}
+        docBlobUrlAtual = "";
+      }
+    });
     (async () => {
       redirecionarConsultaQr();
       const emModoDocumento = await abrirModoDocumento();
