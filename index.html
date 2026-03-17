@@ -827,8 +827,7 @@
         const body = await res.json();
         const items = Array.isArray(body?.items) ? body.items : [];
         return items
-          .filter((x) => x && typeof x.path === "string" && x.path.toLowerCase().endsWith(".pdf"))
-          .map((x) => ({ path: x.path, type: "blob" }));
+          .filter((x) => x && typeof x.path === "string" && x.path.toLowerCase().endsWith(".pdf"));
       } catch {
         return [];
       }
