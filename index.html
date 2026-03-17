@@ -765,6 +765,9 @@
       try {
         const alvos = new Set();
         for (const p of pathsBase) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
+        const funcSlugAlvo = slugUrl(String(funcionarioNome || "").trim());
+        const funcNomeAlvo = String(funcionarioNome || "").trim().toLowerCase();
+        const empNomeAlvo = String(empresaNome || "").trim().toLowerCase();
 
         // Reforco: remove tambem PDFs adicionais do funcionario/empresa caso o indice esteja desatualizado.
         let extras = [];
@@ -790,8 +793,17 @@
         const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
         const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
         const itens = Array.isArray(data.items) ? data.items : [];
-        const alvosPdf = new Set(pathsBase.map((p) => normFolder(p)));
-        const filtrados = itens.filter((it) => !alvosPdf.has(normFolder(String(it?.path || ""))));
+        const alvosPdf = new Set([...alvos].map((p) => normFolder(p)).filter((p) => p.toLowerCase().endsWith(".pdf")));
+        const filtrados = itens.filter((it) => {
+          const pathItem = normFolder(String(it?.path || ""));
+          if (alvosPdf.has(pathItem)) return false;
+          const routeFunc = String(it?.route_funcionario || "").trim().toLowerCase();
+          if (funcSlugAlvo && routeFunc && routeFunc === funcSlugAlvo) return false;
+          const funcItem = String(it?.funcionario || "").trim().toLowerCase();
+          const empItem = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
+          if (funcItem && funcItem === funcNomeAlvo && (!empNomeAlvo || empItem === empNomeAlvo)) return false;
+          return true;
+        });
         const payload = {
           updated_at: new Date().toISOString(),
           total: filtrados.length,
@@ -1050,7 +1062,7 @@
           a.target = "_blank";
           a.rel = "noopener";
           a.href = linkConsultaItem(doc);
-          a.textContent = `? ${fileName}`;
+          a.textContent = `Abrir ${fileName}`;
           li.appendChild(a);
           ul.appendChild(li);
         }
