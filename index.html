@@ -149,21 +149,32 @@
     body.document-mode .wrap {
       max-width: none;
       margin: 0;
-      padding: 0;
+      padding: 18px;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    body.document-mode .wrap .panel {
+      display: none !important;
     }
     body.document-mode .panel.doc-view {
+      display: flex !important;
+      flex-direction: column;
+      align-items: center;
+      width: min(1100px, 96vw);
       border: 0;
-      border-radius: 0;
+      border-radius: 14px;
       box-shadow: none;
       margin: 0;
-      padding: 10px;
-      min-height: 100vh;
+      padding: 14px;
+      min-height: 0;
       background: #ffffff;
     }
     .doc-actions {
       display: flex;
-      justify-content: flex-end;
-      margin-bottom: 10px;
+      justify-content: center;
+      margin-top: 12px;
     }
     .doc-download-btn {
       display: inline-block;
@@ -175,13 +186,14 @@
       background: linear-gradient(135deg, var(--brand), var(--brand2));
     }
     .doc-frame {
-      width: 100%;
-      height: calc(100vh - 72px);
+      width: min(980px, 94vw);
+      height: min(78vh, 980px);
       border: 1px solid #d9e2ec;
       border-radius: 10px;
       background: #fff;
     }
     .doc-msg {
+      margin-top: 10px;
       border: 1px dashed var(--line);
       border-radius: 10px;
       background: #f8fbff;
@@ -194,10 +206,10 @@
 <body>
   <div class="wrap">
     <div class="panel doc-view" id="painelDocumento">
+      <iframe id="frameDocumento" class="doc-frame" title="Documento PDF"></iframe>
       <div class="doc-actions">
         <a id="btnDownloadDocumento" class="doc-download-btn" href="#" target="_blank" rel="noopener">Download</a>
       </div>
-      <iframe id="frameDocumento" class="doc-frame" title="Documento PDF"></iframe>
       <div id="msgDocumento" class="doc-msg" style="display:none;"></div>
     </div>
 
