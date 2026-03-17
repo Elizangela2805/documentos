@@ -6540,12 +6540,24 @@ class App(tk.Tk):
                         falhas.append(f"{tipo_doc}: ignorado (carteirinha nao vinculada a NR selecionada)")
                         continue
                 else:
-                    if not self._arquivo_vinculado_nr_documento(caminho_ref):
-                        falhas.append(f"{tipo_doc}: ignorado (sem vinculo com NR selecionada)")
-                        continue
-                    if not self._arquivo_compativel_funcao(caminho_ref, funcao_selecionada):
-                        falhas.append(f"{tipo_doc}: ignorado (sem vinculo com a funcao selecionada)")
-                        continue
+                    if tipo_norm in {"ordem de servico", "ordem de serviço"}:
+                        if not self._arquivo_vinculado_nr_documento(caminho_ref):
+                            falhas.append(f"{tipo_doc}: ignorado (sem vinculo com NR selecionada)")
+                            continue
+                        if not self._arquivo_ordem_servico_compativel_funcao(caminho_ref, funcao_selecionada):
+                            falhas.append(f"{tipo_doc}: ignorado (OS sem vinculo com a funcao selecionada)")
+                            continue
+                    elif tipo_norm == "ficha de epi":
+                        if not self._arquivo_epi_compativel_funcao(caminho_ref, funcao_selecionada):
+                            falhas.append(f"{tipo_doc}: ignorado (EPI sem vinculo com a funcao selecionada)")
+                            continue
+                    else:
+                        if not self._arquivo_vinculado_nr_documento(caminho_ref):
+                            falhas.append(f"{tipo_doc}: ignorado (sem vinculo com NR selecionada)")
+                            continue
+                        if not self._arquivo_compativel_funcao(caminho_ref, funcao_selecionada):
+                            falhas.append(f"{tipo_doc}: ignorado (sem vinculo com a funcao selecionada)")
+                            continue
                 origem = Path(caminho_ref)
                 if not origem.is_absolute():
                     origem = (base_dir / origem).resolve()
@@ -7295,7 +7307,11 @@ class App(tk.Tk):
             return "Fit Test"
         if re.search(r"(^| )aso( |$)", nome_norm):
             return "ASO"
-        if "ficha epi" in nome_norm or (("ficha" in nome_norm) and ("epi" in nome_norm)):
+        if (
+            "ficha epi" in nome_norm
+            or (("ficha" in nome_norm) and ("epi" in nome_norm))
+            or re.search(r"(^| )epi( |$)", nome_norm)
+        ):
             return "Ficha de EPI"
         if "contrato" in nome_norm:
             return "Contrato"
@@ -7434,10 +7450,19 @@ class App(tk.Tk):
                 if not self._arquivo_vinculado_nr_carteirinha(caminho):
                     continue
             else:
-                if not self._arquivo_vinculado_nr_documento(caminho):
-                    continue
-                if not self._arquivo_compativel_funcao(caminho, funcao_selecionada):
-                    continue
+                if tipo_norm in {"ordem de servico", "ordem de serviço"}:
+                    if not self._arquivo_vinculado_nr_documento(caminho):
+                        continue
+                    if not self._arquivo_ordem_servico_compativel_funcao(caminho, funcao_selecionada):
+                        continue
+                elif tipo_norm == "ficha de epi":
+                    if not self._arquivo_epi_compativel_funcao(caminho, funcao_selecionada):
+                        continue
+                else:
+                    if not self._arquivo_vinculado_nr_documento(caminho):
+                        continue
+                    if not self._arquivo_compativel_funcao(caminho, funcao_selecionada):
+                        continue
             disponiveis.append(
                 {
                     "empresa_id": empresa_id_sel,
@@ -7471,6 +7496,37 @@ class App(tk.Tk):
         if any(fn and fn in nome_norm for fn in funcoes_norm):
             return False
         return True
+
+    def _arquivo_ordem_servico_compativel_funcao(self, caminho_arquivo, funcao_selecionada):
+        funcao_norm = self._normalizar_texto_filtro(funcao_selecionada)
+        if not funcao_norm:
+            return False
+        nome_norm = self._normalizar_texto_filtro(Path(str(caminho_arquivo or "")).stem)
+        if not nome_norm:
+            return False
+        if funcao_norm in nome_norm:
+            return True
+
+        tokens_funcao = [tok for tok in funcao_norm.split() if len(tok) >= 4]
+        if tokens_funcao and all(tok in nome_norm for tok in tokens_funcao):
+            return True
+        return False
+
+    def _arquivo_epi_compativel_funcao(self, caminho_arquivo, funcao_selecionada):
+        funcao_norm = self._normalizar_texto_filtro(funcao_selecionada)
+        if not funcao_norm:
+            return False
+        nome_norm = self._normalizar_texto_filtro(Path(str(caminho_arquivo or "")).stem)
+        if not nome_norm:
+            return False
+        if "epi" not in nome_norm:
+            return False
+        if funcao_norm in nome_norm:
+            return True
+        tokens_funcao = [tok for tok in funcao_norm.split() if len(tok) >= 4]
+        if tokens_funcao and all(tok in nome_norm for tok in tokens_funcao):
+            return True
+        return False
 
     def _arquivo_vinculado_funcao(self, caminho_arquivo, funcao_selecionada):
         funcao_norm = self._normalizar_texto_filtro(funcao_selecionada)
@@ -7803,10 +7859,18 @@ class App(tk.Tk):
             if tipo_norm == "carteirinha":
                 vinculado = self._arquivo_vinculado_nr_carteirinha(caminho)
             else:
-                if not self._arquivo_vinculado_nr_documento(caminho):
-                    selecionados_sem_vinculo.append((tipo, caminho))
-                    continue
-                vinculado = self._arquivo_compativel_funcao(caminho, funcao_selecionada)
+                if tipo_norm in {"ordem de servico", "ordem de serviço"}:
+                    if not self._arquivo_vinculado_nr_documento(caminho):
+                        selecionados_sem_vinculo.append((tipo, caminho))
+                        continue
+                    vinculado = self._arquivo_ordem_servico_compativel_funcao(caminho, funcao_selecionada)
+                elif tipo_norm == "ficha de epi":
+                    vinculado = self._arquivo_epi_compativel_funcao(caminho, funcao_selecionada)
+                else:
+                    if not self._arquivo_vinculado_nr_documento(caminho):
+                        selecionados_sem_vinculo.append((tipo, caminho))
+                        continue
+                    vinculado = self._arquivo_compativel_funcao(caminho, funcao_selecionada)
             if vinculado:
                 selecionados_vinculados.append((tipo, caminho))
             else:
