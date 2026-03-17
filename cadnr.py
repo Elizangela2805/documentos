@@ -320,21 +320,85 @@ class CadastroPopup(tk.Toplevel):
         self.transient(master)
         self.grab_set()
         self.columnconfigure(0, weight=1)
+        self._scroll_canvas = None
+        self._scroll_body = None
+        self._scroll_window = None
 
-    def secao(self, texto, row):
-        lbl = ttk.Label(self, text=texto, font=("Segoe UI", 10, "bold"))
+    def habilitar_rolagem(self):
+        if self._scroll_body is not None:
+            return self._scroll_body
+
+        self.rowconfigure(0, weight=1)
+        self.columnconfigure(0, weight=1)
+        canvas = tk.Canvas(self, highlightthickness=0, borderwidth=0)
+        canvas.grid(row=0, column=0, sticky="nsew")
+        barra = ttk.Scrollbar(self, orient="vertical", command=canvas.yview)
+        barra.grid(row=0, column=1, sticky="ns")
+        canvas.configure(yscrollcommand=barra.set)
+
+        body = ttk.Frame(canvas)
+        body.columnconfigure(0, weight=1)
+        window_id = canvas.create_window((0, 0), window=body, anchor="nw")
+
+        def _atualizar_scrollregion(_event=None):
+            canvas.configure(scrollregion=canvas.bbox("all"))
+
+        def _ajustar_largura(_event=None):
+            try:
+                canvas.itemconfigure(window_id, width=canvas.winfo_width())
+            except tk.TclError:
+                pass
+
+        def _wheel(event):
+            delta = int(-1 * (event.delta / 120)) if event.delta else 0
+            if delta:
+                canvas.yview_scroll(delta, "units")
+                return "break"
+            return None
+
+        def _wheel_linux_up(_event):
+            canvas.yview_scroll(-1, "units")
+            return "break"
+
+        def _wheel_linux_down(_event):
+            canvas.yview_scroll(1, "units")
+            return "break"
+
+        body.bind("<Configure>", _atualizar_scrollregion)
+        canvas.bind("<Configure>", _ajustar_largura)
+        canvas.bind("<MouseWheel>", _wheel, add="+")
+        canvas.bind("<Button-4>", _wheel_linux_up, add="+")
+        canvas.bind("<Button-5>", _wheel_linux_down, add="+")
+        body.bind("<MouseWheel>", _wheel, add="+")
+        body.bind("<Button-4>", _wheel_linux_up, add="+")
+        body.bind("<Button-5>", _wheel_linux_down, add="+")
+        self.bind("<MouseWheel>", _wheel, add="+")
+        self.bind("<Button-4>", _wheel_linux_up, add="+")
+        self.bind("<Button-5>", _wheel_linux_down, add="+")
+
+        self._scroll_canvas = canvas
+        self._scroll_body = body
+        self._scroll_window = window_id
+        return body
+
+    def secao(self, texto, row, parent=None):
+        host = parent if parent is not None else self
+        lbl = ttk.Label(host, text=texto, font=("Segoe UI", 10, "bold"))
         lbl.grid(row=row, column=0, sticky="w", padx=12, pady=(10, 4))
 
     def ajustar_tamanho(self):
         self.update_idletasks()
         req_w = self.winfo_reqwidth() + 24
         req_h = self.winfo_reqheight() + 24
+        if self._scroll_body is not None:
+            req_w = max(req_w, self._scroll_body.winfo_reqwidth() + 44)
+            req_h = max(req_h, self._scroll_body.winfo_reqheight() + 28)
         max_w = int(self.winfo_screenwidth() * 0.92)
         max_h = int(self.winfo_screenheight() * 0.9)
         width = min(req_w, max_w)
         height = min(req_h, max_h)
         self.geometry(f"{width}x{height}")
-        self.minsize(max(560, min(req_w, width)), max(420, min(req_h, height)))
+        self.minsize(max(560, min(req_w, width)), 420)
 
 class CalendarioPopup(tk.Toplevel):
     MESES_PT = [
@@ -661,6 +725,9 @@ class App(tk.Tk):
         self._git_auto_commit_lock = threading.Lock()
         self._git_auto_commit_pendentes = set()
         self._git_auto_commit_thread = None
+        self._docs_monitor_after_id = None
+        self._docs_monitor_interval_ms = 3000
+        self._docs_monitor_assinatura = ""
 
         container = ttk.Frame(self, padding=16)
         container.pack(fill="both", expand=True)
@@ -919,6 +986,7 @@ class App(tk.Tk):
         self._atualizar_select_empresas(limpar_nr=False)
         self.after(120, self._pos_inicializacao_pesada)
         self.after(800, self._sincronizar_documentos_salvos_pendentes)
+        self.after(1200, self._monitorar_documentos_projeto)
 
     def _pos_inicializacao_pesada(self):
         alterou_nr = False
@@ -948,13 +1016,48 @@ class App(tk.Tk):
             return None
         return self.main_empresa_ids[idx]
 
+    def _sincronizar_empresa_entre_abas(self, empresa_id, origem="main"):
+        if empresa_id is None:
+            return
+        if origem == "main":
+            if empresa_id in self.imprimir_empresa_ids:
+                idx_imp = self.imprimir_empresa_ids.index(empresa_id)
+                if self.imprimir_select_empresa.current() != idx_imp:
+                    self.imprimir_select_empresa.current(idx_imp)
+                    self._atualizar_imprimir_funcionarios(empresa_id)
+        else:
+            if empresa_id in self.main_empresa_ids:
+                idx_main = self.main_empresa_ids.index(empresa_id)
+                if self.select_empresa.current() != idx_main:
+                    self.select_empresa.current(idx_main)
+                    self._atualizar_select_funcionarios(empresa_id)
+                    self._aplicar_filtro_nr_por_empresa(empresa_id, limpar_nr=False)
+                    self._carregar_outros_documentos_empresa_selecionada()
+
+    def _sincronizar_funcionario_entre_abas(self, funcionario_id, origem="main"):
+        if funcionario_id is None:
+            return
+        if origem == "main":
+            if funcionario_id in self.imprimir_funcionario_ids:
+                idx_imp = self.imprimir_funcionario_ids.index(funcionario_id)
+                if self.imprimir_select_funcionario.current() != idx_imp:
+                    self.imprimir_select_funcionario.current(idx_imp)
+        else:
+            if funcionario_id in self.main_funcionario_ids:
+                idx_main = self.main_funcionario_ids.index(funcionario_id)
+                if self.select_funcionario.current() != idx_main:
+                    self.select_funcionario.current(idx_main)
+                    self._carregar_outros_documentos_empresa_selecionada()
+
     def _on_empresa_main_selected(self, _event=None):
         empresa_id = self._empresa_id_selecionada_main()
         self._atualizar_select_funcionarios(empresa_id)
+        self._sincronizar_empresa_entre_abas(empresa_id, origem="main")
         self._aplicar_filtro_nr_por_empresa(empresa_id)
         self._carregar_outros_documentos_empresa_selecionada()
 
     def _on_funcionario_main_selected(self, _event=None):
+        self._sincronizar_funcionario_entre_abas(self._funcionario_id_selecionado_main(), origem="main")
         self._atualizar_preview_nr()
         self._carregar_outros_documentos_empresa_selecionada()
 
@@ -2376,6 +2479,7 @@ class App(tk.Tk):
             "NOME_DO_FUNCIONARIO_1": str(funcionario.get("nome", "") or "").upper(),
             "NOME_DO_FUNCIONARIO_2": self._title_case_com_excecoes(funcionario.get("nome", "")),
             "CPF": funcionario.get("cpf", ""),
+            "RG1": funcionario.get("rg", ""),
             "RG": funcionario.get("rg", ""),
             "FUNCAO": funcionario.get("funcao", ""),
             "CBO": funcionario.get("cbo", ""),
@@ -3325,6 +3429,12 @@ class App(tk.Tk):
         return self._publicar_arquivo_no_site(caminho, permitir_inexistente=permitir_inexistente)
 
     def _on_app_close(self):
+        try:
+            if self._docs_monitor_after_id is not None:
+                self.after_cancel(self._docs_monitor_after_id)
+                self._docs_monitor_after_id = None
+        except Exception:
+            pass
         self._encerrar_servidor_qr_local()
         self.destroy()
 
@@ -6370,6 +6480,10 @@ class App(tk.Tk):
         chaves = {_chave_outro_documento(item) for item in outros_selecionados}
         adicionou_auto = False
         for item_auto in outros_automaticos:
+            tipo_auto_norm = str(item_auto.get("tipo", "") or "").strip().casefold()
+            # Ordem de Servico e Fit Test so devem entrar quando selecionados manualmente.
+            if tipo_auto_norm in {"ordem de servico", "ordem de serviço", "fit test", "fittest"}:
+                continue
             chave = _chave_outro_documento(item_auto)
             if chave in chaves:
                 continue
@@ -6421,16 +6535,17 @@ class App(tk.Tk):
                 if tipo_norm in {"anuencia", "anuência"} and not nr35_selecionada:
                     falhas.append(f"{tipo_doc}: ignorado (NR 35 nao selecionada)")
                     continue
-                if not self._arquivo_vinculado_nr_documento(caminho_ref):
-                    falhas.append(f"{tipo_doc}: ignorado (sem vinculo com NR selecionada)")
-                    continue
                 if tipo_norm == "carteirinha":
                     if not self._arquivo_vinculado_nr_carteirinha(caminho_ref):
                         falhas.append(f"{tipo_doc}: ignorado (carteirinha nao vinculada a NR selecionada)")
                         continue
-                elif not self._arquivo_compativel_funcao(caminho_ref, funcao_selecionada):
-                    falhas.append(f"{tipo_doc}: ignorado (sem vinculo com a funcao selecionada)")
-                    continue
+                else:
+                    if not self._arquivo_vinculado_nr_documento(caminho_ref):
+                        falhas.append(f"{tipo_doc}: ignorado (sem vinculo com NR selecionada)")
+                        continue
+                    if not self._arquivo_compativel_funcao(caminho_ref, funcao_selecionada):
+                        falhas.append(f"{tipo_doc}: ignorado (sem vinculo com a funcao selecionada)")
+                        continue
                 origem = Path(caminho_ref)
                 if not origem.is_absolute():
                     origem = (base_dir / origem).resolve()
@@ -7141,6 +7256,103 @@ class App(tk.Tk):
 
         return True, ""
 
+    def _iterar_arquivos_documentos_empresa(self, empresa):
+        if not isinstance(empresa, dict):
+            return
+        base_dir = Path(__file__).resolve().parent
+        pastas_vistas = set()
+        for pasta_nome in self._pastas_candidatas_empresa(empresa):
+            if not pasta_nome:
+                continue
+            pasta_empresa = (base_dir / pasta_nome).resolve()
+            if not pasta_empresa.exists() or not pasta_empresa.is_dir():
+                continue
+            chave_pasta = str(pasta_empresa).casefold()
+            if chave_pasta in pastas_vistas:
+                continue
+            pastas_vistas.add(chave_pasta)
+            try:
+                arquivos = sorted(pasta_empresa.iterdir(), key=lambda p: p.name.lower())
+            except OSError:
+                continue
+            for arquivo in arquivos:
+                if not arquivo.is_file():
+                    continue
+                if arquivo.suffix.lower() not in {".docx", ".doc", ".pdf"}:
+                    continue
+                yield base_dir, arquivo
+
+    @staticmethod
+    def _detectar_tipo_outro_documento(nome_arquivo):
+        nome_norm = App._normalizar_texto_filtro(nome_arquivo)
+        if not nome_norm:
+            return ""
+        if "carteirinha" in nome_norm:
+            return "Carteirinha"
+        if "anuencia" in nome_norm:
+            return "Anuencia"
+        if "fit test" in nome_norm or "fittest" in nome_norm or re.search(r"(^| )fit( |$)", nome_norm):
+            return "Fit Test"
+        if re.search(r"(^| )aso( |$)", nome_norm):
+            return "ASO"
+        if "ficha epi" in nome_norm or (("ficha" in nome_norm) and ("epi" in nome_norm)):
+            return "Ficha de EPI"
+        if "contrato" in nome_norm:
+            return "Contrato"
+        if (
+            "ordem de servico" in nome_norm
+            or re.search(r"(^| )os( |$)", nome_norm)
+            or ("os " in nome_norm)
+        ):
+            return "Ordem de Servico"
+        return ""
+
+    def _assinatura_documentos_projeto(self):
+        entradas = []
+        vistos = set()
+        for empresa in self.empresas:
+            if not isinstance(empresa, dict):
+                continue
+            for base_dir, arquivo in self._iterar_arquivos_documentos_empresa(empresa):
+                try:
+                    rel = str(arquivo.relative_to(base_dir)).replace("\\", "/")
+                    chave = rel.casefold()
+                    if chave in vistos:
+                        continue
+                    vistos.add(chave)
+                    stat = arquivo.stat()
+                    entradas.append(f"{chave}|{int(stat.st_mtime)}|{int(stat.st_size)}")
+                except Exception:
+                    continue
+        entradas.sort()
+        return ";".join(entradas)
+
+    def _reaplicar_filtros_documentos(self):
+        empresa_id = self._empresa_id_selecionada_main()
+        if empresa_id is not None:
+            self._aplicar_filtro_nr_por_empresa(empresa_id, limpar_nr=False)
+        else:
+            self._render_campos_nr()
+            self._atualizar_lista_nr_imprimir()
+        self._carregar_outros_documentos_empresa_selecionada()
+        self._atualizar_lista_outros_docs_imprimir()
+
+    def _monitorar_documentos_projeto(self):
+        try:
+            assinatura = self._assinatura_documentos_projeto()
+            if assinatura != self._docs_monitor_assinatura:
+                self._docs_monitor_assinatura = assinatura
+                self._reaplicar_filtros_documentos()
+        except Exception:
+            pass
+        try:
+            self._docs_monitor_after_id = self.after(
+                int(self._docs_monitor_interval_ms),
+                self._monitorar_documentos_projeto,
+            )
+        except Exception:
+            self._docs_monitor_after_id = None
+
     def _construir_aba_outros_documentos(self):
         container = ttk.Frame(self.aba_outros_documentos)
         container.pack(fill="both", expand=True)
@@ -7191,32 +7403,26 @@ class App(tk.Tk):
             None,
         )
         itens_documentos = list(self._listar_arquivos_outros_documentos(documento))
+        caminhos_vistos = set()
+        for _tipo_item, caminho_item in itens_documentos:
+            caminho_norm = self._normalizar_caminho_documento_db(caminho_item)
+            chave = str(caminho_norm or caminho_item or "").strip().replace("\\", "/").casefold()
+            if chave:
+                caminhos_vistos.add(chave)
         if empresa:
-            base_dir = Path(__file__).resolve().parent
-            vistos_carteirinha = {
-                str(caminho or "").strip()
-                for tipo, caminho in itens_documentos
-                if str(tipo or "").strip().casefold() == "carteirinha"
-            }
-            for pasta_nome in self._pastas_candidatas_empresa(empresa):
-                if not pasta_nome:
+            for base_dir, arquivo in self._iterar_arquivos_documentos_empresa(empresa):
+                tipo_auto = self._detectar_tipo_outro_documento(arquivo.stem)
+                if not tipo_auto:
                     continue
-                pasta_empresa = base_dir / pasta_nome
-                if not pasta_empresa.exists() or not pasta_empresa.is_dir():
-                    continue
-                for arquivo in pasta_empresa.iterdir():
-                    if not arquivo.is_file():
-                        continue
-                    if arquivo.suffix.lower() not in {".docx", ".doc", ".pdf"}:
-                        continue
-                    nome_norm = self._normalizar_texto_filtro(arquivo.stem)
-                    if "carteirinha" not in nome_norm or "nr" not in nome_norm:
-                        continue
+                try:
                     caminho_rel = str(arquivo.relative_to(base_dir)).replace("\\", "/")
-                    if caminho_rel in vistos_carteirinha:
-                        continue
-                    itens_documentos.append(("Carteirinha", caminho_rel))
-                    vistos_carteirinha.add(caminho_rel)
+                except ValueError:
+                    continue
+                chave_arquivo = str(caminho_rel).strip().replace("\\", "/").casefold()
+                if not chave_arquivo or chave_arquivo in caminhos_vistos:
+                    continue
+                itens_documentos.append((tipo_auto, caminho_rel))
+                caminhos_vistos.add(chave_arquivo)
         funcao_selecionada = str((funcionario_sel or {}).get("funcao", "") or "").strip()
         nr35_selecionada = self._nr_35_selecionada()
         disponiveis = []
@@ -7224,13 +7430,14 @@ class App(tk.Tk):
             tipo_norm = str(tipo).strip().casefold()
             if tipo_norm in {"anuencia", "anuência"} and not nr35_selecionada:
                 continue
-            if not self._arquivo_vinculado_nr_documento(caminho):
-                continue
             if tipo_norm == "carteirinha":
                 if not self._arquivo_vinculado_nr_carteirinha(caminho):
                     continue
-            elif not self._arquivo_compativel_funcao(caminho, funcao_selecionada):
-                continue
+            else:
+                if not self._arquivo_vinculado_nr_documento(caminho):
+                    continue
+                if not self._arquivo_compativel_funcao(caminho, funcao_selecionada):
+                    continue
             disponiveis.append(
                 {
                     "empresa_id": empresa_id_sel,
@@ -7341,7 +7548,8 @@ class App(tk.Tk):
             return False
         nrs_marcadas = self._nrs_marcadas_cadnr()
         if not nrs_marcadas:
-            return False
+            # Sem NR marcada, ainda exibimos/reconhecemos carteirinhas disponiveis.
+            return True
 
         nr_arq, codigos_arq, cargas_arq = self._dados_nr_para_carteirinha(nome_arquivo)
         if not nr_arq:
@@ -7356,7 +7564,10 @@ class App(tk.Tk):
 
             # Se a NR marcada exige carga horaria, o arquivo deve conter a mesma carga.
             if cargas and not (cargas_arq & cargas):
-                continue
+                # Fallback pragmatico: para subtipos de equipamento (ex.: munck/pr/emp),
+                # se o subtipo bate, aceitamos mesmo com carga diferente no nome.
+                if not (codigos and (codigos_arq & codigos)):
+                    continue
             # Se a NR marcada exige subtipo/codigo, o arquivo deve conter o mesmo subtipo.
             if codigos and not (codigos_arq & codigos):
                 continue
@@ -7589,12 +7800,12 @@ class App(tk.Tk):
         selecionados_sem_vinculo = []
         for tipo, caminho in selecionados:
             tipo_norm = str(tipo or "").strip().casefold()
-            if not self._arquivo_vinculado_nr_documento(caminho):
-                selecionados_sem_vinculo.append((tipo, caminho))
-                continue
             if tipo_norm == "carteirinha":
                 vinculado = self._arquivo_vinculado_nr_carteirinha(caminho)
             else:
+                if not self._arquivo_vinculado_nr_documento(caminho):
+                    selecionados_sem_vinculo.append((tipo, caminho))
+                    continue
                 vinculado = self._arquivo_compativel_funcao(caminho, funcao_selecionada)
             if vinculado:
                 selecionados_vinculados.append((tipo, caminho))
@@ -7662,9 +7873,12 @@ class App(tk.Tk):
         self._atualizar_lista_outros_docs_imprimir()
 
     def _on_empresa_imprimir_selected(self, _event=None):
-        self._atualizar_imprimir_funcionarios(self._empresa_id_selecionada_imprimir())
+        empresa_id = self._empresa_id_selecionada_imprimir()
+        self._atualizar_imprimir_funcionarios(empresa_id)
+        self._sincronizar_empresa_entre_abas(empresa_id, origem="imprimir")
 
     def _on_funcionario_imprimir_selected(self, _event=None):
+        self._sincronizar_funcionario_entre_abas(self._funcionario_id_selecionado_imprimir(), origem="imprimir")
         self._atualizar_preview_nr()
         self._atualizar_lista_nr_imprimir()
 
@@ -7951,11 +8165,13 @@ class App(tk.Tk):
 
         popup = CadastroPopup(self, "Editar Funcionario")
         popup.columnconfigure(0, weight=1)
+        form_parent = popup.habilitar_rolagem()
+        form_parent.columnconfigure(0, weight=1)
 
         r = 0
-        popup.secao("Nome da Pasta", r)
+        popup.secao("Nome da Pasta", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nome da Pasta:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -7977,9 +8193,9 @@ class App(tk.Tk):
                     nome_pasta.set(nome_pasta_fallback)
 
         r += 1
-        popup.secao("Nome do Funcionario", r)
+        popup.secao("Nome do Funcionario", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nome:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8016,9 +8232,9 @@ class App(tk.Tk):
         nome.insert(0, funcionario.get("nome", ""))
 
         r += 1
-        popup.secao("Insira o nº do CPF", r)
+        popup.secao("Insira o nº do CPF", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="CPF:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8028,9 +8244,9 @@ class App(tk.Tk):
         self._bind_mask(cpf, mascara_cpf)
 
         r += 1
-        popup.secao("Insira o nº do RG", r)
+        popup.secao("Insira o nº do RG", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="RG:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8039,9 +8255,9 @@ class App(tk.Tk):
         rg.insert(0, funcionario.get("rg", ""))
 
         r += 1
-        popup.secao("Insira a data de nascimento", r)
+        popup.secao("Insira a data de nascimento", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nascimento:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8055,9 +8271,9 @@ class App(tk.Tk):
         self._attach_calendar(f, nascimento)
 
         r += 1
-        popup.secao("nº do celular", r)
+        popup.secao("nº do celular", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Contato:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8067,14 +8283,14 @@ class App(tk.Tk):
         self._bind_mask(celular, mascara_celular)
 
         r += 1
-        popup.secao("Endereco do Funcionario", r)
+        popup.secao("Endereco do Funcionario", r, parent=form_parent)
         r += 1
-        tipo_log, nome_log = self._linha_logradouro(popup, r)
+        tipo_log, nome_log = self._linha_logradouro(form_parent, r)
         tipo_log.set(funcionario.get("logradouro_tipo", ""))
         nome_log.insert(0, funcionario.get("logradouro_nome", ""))
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12, pady=2)
         f.columnconfigure(1, weight=1)
         f.columnconfigure(3, weight=1)
@@ -8088,7 +8304,7 @@ class App(tk.Tk):
         complemento.insert(0, funcionario.get("complemento", ""))
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12, pady=2)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Bairro:").grid(row=0, column=0, sticky="w", padx=(0, 6))
@@ -8097,7 +8313,7 @@ class App(tk.Tk):
         bairro.insert(0, funcionario.get("bairro", ""))
 
         r += 1
-        uf, cidade = self._combo_uf_cidade(popup, r)
+        uf, cidade = self._combo_uf_cidade(form_parent, r)
         uf_inicial = funcionario.get("uf", "")
         cidade_inicial = funcionario.get("cidade", "")
         if uf_inicial:
@@ -8107,9 +8323,9 @@ class App(tk.Tk):
                 cidade.set(cidade_inicial)
 
         r += 1
-        popup.secao("Selecione a data de admissão", r)
+        popup.secao("Selecione a data de admissão", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Admissão:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8123,9 +8339,9 @@ class App(tk.Tk):
         self._attach_calendar(f, admissao)
 
         r += 1
-        popup.secao("Selecione o cargo do funcionario", r)
+        popup.secao("Selecione o cargo do funcionario", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Função:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8136,7 +8352,7 @@ class App(tk.Tk):
             funcao.set(funcao_inicial)
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="CBO:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8152,9 +8368,9 @@ class App(tk.Tk):
             cbo_var.set(FUNCOES_CBO.get(funcao.get(), ""))
 
         r += 1
-        popup.secao("Insira o valor do salário", r)
+        popup.secao("Insira o valor do salário", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Salário:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -8165,11 +8381,8 @@ class App(tk.Tk):
         self._bind_mask(salario, mascara_moeda_br)
 
         r += 1
-        rodape = ttk.Frame(popup, height=56)
-        rodape.grid(row=r, column=0, sticky="ew", padx=12)
-        rodape.grid_propagate(False)
-        botoes = ttk.Frame(popup)
-        botoes.place(relx=1.0, rely=1.0, anchor="se", x=-12, y=-12)
+        botoes = ttk.Frame(form_parent)
+        botoes.grid(row=r, column=0, sticky="e", padx=12, pady=18)
 
         def salvar():
             novo_nome = nome.get().strip()
@@ -9104,27 +9317,6 @@ class App(tk.Tk):
         btn_salvar_doc = ttk.Button(f_salvar_doc, text="Salvar")
         btn_salvar_doc.grid(row=0, column=1, sticky="e")
 
-        def _normalizar_tipo_documento(nome):
-            texto = unicodedata.normalize("NFD", str(nome or ""))
-            texto = "".join(ch for ch in texto if unicodedata.category(ch) != "Mn")
-            return re.sub(r"[^a-z0-9]", "", texto.lower())
-
-        tipos_normalizados = {
-            _normalizar_tipo_documento(tipo): tipo for tipo in OUTROS_DOCUMENTOS_TIPOS
-        }
-
-        def _detectar_tipo_outro_documento(nome_arquivo):
-            nome_norm = _normalizar_tipo_documento(nome_arquivo)
-            if not nome_norm:
-                return ""
-            for chave, tipo in tipos_normalizados.items():
-                if chave and chave in nome_norm:
-                    return tipo
-            # Alias comuns para arquivos de Ordem de Servico.
-            if "ordemdeservico" in nome_norm or re.search(r"(^|[^a-z])os([^a-z]|$)", nome_arquivo.lower()):
-                return "Ordem de Servico"
-            return ""
-
         r += 1
         popup.secao("Atualizar NR", r)
         r += 1
@@ -9451,7 +9643,7 @@ class App(tk.Tk):
             arquivo_salvo_rel = ""
 
             if arquivo_cert:
-                tipo_outro_detectado = _detectar_tipo_outro_documento(Path(arquivo_cert).stem)
+                tipo_outro_detectado = self._detectar_tipo_outro_documento(Path(arquivo_cert).stem)
                 tipo_para_registro = tipo_outro_detectado or "Certificado"
                 try:
                     arquivo_salvo_rel = self._salvar_documento_no_projeto(
@@ -9577,11 +9769,13 @@ class App(tk.Tk):
 
         popup = CadastroPopup(self, "Cadastro de Funcionario")
         popup.columnconfigure(0, weight=1)
+        form_parent = popup.habilitar_rolagem()
+        form_parent.columnconfigure(0, weight=1)
 
         r = 0
-        popup.secao("Nome da Pasta", r)
+        popup.secao("Nome da Pasta", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nome da Pasta:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9602,9 +9796,9 @@ class App(tk.Tk):
             nome_pasta.current(0)
 
         r += 1
-        popup.secao("Nome do Funcionario", r)
+        popup.secao("Nome do Funcionario", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nome:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9635,9 +9829,9 @@ class App(tk.Tk):
         )
 
         r += 1
-        popup.secao("Insira o nº do CPF", r)
+        popup.secao("Insira o nº do CPF", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="CPF:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9646,9 +9840,9 @@ class App(tk.Tk):
         self._bind_mask(cpf, mascara_cpf)
 
         r += 1
-        popup.secao("Insira o nº do RG", r)
+        popup.secao("Insira o nº do RG", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="RG:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9656,9 +9850,9 @@ class App(tk.Tk):
         rg.grid(row=0, column=1, sticky="ew")
 
         r += 1
-        popup.secao("Insira a data de nascimento", r)
+        popup.secao("Insira a data de nascimento", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Nascimento:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9669,9 +9863,9 @@ class App(tk.Tk):
         self._attach_calendar(f, nascimento)
 
         r += 1
-        popup.secao("nº do celular", r)
+        popup.secao("nº do celular", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Contato:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9680,12 +9874,12 @@ class App(tk.Tk):
         self._bind_mask(celular, mascara_celular)
 
         r += 1
-        popup.secao("Endereco do Funcionario", r)
+        popup.secao("Endereco do Funcionario", r, parent=form_parent)
         r += 1
-        tipo_log, nome_log = self._linha_logradouro(popup, r)
+        tipo_log, nome_log = self._linha_logradouro(form_parent, r)
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12, pady=2)
         f.columnconfigure(1, weight=1)
         f.columnconfigure(3, weight=1)
@@ -9697,7 +9891,7 @@ class App(tk.Tk):
         complemento.grid(row=0, column=3, sticky="ew")
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12, pady=2)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Bairro:").grid(row=0, column=0, sticky="w", padx=(0, 6))
@@ -9705,12 +9899,12 @@ class App(tk.Tk):
         bairro.grid(row=0, column=1, sticky="ew")
 
         r += 1
-        uf, cidade = self._combo_uf_cidade(popup, r)
+        uf, cidade = self._combo_uf_cidade(form_parent, r)
 
         r += 1
-        popup.secao("Selecione a data de admissão", r)
+        popup.secao("Selecione a data de admissão", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Admissão:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9721,9 +9915,9 @@ class App(tk.Tk):
         self._attach_calendar(f, admissao)
 
         r += 1
-        popup.secao("Selecione o cargo do funcionario", r)
+        popup.secao("Selecione o cargo do funcionario", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Função:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9731,7 +9925,7 @@ class App(tk.Tk):
         funcao.grid(row=0, column=1, sticky="ew")
 
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="CBO:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9745,9 +9939,9 @@ class App(tk.Tk):
         funcao.bind("<<ComboboxSelected>>", atualizar_cbo)
 
         r += 1
-        popup.secao("Insira o valor do salário", r)
+        popup.secao("Insira o valor do salário", r, parent=form_parent)
         r += 1
-        f = ttk.Frame(popup)
+        f = ttk.Frame(form_parent)
         f.grid(row=r, column=0, sticky="ew", padx=12)
         f.columnconfigure(1, weight=1)
         ttk.Label(f, text="Salário:").grid(row=0, column=0, sticky="w", padx=(0, 8))
@@ -9757,7 +9951,7 @@ class App(tk.Tk):
         self._bind_mask(salario, mascara_moeda_br)
 
         r += 1
-        botoes = ttk.Frame(popup)
+        botoes = ttk.Frame(form_parent)
         botoes.grid(row=r, column=0, sticky="e", padx=12, pady=18)
 
         def salvar():

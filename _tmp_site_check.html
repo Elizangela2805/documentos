@@ -39,58 +39,6 @@
     }
     h1 { margin: 0 0 8px; font-size: 1.5rem; }
     p { margin: 0 0 10px; color: var(--muted); }
-    .site-header {
-      background: #ffffff;
-      border: 1px solid #d9e2ec;
-      border-radius: 12px;
-      padding: 12px 16px;
-      margin-bottom: 12px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      position: relative;
-    }
-    .site-header::before,
-    .site-header::after {
-      content: "";
-      position: absolute;
-      left: 12px;
-      right: 12px;
-      border-top: 2px solid #d9e2ec;
-    }
-    .site-header::before { top: 8px; }
-    .site-header::after { bottom: 8px; }
-    .brand-logo {
-      width: 230px;
-      height: 92px;
-      border-radius: 0;
-      border: 0;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: 800;
-      color: #0f4c81;
-      background: transparent;
-      flex: 0 0 auto;
-      object-fit: contain;
-      z-index: 1;
-    }
-    .brand-lines {
-      border-left: 3px solid #d9e2ec;
-      padding-left: 12px;
-      line-height: 1.2;
-      z-index: 1;
-    }
-    .brand-main {
-      font-size: 1.45rem;
-      font-weight: 800;
-      letter-spacing: 0.01em;
-    }
-    .brand-sub {
-      font-size: 1rem;
-      color: #35506b;
-      font-weight: 700;
-    }
     .grid {
       display: grid;
       grid-template-columns: repeat(3, minmax(180px, 1fr));
@@ -175,7 +123,7 @@
     }
     .funcionario-item summary::-webkit-details-marker { display: none; }
     .funcionario-item summary::before {
-      content: "?";
+      content: "▶";
       display: inline-block;
       margin-right: 8px;
       transition: transform .15s ease;
@@ -193,118 +141,11 @@
     .funcionario-docs li { margin: 4px 0; }
     .admin-panel { display: none; }
     .admin-panel.is-admin { display: block; }
-    .doc-view { display: none; }
-    .doc-view.is-active { display: block; }
-    body.document-mode {
-      background: #ffffff;
-    }
-    body.document-mode .wrap {
-      max-width: none;
-      margin: 0;
-      padding: 18px;
-      min-height: 100vh;
-      display: block;
-    }
-    body.document-mode .wrap .panel {
-      display: none !important;
-    }
-    body.document-mode .panel.doc-view {
-      display: flex !important;
-      flex-direction: column;
-      align-items: center;
-      width: min(1100px, 96vw);
-      border: 0;
-      border-radius: 14px;
-      box-shadow: none;
-      margin: 0;
-      padding: 14px;
-      min-height: 0;
-      background: #ffffff;
-      margin: 0 auto;
-    }
-    .doc-actions {
-      display: flex;
-      justify-content: center;
-      margin-top: 12px;
-    }
-    .doc-download-btn {
-      display: inline-block;
-      text-decoration: none;
-      color: #fff;
-      border-radius: 9px;
-      padding: 10px 16px;
-      font-weight: 700;
-      background: linear-gradient(135deg, var(--brand), var(--brand2));
-    }
-    .doc-frame {
-      width: min(980px, 94vw);
-      height: min(78vh, 980px);
-      border: 1px solid #d9e2ec;
-      border-radius: 10px;
-      background: #fff;
-    }
-    .doc-msg {
-      margin-top: 10px;
-      border: 1px dashed var(--line);
-      border-radius: 10px;
-      background: #f8fbff;
-      color: #334e68;
-      padding: 14px;
-    }
-    .empresa-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
-      gap: 12px;
-    }
-    .empresa-card {
-      display: block;
-      text-decoration: none;
-      color: var(--ink);
-      border: 1px solid #d9e2ec;
-      border-radius: 12px;
-      background: #f8fbff;
-      padding: 16px 14px;
-      font-weight: 800;
-      text-align: center;
-    }
-    .empresa-card:hover {
-      border-color: #89bce5;
-      background: #eef7ff;
-    }
-    .empresa-back {
-      display: inline-block;
-      margin-bottom: 10px;
-      text-decoration: none;
-      color: #0f4c81;
-      font-weight: 700;
-    }
     @media (max-width: 900px) { .grid { grid-template-columns: 1fr; } }
-    @media (max-width: 700px) {
-      .site-header { gap: 10px; padding: 10px 12px; }
-      .brand-logo { width: 150px; height: 64px; }
-      .brand-main { font-size: 1.2rem; }
-      .brand-sub { font-size: .92rem; }
-    }
   </style>
 </head>
 <body>
   <div class="wrap">
-    <div class="site-header" id="siteHeader">
-      <img class="brand-logo" id="brandLogo" src="./_logos_empresas/1_Projetta.png" alt="Logo Projetta" />
-      <div class="brand-lines">
-        <div class="brand-main">Sistema de Consulta</div>
-        <div class="brand-sub">Projetta Engenharia</div>
-      </div>
-    </div>
-
-    <div class="panel doc-view" id="painelDocumento">
-      <iframe id="frameDocumento" class="doc-frame" title="Documento PDF"></iframe>
-      <div class="doc-actions">
-        <a id="btnDownloadDocumento" class="doc-download-btn" href="#" target="_blank" rel="noopener">Download</a>
-      </div>
-      <div id="msgDocumento" class="doc-msg" style="display:none;"></div>
-    </div>
-
     <div class="panel admin-panel" id="painelAdmin">
       <h1>Projetta - Upload de PDF e Conferencia por QR Code</h1>
       <p>Publique os PDFs gerados no site, gere QR automaticamente e obtenha links para consulta dos documentos.</p>
@@ -365,7 +206,7 @@
     </div>
 
     <div class="panel">
-      <h2 id="tituloLista" style="margin:0;font-size:1.1rem;">Funcionarios e documentos emitidos</h2>
+      <h2 style="margin:0;font-size:1.1rem;">Funcionarios e documentos emitidos</h2>
       <div id="listaFuncionarios" class="funcionarios-list">
         <div class="small">Nenhum documento carregado ainda.</div>
       </div>
@@ -400,8 +241,6 @@
       const pHist = document.getElementById("painelHistorico");
       if (pAdmin) pAdmin.classList.add("is-admin");
       if (pHist) pHist.classList.add("is-admin");
-      const header = document.getElementById("siteHeader");
-      if (header) header.style.display = "none";
     }
 
     const el = {
@@ -424,15 +263,6 @@
       status: document.getElementById("status"),
       listaFuncionarios: document.getElementById("listaFuncionarios"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
-      painelDocumento: document.getElementById("painelDocumento"),
-      btnDownloadDocumento: document.getElementById("btnDownloadDocumento"),
-      frameDocumento: document.getElementById("frameDocumento"),
-      msgDocumento: document.getElementById("msgDocumento"),
-      painelAdmin: document.getElementById("painelAdmin"),
-      painelHistorico: document.getElementById("painelHistorico"),
-      siteHeader: document.getElementById("siteHeader"),
-      brandLogo: document.getElementById("brandLogo"),
-      tituloLista: document.getElementById("tituloLista"),
     };
 
     const DB_NAME = "projetta_pdf_db";
@@ -442,90 +272,12 @@
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
     const normFolder = (s) => String(s || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
-    const slugUrl = (s) => String(s || "")
-      .normalize("NFD")
-      .replace(/[\u0300-\u036f]/g, "")
-      .toLowerCase()
-      .replace(/[^a-z0-9]+/g, "");
-    const dataHojeDdMmAaaa = () => {
-      const d = new Date();
-      const dd = String(d.getDate()).padStart(2, "0");
-      const mm = String(d.getMonth() + 1).padStart(2, "0");
-      const yyyy = String(d.getFullYear());
-      return `${dd}${mm}${yyyy}`;
-    };
-    const extrairDataSlug = (path) => {
-      const texto = String(path || "");
-      let m = texto.match(/(?:^|[^0-9])([0-3][0-9])[-_/]?([01][0-9])[-_/]?([0-9]{4})(?:[^0-9]|$)/);
-      if (m) return `${m[1]}${m[2]}${m[3]}`;
-      m = texto.match(/(?:^|[^0-9])([0-9]{4})[-_/]?([01][0-9])[-_/]?([0-3][0-9])(?:[^0-9]|$)/);
-      if (m) return `${m[3]}${m[2]}${m[1]}`;
-      return dataHojeDdMmAaaa();
-    };
-    const extrairDocumentoSlug = (path) => {
-      const p = normFolder(path);
-      const nomeArq = p.split("/").pop() || "";
-      const stem = nomeArq.replace(/\.pdf$/i, "");
-      const stemNorm = String(stem || "")
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase();
-      const mNr = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b/);
-      if (mNr) {
-        const num = String(mNr[1] || "");
-        const suf = String(mNr[2] || "");
-        return `nr${num}${suf === "pta" ? "pta" : ""}`;
-      }
-      return slugUrl(stem) || "documento";
-    };
-    const extrairFuncionarioSlug = (path) => {
-      const p = normFolder(path);
-      const partes = p.split("/").filter(Boolean);
-      if (!partes.length) return "funcionario";
-      const semArquivo = /\.pdf$/i.test(partes[partes.length - 1]) ? partes.slice(0, -1) : partes.slice();
-      let dirs = semArquivo.slice();
-      if (dirs[0] && dirs[0].toLowerCase() === "_pdf_gerados") dirs = dirs.slice(1);
-      for (const parte of dirs) {
-        const t = String(parte || "").trim();
-        if (!t || t.toLowerCase() === "_qrcodes") continue;
-        if (/^[0-9]{8}$/.test(t)) continue;
-        if (/^[0-9]{4}[-_/][0-9]{2}[-_/][0-9]{2}$/.test(t)) continue;
-        const slug = slugUrl(t);
-        if (slug) return slug;
-      }
-      if (dirs.length) {
-        const slugUltimo = slugUrl(dirs[dirs.length - 1]);
-        if (slugUltimo) return slugUltimo;
-      }
-      return "funcionario";
-    };
     const branchEsc = (branch) => encodeURIComponent(branch);
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
-    const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco"];
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
-    const obterOwnerRepoBranch = () => ({
-      owner: el.owner?.value?.trim() || "Elizangela2805",
-      repo: el.repo?.value?.trim() || "documentos",
-      branch: el.branch?.value?.trim() || "main",
-    });
-    const consultaUrl = (path) => {
-      const p = normFolder(path);
-      if (!p) return `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
-      const funcionario = encodeURIComponent(extrairFuncionarioSlug(p));
-      const documento = encodeURIComponent(extrairDocumentoSlug(p));
-      const dataRef = encodeURIComponent(extrairDataSlug(p));
-      return `${PAGES_BASE_FIXED}/${funcionario}/${documento}/${dataRef}`;
-    };
-    const linkPublicoPdf = (_owner, _repo, _branch, path) => consultaUrl(path);
-    const linkConsultaItem = (item) => {
-      const consulta = String(item?.consulta || "").trim();
-      if (consulta) return consulta;
-      const route = String(item?.route || "").trim();
-      if (route) return `${PAGES_BASE_FIXED}/${route.replace(/^\/+/, "")}`;
-      return linkPublicoPdf("", "", "", String(item?.path || ""));
-    };
+    const consultaUrl = (path) => `${PAGES_BASE_FIXED}/index.html?pdf=${encodeURIComponent(normFolder(path))}`;
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
@@ -694,17 +446,14 @@
       const now = new Date().toISOString();
       const payload = {
         updated_at: now,
-        total: 0,
-        items: items
-          .map((it) => ({
-            path: it.path,
-            nome: (it.path || "").split("/").pop(),
-            funcionario: extrairFuncionarioDoPath(it.path, it),
-            consulta: consultaUrl(it.path),
-          }))
-          .filter((it) => !isGrupoFuncionarioInvalido(it.funcionario)),
+        total: items.length,
+        items: items.map((it) => ({
+          path: it.path,
+          nome: (it.path || "").split("/").pop(),
+          funcionario: extrairFuncionarioDoPath(it.path),
+          consulta: consultaUrl(it.path),
+        })),
       };
-      payload.total = payload.items.length;
       await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, "Atualiza indice de documentos");
     };
 
@@ -731,83 +480,6 @@
       await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, `Atualiza indice apos exclusao de ${funcionarioNome}`);
     };
 
-    const caminhosRelacionadosAoPdf = (pdfPath) => {
-      const p = normFolder(pdfPath);
-      if (!p || !p.toLowerCase().endsWith(".pdf")) return [];
-      const partes = p.split("/").filter(Boolean);
-      const nomePdf = partes[partes.length - 1];
-      const stem = nomePdf.replace(/\.pdf$/i, "");
-      const dir = partes.slice(0, -1).join("/");
-      const raiz = partes.length ? partes[0] : "";
-      const out = new Set([p]);
-      if (dir) out.add(`${dir}/_qrcodes/${stem}_qrcode.png`);
-      if (dir) out.add(`${dir}/${stem}_qrcode.png`);
-      if (raiz) out.add(`${raiz}/_qrcodes/${stem}_qrcode.png`);
-      return [...out];
-    };
-
-    const excluirFuncionarioPublico = async (empresaNome, funcionarioNome, docs, btnRef = null) => {
-      const pathsBase = (Array.isArray(docs) ? docs : [])
-        .map((d) => normFolder(String(d?.path || "")))
-        .filter((p) => p && p.toLowerCase().endsWith(".pdf"));
-      if (!pathsBase.length) {
-        window.alert("Nenhum documento encontrado para exclusao.");
-        return;
-      }
-      const { owner, repo, branch, token } = obterConfigEscrita();
-      if (!owner || !repo || !token) {
-        window.alert("Informe owner, repositorio e token para excluir.");
-        return;
-      }
-      const ok = window.confirm(`Excluir definitivamente ${funcionarioNome} da empresa ${empresaNome}?`);
-      if (!ok) return;
-      if (btnRef) btnRef.disabled = true;
-      try {
-        const alvos = new Set();
-        for (const p of pathsBase) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
-
-        // Reforco: remove tambem PDFs adicionais do funcionario/empresa caso o indice esteja desatualizado.
-        let extras = [];
-        try {
-          const todos = await listRepoPdfs(owner, repo, branch, normFolder(el.folder.value), token);
-          extras = todos.filter((it) => {
-            const func = String(extrairFuncionarioDoPath(it.path, it) || "").trim().toLowerCase();
-            const emp = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
-            return func === String(funcionarioNome || "").trim().toLowerCase()
-              && emp === String(empresaNome || "").trim().toLowerCase();
-          }).map((it) => normFolder(it.path));
-        } catch {}
-        for (const p of extras) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
-
-        for (const alvo of [...alvos]) {
-          try {
-            await githubDeleteFile(owner, repo, branch, alvo, token, `Excluir documentos de ${funcionarioNome}`);
-          } catch (err) {
-            if (!String(err?.message || "").includes(" 404 ")) throw err;
-          }
-        }
-
-        const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
-        const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
-        const itens = Array.isArray(data.items) ? data.items : [];
-        const alvosPdf = new Set(pathsBase.map((p) => normFolder(p)));
-        const filtrados = itens.filter((it) => !alvosPdf.has(normFolder(String(it?.path || ""))));
-        const payload = {
-          updated_at: new Date().toISOString(),
-          total: filtrados.length,
-          items: filtrados,
-        };
-        await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, `Atualiza indice apos exclusao de ${funcionarioNome}`);
-
-        await atualizarLista();
-        window.alert(`Funcionario ${funcionarioNome} excluido com sucesso.`);
-      } catch (err) {
-        window.alert(String(err?.message || err || "Falha ao excluir funcionario."));
-      } finally {
-        if (btnRef) btnRef.disabled = false;
-      }
-    };
-
     const carregarIndicePublico = async () => {
       try {
         const res = await fetch(pagesUrl("", "", REPO_INDEX_PATH), { cache: "no-cache" });
@@ -817,17 +489,6 @@
         return items
           .filter((x) => x && typeof x.path === "string" && x.path.toLowerCase().endsWith(".pdf"))
           .map((x) => ({ path: x.path, type: "blob" }));
-      } catch {
-        return [];
-      }
-    };
-
-    const carregarIndicePublicoBruto = async () => {
-      try {
-        const res = await fetch(pagesUrl("", "", REPO_INDEX_PATH), { cache: "no-cache" });
-        if (!res.ok) return [];
-        const body = await res.json();
-        return Array.isArray(body?.items) ? body.items : [];
       } catch {
         return [];
       }
@@ -904,58 +565,13 @@
       return all.filter((i) => i.path.toLowerCase().endsWith(".pdf"));
     };
 
-    const isGrupoFuncionarioInvalido = (nome) => {
-      const n = String(nome || "").trim().toLowerCase();
-      return !n || n === "sem pasta" || n === "_pdf_gerados" || n === "_qrcodes";
-    };
-
-    const inferirFuncionarioDoNomeArquivo = (path, nomeHint = "") => {
-      const nomeArquivo = String(nomeHint || normFolder(path).split("/").pop() || "").replace(/\.pdf$/i, "").trim();
-      if (!nomeArquivo) return "";
-      const aposParenteses = nomeArquivo.split(")").pop()?.trim() || "";
-      const candidato1 = aposParenteses || nomeArquivo;
-      const m1 = candidato1.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
-      if (m1 && m1[1]) return String(m1[1]).trim();
-      const m2 = nomeArquivo.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
-      if (m2 && m2[1]) return String(m2[1]).trim();
-      return "";
-    };
-
-    const slugEmpresa = (nome) => slugUrl(String(nome || "").trim());
-
-    const extrairEmpresaDoItem = (it) => {
-      const empItem = String(it?.empresa || "").trim();
-      if (empItem) return empItem;
-      const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").replace(/\.pdf$/i, "");
-      const mParen = nomeArq.match(/\(([^)]+)\)/g);
-      if (mParen && mParen.length) {
-        const ultima = String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim();
-        if (ultima) return ultima;
-      }
-      return "Projetta";
-    };
-
-    const extrairFuncionarioDoPath = (path, item = null) => {
-      const nomeItem = String(item?.funcionario || "").trim();
-      if (!isGrupoFuncionarioInvalido(nomeItem)) return nomeItem;
+    const extrairFuncionarioDoPath = (path) => {
       const root = normFolder(el.folder.value);
-      const pathNorm = normFolder(path);
-      const rel = root && pathNorm.startsWith(`${root}/`)
-        ? pathNorm.slice(root.length + 1)
-        : pathNorm;
-      let partes = rel.split("/").filter(Boolean);
-      if (partes.length && partes[0].toLowerCase() === "_pdf_gerados") partes = partes.slice(1);
-      for (const p of partes) {
-        const t = String(p || "").trim();
-        if (!t) continue;
-        if (/\.pdf$/i.test(t)) continue;
-        if (t.toLowerCase() === "_qrcodes") continue;
-        if (/^\d{8}$/.test(t)) continue;
-        if (/^\d{4}[-_/]\d{2}[-_/]\d{2}$/.test(t)) continue;
-        if (isGrupoFuncionarioInvalido(t)) continue;
-        return t;
-      }
-      return inferirFuncionarioDoNomeArquivo(path, String(item?.nome || ""));
+      const rel = root && String(path || "").startsWith(`${root}/`)
+        ? String(path || "").slice(root.length + 1)
+        : String(path || "");
+      const partes = rel.split("/");
+      return partes.length > 1 ? partes[0] : "Sem pasta";
     };
 
     const obterConfigEscrita = () => {
@@ -978,14 +594,9 @@
       const root = normFolder(el.folder.value);
       const grupos = new Map();
       for (const it of items) {
-        const funcionario = extrairFuncionarioDoPath(it.path, it);
-        if (isGrupoFuncionarioInvalido(funcionario)) continue;
+        const funcionario = extrairFuncionarioDoPath(it.path);
         if (!grupos.has(funcionario)) grupos.set(funcionario, []);
         grupos.get(funcionario).push(it);
-      }
-      if (!grupos.size) {
-        el.listaFuncionarios.innerHTML = `<div class="small">Nenhum PDF encontrado na pasta configurada.</div>`;
-        return;
       }
       const nomes = [...grupos.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
       el.listaFuncionarios.innerHTML = "";
@@ -1018,7 +629,22 @@
           if (!ok) return;
           btnExcluirFunc.disabled = true;
           try {
-            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
+            let files = [];
+            if (nome === "Sem pasta") {
+              const extras = [];
+              for (const d of docs) {
+                const p = normFolder(d.path);
+                extras.push({ path: p, type: "blob" });
+                const base = p.replace(/\.pdf$/i, "");
+                const qr1 = `${root}/_qrcodes/${base.split("/").pop()}_qrcode.png`;
+                extras.push({ path: normFolder(qr1), type: "blob" });
+              }
+              const unicos = new Map();
+              for (const f of extras) unicos.set(normFolder(f.path), { path: normFolder(f.path), type: "blob" });
+              files = [...unicos.values()];
+            } else {
+              files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
+            }
             if (!files.length) {
               log(`Nenhum arquivo encontrado para ${nome}.`);
               return;
@@ -1049,8 +675,8 @@
           a.className = "muted-link";
           a.target = "_blank";
           a.rel = "noopener";
-          a.href = linkConsultaItem(doc);
-          a.textContent = `? ${fileName}`;
+          a.href = consultaUrl(doc.path);
+          a.textContent = `↗ ${fileName}`;
           li.appendChild(a);
           ul.appendChild(li);
         }
@@ -1058,118 +684,6 @@
         details.appendChild(body);
         el.listaFuncionarios.appendChild(details);
       }
-    };
-
-    const construirCatalogoEmpresas = (items) => {
-      const catalogo = new Map();
-      for (const nomePadrao of EMPRESAS_PADRAO) {
-        const slug = slugEmpresa(nomePadrao);
-        if (slug && !catalogo.has(slug)) {
-          catalogo.set(slug, { nome: nomePadrao, funcionarios: new Map() });
-        }
-      }
-      for (const it of items) {
-        const funcionario = extrairFuncionarioDoPath(it.path, it);
-        if (isGrupoFuncionarioInvalido(funcionario)) continue;
-        const empresa = extrairEmpresaDoItem(it);
-        const empSlug = slugEmpresa(empresa);
-        if (!empSlug) continue;
-        if (!catalogo.has(empSlug)) {
-          catalogo.set(empSlug, { nome: empresa, funcionarios: new Map() });
-        }
-        const grupoEmp = catalogo.get(empSlug);
-        if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
-        grupoEmp.funcionarios.get(funcionario).push(it);
-      }
-      return catalogo;
-    };
-
-    const renderHomeEmpresas = (catalogo) => {
-      const empresas = [...catalogo.entries()]
-        .map(([slug, data]) => ({ slug, nome: data.nome }))
-        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-      el.tituloLista.textContent = "Empresas";
-      if (!empresas.length) {
-        el.listaFuncionarios.innerHTML = `<div class="small">Nenhuma empresa encontrada.</div>`;
-        return;
-      }
-      el.listaFuncionarios.innerHTML = `<div class="empresa-grid">${
-        empresas.map((e) => `<a class="empresa-card" href="?empresa=${encodeURIComponent(e.slug)}">${e.nome}</a>`).join("")
-      }</div>`;
-    };
-
-    const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
-      const grupoEmp = catalogo.get(empresaSlug);
-      if (!grupoEmp) {
-        el.tituloLista.textContent = "Empresas";
-        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
-        return;
-      }
-      el.tituloLista.textContent = grupoEmp.nome.toUpperCase();
-      const funcionarios = [...grupoEmp.funcionarios.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
-      if (!funcionarios.length) {
-        el.listaFuncionarios.innerHTML = `<a class="empresa-back" href="./">? Voltar para empresas</a><div class="small">Nenhum documento disponivel para esta empresa.</div>`;
-        return;
-      }
-      el.listaFuncionarios.innerHTML = "";
-      const voltar = document.createElement("a");
-      voltar.className = "empresa-back";
-      voltar.href = "./";
-      voltar.textContent = "? Voltar para empresas";
-      el.listaFuncionarios.appendChild(voltar);
-
-      for (const nome of funcionarios) {
-        const docs = (grupoEmp.funcionarios.get(nome) || []).slice().sort((a, b) => String(a.path || "").localeCompare(String(b.path || ""), "pt-BR"));
-        const details = document.createElement("details");
-        details.className = "funcionario-item";
-        const summary = document.createElement("summary");
-        summary.textContent = `${nome} (${docs.length})`;
-        details.appendChild(summary);
-
-        const body = document.createElement("div");
-        body.className = "funcionario-docs";
-        const acoes = document.createElement("div");
-        acoes.style.marginBottom = "8px";
-        const btnExcluirFunc = document.createElement("button");
-        btnExcluirFunc.type = "button";
-        btnExcluirFunc.className = "warn small-btn";
-        btnExcluirFunc.textContent = "Excluir funcionario";
-        btnExcluirFunc.addEventListener("click", async (ev) => {
-          ev.preventDefault();
-          ev.stopPropagation();
-          await excluirFuncionarioPublico(grupoEmp.nome, nome, docs, btnExcluirFunc);
-        });
-        acoes.appendChild(btnExcluirFunc);
-        body.appendChild(acoes);
-
-        const ul = document.createElement("ul");
-        for (const doc of docs) {
-          const fileName = String(doc?.nome || doc?.path || "").split("/").pop();
-          const li = document.createElement("li");
-          const a = document.createElement("a");
-          a.className = "muted-link";
-          a.target = "_blank";
-          a.rel = "noopener";
-          a.href = linkConsultaItem(doc);
-          a.textContent = `? ${fileName}`;
-          li.appendChild(a);
-          ul.appendChild(li);
-        }
-        body.appendChild(ul);
-        details.appendChild(body);
-        el.listaFuncionarios.appendChild(details);
-      }
-    };
-
-    const renderPublicoEmpresasFuncionarios = (items) => {
-      const catalogo = construirCatalogoEmpresas(items);
-      const p = new URLSearchParams(window.location.search);
-      const empresaSel = slugEmpresa(p.get("empresa") || "");
-      if (!empresaSel) {
-        renderHomeEmpresas(catalogo);
-        return;
-      }
-      renderEmpresaFuncionarios(empresaSel, catalogo);
     };
 
     const syncFileListSelected = () => {
@@ -1199,6 +713,15 @@
       }
       setTimeout(() => URL.revokeObjectURL(url), 30000);
       return nomeArquivo;
+    };
+
+    const baixarBlob = (blob, nomeArquivo) => {
+      if (!(blob instanceof Blob)) throw new Error("PDF local nao encontrado no banco.");
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = nomeArquivo || "documento.pdf";
+      a.click();
+      setTimeout(() => URL.revokeObjectURL(a.href), 30000);
     };
 
     const renderHistorico = async () => {
@@ -1241,7 +764,21 @@
             log(err.message, "err");
           }
         });
+        const btnBaixarLocal = document.createElement("button");
+        btnBaixarLocal.type = "button";
+        btnBaixarLocal.className = "alt small-btn";
+        btnBaixarLocal.style.marginLeft = "6px";
+        btnBaixarLocal.textContent = "Baixar";
+        btnBaixarLocal.addEventListener("click", () => {
+          try {
+            baixarBlob(it.blob_pdf, it.arquivo || "documento.pdf");
+            log(`PDF local baixado: ${it.arquivo || "-"}`, "ok");
+          } catch (err) {
+            log(err.message, "err");
+          }
+        });
         tdAcoes.appendChild(btnAbrirLocal);
+        tdAcoes.appendChild(btnBaixarLocal);
         el.tbodyHistorico.appendChild(tr);
       }
     };
@@ -1276,7 +813,7 @@
           const pdfPath = normFolder(`${folder}/${dateFolder}/${safeName}`);
           const qrPath = normFolder(`${folder}/${dateFolder}/_qrcodes/${fileNoExt}_qrcode.png`);
           const pdfPageLink = pagesUrl(owner, repo, pdfPath);
-          const qrLink = linkPublicoPdf(owner, repo, branch, pdfPath);
+          const qrLink = consultaUrl(pdfPath);
           const qrBlob = await renderQrBlob(qrLink);
           await githubUpload(owner, repo, branch, pdfPath, f, token, `Upload PDF: ${safeName}`);
           await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Upload QR: ${fileNoExt}_qrcode.png`);
@@ -1311,32 +848,18 @@
       if (!owner || !repo) return log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
       el.btnAtualizar.disabled = true;
       try {
-        let items = [];
-        // Modo publico (sem admin/token): usa indice do Pages para evitar limite da API.
-        if (!isAdminMode && !token) {
-          items = await carregarIndicePublico();
+        let items = await listRepoPdfs(owner, repo, branch, folder, token);
+        if (!items.length) {
+          const idx = await carregarIndicePublico();
+          if (idx.length) items = idx;
         } else {
-          items = await listRepoPdfs(owner, repo, branch, folder, token);
-          if (!items.length) {
-            const idx = await carregarIndicePublico();
-            if (idx.length) items = idx;
-          } else {
-            try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
-          }
+          try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
         }
-        if (isAdminMode) mountFuncionarios(items);
-        else renderPublicoEmpresasFuncionarios(items);
+        mountFuncionarios(items);
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
-        const idx = await carregarIndicePublico();
-        if (idx.length) {
-          if (isAdminMode) mountFuncionarios(idx);
-          else renderPublicoEmpresasFuncionarios(idx);
-          log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
-        } else {
-          mountFuncionarios([]);
-          log(err.message, "err");
-        }
+        mountFuncionarios([]);
+        log(err.message, "err");
       } finally {
         el.btnAtualizar.disabled = false;
       }
@@ -1371,133 +894,20 @@
     const redirecionarConsultaQr = () => {
       const p = new URLSearchParams(window.location.search);
       const pdfParam = String(p.get("pdf") || "").trim();
-      if (!pdfParam || isAdminMode) return;
+      if (!pdfParam) return;
       const pdfPath = normFolder(decodeURIComponent(pdfParam));
       if (!pdfPath || !pdfPath.toLowerCase().endsWith(".pdf")) return;
-      const destino = consultaUrl(pdfPath);
-      try {
-        const u = new URL(destino);
-        window.history.replaceState({}, "", `${u.pathname}${u.search}${u.hash}`);
-      } catch {
-        window.location.replace(destino);
-      }
-    };
-
-    const obterRotaDocumentoDaUrl = () => {
-      const p = new URLSearchParams(window.location.search);
-      const rotaQuery = String(p.get("route") || "").trim();
-      let caminho = rotaQuery || window.location.pathname || "";
-      caminho = decodeURIComponent(caminho);
-      try { caminho = caminho.split("?")[0].split("#")[0]; } catch {}
-      caminho = String(caminho || "").replace(/^\/+|\/+$/g, "");
-      if (!caminho) return null;
-      const partes = caminho.split("/").filter(Boolean);
-      const idxBase = partes.findIndex((x) => String(x).toLowerCase() === "documentos");
-      const rota = idxBase >= 0 ? partes.slice(idxBase + 1) : partes;
-      if (rota.length < 3) return null;
-      return {
-        funcionario: String(rota[0] || "").toLowerCase(),
-        documento: String(rota[1] || "").toLowerCase(),
-        dataRef: String(rota[2] || "").toLowerCase(),
-      };
-    };
-
-    const assinaturaRotaFromPath = (path) => ({
-      funcionario: extrairFuncionarioSlug(path),
-      documento: extrairDocumentoSlug(path),
-      dataRef: extrairDataSlug(path),
-    });
-
-    const assinaturaRotaFromItem = (it) => {
-      const rf = String(it?.route_funcionario || "").trim().toLowerCase();
-      const rd = String(it?.route_documento || "").trim().toLowerCase();
-      const rt = String(it?.route_data || "").trim().toLowerCase();
-      if (rf && rd && rt) {
-        return { funcionario: rf, documento: rd, dataRef: rt };
-      }
-      return assinaturaRotaFromPath(normFolder(String(it?.path || "")));
-    };
-
-    const selecionarDocumentoPorRota = (rota, itens) => {
-      const lista = Array.isArray(itens) ? itens : [];
-      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
-      const exato = lista.find((it) => {
-        const routeItem = String(it?.route || "").trim().toLowerCase();
-        if (routeItem) return routeItem === rotaKey;
-        const r = assinaturaRotaFromItem(it);
-        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
-      });
-      if (exato) return exato;
-
-      let melhor = null;
-      let melhorScore = -1;
-      for (const it of lista) {
-        const path = normFolder(String(it?.path || ""));
-        if (!path || !path.toLowerCase().endsWith(".pdf")) continue;
-        const r = assinaturaRotaFromItem(it);
-        if (r.documento !== rota.documento) continue;
-        let score = 10;
-        if (r.funcionario === rota.funcionario) score += 3;
-        if (r.dataRef === rota.dataRef) score += 2;
-        // Pequeno bonus para caminhos mais especificos (ex.: com pasta de funcionario/data).
-        score += Math.min(path.split("/").length, 6) * 0.01;
-        if (score > melhorScore) {
-          melhor = it;
-          melhorScore = score;
-        }
-      }
-      return melhor;
-    };
-
-    const abrirModoDocumento = async () => {
-      if (isAdminMode) return false;
-      const rota = obterRotaDocumentoDaUrl();
-      if (!rota) return false;
-
-      const wrap = document.querySelector(".wrap");
-      const paineis = wrap ? [...wrap.querySelectorAll(".panel")] : [];
-      for (const p of paineis) {
-        if (p !== el.painelDocumento) p.style.display = "none";
-      }
-      document.body.classList.add("document-mode");
-      el.painelDocumento.classList.add("is-active");
-      el.msgDocumento.style.display = "none";
-      el.frameDocumento.style.display = "block";
-      el.btnDownloadDocumento.style.display = "inline-block";
-
-      const itens = await carregarIndicePublicoBruto();
-      const candidato = selecionarDocumentoPorRota(rota, itens);
-
-      if (!candidato || !candidato.path) {
-        el.frameDocumento.style.display = "none";
-        el.btnDownloadDocumento.style.display = "none";
-        el.msgDocumento.style.display = "block";
-        el.msgDocumento.textContent = "Documento nao encontrado para esta rota.";
-        return true;
-      }
-
-      const pdfPath = normFolder(candidato.path);
-      const { owner, repo, branch } = obterOwnerRepoBranch();
-      const pdfUrl = pagesUrl(owner, repo, pdfPath);
-      const nomeArquivo = pdfPath.split("/").pop() || "documento.pdf";
-      el.frameDocumento.src = pdfUrl;
-      el.btnDownloadDocumento.href = rawUrl(owner, repo, branch, pdfPath);
-      el.btnDownloadDocumento.setAttribute("download", nomeArquivo);
-      return true;
+      const destino = pagesUrl(el.owner.value.trim(), el.repo.value.trim(), pdfPath);
+      window.location.replace(destino);
     };
 
     if (isAdminMode) {
       syncFileListSelected();
       renderHistorico();
     }
-    (async () => {
-      redirecionarConsultaQr();
-      const emModoDocumento = await abrirModoDocumento();
-      if (emModoDocumento) return;
-      atualizarLista();
-    })();
+    atualizarLista();
+    redirecionarConsultaQr();
   </script>
 </body>
 </html>
-
 

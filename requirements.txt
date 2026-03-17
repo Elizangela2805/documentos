@@ -1,0 +1,5 @@
+Pillow
+python-docx
+PyMuPDF
+qrcode
+pyHanko
