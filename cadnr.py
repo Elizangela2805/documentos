@@ -6602,7 +6602,8 @@ class App(tk.Tk):
                     tipo_os = tipo_norm in {"ordem de servico", "ordem de serviço"}
                     tipo_fit_test = tipo_norm in {"fit test", "fittest"}
                     tipo_anuencia = tipo_norm in {"anuencia", "anuência"}
-                    tipo_com_parametros = tipo_os or tipo_carteirinha or tipo_fit_test or tipo_anuencia
+                    tipo_epi = tipo_norm in {"ficha de epi"}
+                    tipo_com_parametros = tipo_os or tipo_carteirinha or tipo_fit_test or tipo_anuencia or tipo_epi
                     if tipo_com_parametros and ext == ".doc":
                         falhas.append(f"{tipo_doc}: use arquivo .docx para aplicar parametros")
                         continue
