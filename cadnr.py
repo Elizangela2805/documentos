@@ -671,6 +671,8 @@ class App(tk.Tk):
         self.title("CADNR - Sistema de Cadastro")
         self.geometry("860x460")
         self.minsize(780, 400)
+        self._window_icon_ref = None
+        self._configurar_icone_janela()
         self.protocol("WM_DELETE_WINDOW", self._on_app_close)
         self._configurar_estilo_abas()
         self.cidades_cache = {}
@@ -987,6 +989,25 @@ class App(tk.Tk):
         self.after(120, self._pos_inicializacao_pesada)
         self.after(800, self._sincronizar_documentos_salvos_pendentes)
         self.after(1200, self._monitorar_documentos_projeto)
+
+    def _configurar_icone_janela(self):
+        base_dir = Path(__file__).resolve().parent
+        candidatos = (
+            base_dir / "favicon.png",
+            base_dir / "favicon.ico",
+        )
+        for caminho in candidatos:
+            if not caminho.exists() or not caminho.is_file():
+                continue
+            try:
+                if caminho.suffix.lower() == ".ico":
+                    self.iconbitmap(default=str(caminho))
+                    return
+                self._window_icon_ref = tk.PhotoImage(file=str(caminho))
+                self.iconphoto(True, self._window_icon_ref)
+                return
+            except tk.TclError:
+                continue
 
     def _pos_inicializacao_pesada(self):
         alterou_nr = False
@@ -3776,7 +3797,16 @@ class App(tk.Tk):
             return False, str(ex)
 
     def _assinar_pdf_por_marcadores(self, caminho_pdf):
-        # Modo simplificado: assinatura invisivel unica com certificado da Projetta.
+        # Aplica visuais nos marcadores (quando existirem) antes da assinatura digital.
+        try:
+            marcadores = self._localizar_marcadores_assinatura_pdf(caminho_pdf)
+        except Exception:
+            marcadores = []
+        for marcador_info in marcadores:
+            try:
+                self._aplicar_visual_assinatura_em_marcador_pdf(caminho_pdf, marcador_info)
+            except Exception:
+                pass
         return self._assinar_pdf_digital(caminho_pdf)
 
     def _abrir_configuracao_assinatura_digital(self):
@@ -3812,12 +3842,30 @@ class App(tk.Tk):
         ttk.Entry(frame_senha1, textvariable=senha1_var, show="*").grid(row=0, column=1, sticky="ew")
 
         r += 1
+        frame_img1 = ttk.Frame(popup)
+        frame_img1.grid(row=r, column=0, sticky="ew", padx=12, pady=(6, 0))
+        frame_img1.columnconfigure(1, weight=1)
+        ttk.Label(frame_img1, text="Imagem assinatura:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        img1_var = tk.StringVar(value=str(self.assinatura_digital_img1 or ""))
+        ttk.Entry(frame_img1, textvariable=img1_var, state="readonly").grid(row=0, column=1, sticky="ew")
+
+        def escolher_img1():
+            caminho = filedialog.askopenfilename(
+                title="Selecionar imagem de assinatura",
+                filetypes=[("Imagens", "*.png *.jpg *.jpeg *.bmp *.gif *.webp"), ("Todos os arquivos", "*.*")],
+            )
+            if caminho:
+                img1_var.set(caminho)
+
+        ttk.Button(frame_img1, text="Pesquisar...", command=escolher_img1).grid(row=0, column=2, padx=(8, 0))
+
+        r += 1
         frame_flag = ttk.Frame(popup)
         frame_flag.grid(row=r, column=0, sticky="ew", padx=12, pady=(8, 0))
         habilitada_var = tk.BooleanVar(value=bool(self.assinatura_digital_habilitada))
         ttk.Checkbutton(
             frame_flag,
-            text="Habilitar assinatura digital invisivel",
+            text="Habilitar assinatura digital",
             variable=habilitada_var,
         ).grid(row=0, column=0, sticky="w")
 
@@ -3826,7 +3874,7 @@ class App(tk.Tk):
             popup,
             text=(
                 "A assinatura digital requer pyHanko instalado.\n"
-                "Todos os PDFs serao assinados digitalmente em modo invisivel."
+                "Se o PDF tiver marcador assinatura1/assinatura2, o visual sera aplicado antes da assinatura."
             ),
             justify="left",
         )
@@ -3840,6 +3888,7 @@ class App(tk.Tk):
             habilitar = bool(habilitada_var.get())
             pfx1_txt = str(pfx1_var.get() or "").strip()
             senha1_txt = str(senha1_var.get() or "")
+            img1_txt = str(img1_var.get() or "").strip()
             if habilitar:
                 if not pfx1_txt:
                     messagebox.showerror("Assinatura Digital", "Selecione o arquivo PFX da Projetta.")
@@ -3856,8 +3905,20 @@ class App(tk.Tk):
                 self.assinatura_digital_pfx1 = str(Path(pfx1_txt).expanduser().resolve()) if pfx1_txt else ""
             else:
                 self.assinatura_digital_pfx1 = pfx1_txt
+            if img1_txt:
+                ipath = Path(img1_txt).expanduser()
+                if not ipath.is_absolute():
+                    ipath = (Path(__file__).resolve().parent / ipath).resolve()
+                if not ipath.exists() or not ipath.is_file():
+                    messagebox.showerror("Assinatura Digital", "Arquivo de imagem de assinatura nao encontrado.")
+                    return
+                if ipath.suffix.lower() not in {".png", ".jpg", ".jpeg", ".bmp", ".gif", ".webp"}:
+                    messagebox.showerror("Assinatura Digital", "Selecione uma imagem valida (.png/.jpg/.jpeg/.bmp/.gif/.webp).")
+                    return
+                self.assinatura_digital_img1 = str(ipath.resolve())
+            else:
+                self.assinatura_digital_img1 = ""
             self.assinatura_digital_pfx2 = ""
-            self.assinatura_digital_img1 = ""
             self.assinatura_digital_habilitada = habilitar
             self.assinatura_digital_senha1 = senha1_txt
             self.assinatura_digital_senha2 = ""
