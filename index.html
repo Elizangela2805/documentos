@@ -1114,6 +1114,13 @@
       return base;
     };
 
+    const isEmpresaConhecida = (nome) => {
+      const slug = slugEmpresa(nome);
+      if (!slug) return false;
+      if (Object.prototype.hasOwnProperty.call(EMPRESA_ALIASES, slug)) return true;
+      return EMPRESAS_PADRAO.some((n) => slugEmpresa(n) === slug);
+    };
+
     const extrairEmpresaDoItem = (it) => {
       const empItem = normalizarNomeEmpresa(it?.empresa || "");
       if (empItem) return empItem;
@@ -1124,15 +1131,17 @@
           const primeiraPasta = String(partes[1] || "").trim();
           if (primeiraPasta && !/\.pdf$/i.test(primeiraPasta) && !/^\d{8}$/.test(primeiraPasta)) {
             const candidatoPath = normalizarNomeEmpresa(primeiraPasta);
-            if (candidatoPath) return candidatoPath;
+            if (candidatoPath && isEmpresaConhecida(candidatoPath)) return candidatoPath;
           }
         }
       }
       const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").replace(/\.pdf$/i, "");
+      const empresaNoNome = normalizarNomeEmpresa(nomeArq);
+      if (empresaNoNome && isEmpresaConhecida(empresaNoNome)) return empresaNoNome;
       const mParen = nomeArq.match(/\(([^)]+)\)/g);
       if (mParen && mParen.length) {
         const ultima = normalizarNomeEmpresa(String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim());
-        if (ultima) return ultima;
+        if (ultima && isEmpresaConhecida(ultima)) return ultima;
       }
       return "Projetta";
     };
