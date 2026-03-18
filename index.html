@@ -1123,28 +1123,56 @@
       return EMPRESAS_PADRAO.some((n) => slugEmpresa(n) === slug);
     };
 
+    const extrairEmpresaDoNomeArquivo = (nomeArquivo, funcionario = "") => {
+      let nome = String(nomeArquivo || "").replace(/\.pdf$/i, "").trim();
+      const func = String(funcionario || "").trim();
+      if (func) {
+        const esc = func.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        nome = nome.replace(new RegExp(esc, "ig"), " ").replace(/\s+/g, " ").trim();
+      }
+      if (!nome) return "";
+
+      const gruposComFechamento = [...nome.matchAll(/\(([^)]+)\)/g)]
+        .map((m) => String(m?.[1] || "").trim())
+        .filter(Boolean);
+      if (gruposComFechamento.length) {
+        const candidato = normalizarNomeEmpresa(gruposComFechamento[gruposComFechamento.length - 1]);
+        if (candidato && !/^\d+$/.test(candidato)) return candidato;
+      }
+
+      const grupoAberto = nome.match(/\(([^()]*)$/);
+      if (grupoAberto && grupoAberto[1]) {
+        const candidato = normalizarNomeEmpresa(String(grupoAberto[1] || "").trim());
+        if (candidato && !/^\d+$/.test(candidato)) return candidato;
+      }
+
+      const tentativaDireta = normalizarNomeEmpresa(nome);
+      if (isEmpresaConhecida(tentativaDireta)) return tentativaDireta;
+      return "";
+    };
+
     const extrairEmpresaDoItem = (it) => {
       const empItem = normalizarNomeEmpresa(it?.empresa || "");
       if (empItem) return empItem;
       const pathNorm = normFolder(it?.path || "");
+      const funcionarioItem = String(it?.funcionario || "").trim();
       if (pathNorm) {
         const partes = pathNorm.split("/").filter(Boolean);
         if (partes.length >= 2 && String(partes[0]).toLowerCase() === "_pdf_gerados") {
           const primeiraPasta = String(partes[1] || "").trim();
           if (primeiraPasta && !/\.pdf$/i.test(primeiraPasta) && !/^\d{8}$/.test(primeiraPasta)) {
-            const candidatoPath = normalizarNomeEmpresa(primeiraPasta);
-            if (candidatoPath && isEmpresaConhecida(candidatoPath)) return candidatoPath;
+            const pastaSlug = slugUrl(primeiraPasta);
+            const funcSlug = slugUrl(funcionarioItem);
+            if (!funcSlug || pastaSlug !== funcSlug) {
+              const candidatoPath = normalizarNomeEmpresa(primeiraPasta);
+              if (candidatoPath) return candidatoPath;
+            }
           }
         }
       }
       const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").replace(/\.pdf$/i, "");
-      const empresaNoNome = normalizarNomeEmpresa(nomeArq);
-      if (empresaNoNome && isEmpresaConhecida(empresaNoNome)) return empresaNoNome;
-      const mParen = nomeArq.match(/\(([^)]+)\)/g);
-      if (mParen && mParen.length) {
-        const ultima = normalizarNomeEmpresa(String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim());
-        if (ultima && isEmpresaConhecida(ultima)) return ultima;
-      }
+      const empresaNoNome = extrairEmpresaDoNomeArquivo(nomeArq, funcionarioItem);
+      if (empresaNoNome) return empresaNoNome;
       return "Projetta";
     };
 
@@ -1162,7 +1190,7 @@
         const empresas = [];
         for (const item of data) {
           const nomeArq = String(item?.name || "").trim();
-          const m = nomeArq.match(/^\d+_(.+)\.(png|jpg|jpeg|webp|bmp|gif)$/i);
+          const m = nomeArq.match(/^(?:\d+_)?(.+)\.(png|jpg|jpeg|webp|bmp|gif)$/i);
           if (!m) continue;
           const nome = normalizarNomeEmpresa(String(m[1] || "").replace(/[_-]+/g, " ").trim());
           if (nome) empresas.push(nome);
@@ -1457,10 +1485,7 @@
         }
         if (!empSlug) {
           const empresa = extrairEmpresaDoItem(it);
-          const empInferida = slugEmpresa(empresa);
-          if (empInferida && (catalogo.has(empInferida) || (nomesEmpresaPorSlug instanceof Map && nomesEmpresaPorSlug.has(empInferida)))) {
-            empSlug = empInferida;
-          }
+          empSlug = slugEmpresa(empresa);
         }
         if (!empSlug) continue;
         if (!catalogo.has(empSlug)) {
