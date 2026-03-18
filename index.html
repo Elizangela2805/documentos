@@ -4,8 +4,9 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Projetta - Sistema de Consultas</title>
-  <link rel="icon" type="image/png" href="./favicon.png" />
-  <link rel="apple-touch-icon" href="./favicon.png" />
+  <link rel="icon" type="image/png" href="./favicon.png?v=20260318" />
+  <link rel="shortcut icon" type="image/png" href="./favicon.png?v=20260318" />
+  <link rel="apple-touch-icon" href="./favicon.png?v=20260318" />
   <!-- rebuild trigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -1132,34 +1133,63 @@
       }
     };
 
-    const listarEmpresasPorCadastro = async (owner, repo, branch) => {
+    const carregarCadastroPublico = async (owner, repo, branch) => {
       const o = String(owner || "").trim();
       const r = String(repo || "").trim();
       const b = String(branch || "main").trim() || "main";
-      if (!o || !r) return [];
+      if (!o || !r) return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
       try {
         const url = `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`;
         const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) return [];
+        if (!res.ok) return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
         const data = await res.json();
         const empresas = Array.isArray(data?.empresas) ? data.empresas : [];
+        const funcionarios = Array.isArray(data?.funcionarios) ? data.funcionarios : [];
         const nomes = [];
+        const nomesEmpresaPorId = new Map();
+        const nomesEmpresaPorSlug = new Map();
         for (const e of empresas) {
+          const eid = Number(e?.id);
           const nome = normalizarNomeEmpresa(String(e?.nome || "").trim());
-          if (nome) nomes.push(nome);
+          if (!nome) continue;
+          nomes.push(nome);
+          const slug = slugEmpresa(nome);
+          if (slug) nomesEmpresaPorSlug.set(slug, nome);
+          if (Number.isFinite(eid)) nomesEmpresaPorId.set(eid, nome);
         }
-        return [...new Set(nomes)];
+        const funcionariosPorEmpresa = new Map();
+        for (const f of funcionarios) {
+          const nomeFunc = String(f?.nome || "").trim();
+          if (!nomeFunc) continue;
+          const empresaId = Number(f?.empresa_id);
+          if (!Number.isFinite(empresaId)) continue;
+          const nomeEmp = nomesEmpresaPorId.get(empresaId);
+          if (!nomeEmp) continue;
+          const empSlug = slugEmpresa(nomeEmp);
+          if (!empSlug) continue;
+          if (!funcionariosPorEmpresa.has(empSlug)) funcionariosPorEmpresa.set(empSlug, new Set());
+          funcionariosPorEmpresa.get(empSlug).add(nomeFunc);
+        }
+        return {
+          empresas: [...new Set(nomes)],
+          funcionariosPorEmpresa,
+          nomesEmpresaPorSlug,
+        };
       } catch {
-        return [];
+        return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
       }
     };
 
     const obterEmpresasExtrasPublicas = async (owner, repo, branch) => {
-      const [viaLogos, viaCadastro] = await Promise.all([
+      const [viaLogos, cadastro] = await Promise.all([
         listarEmpresasPorLogos(owner, repo, branch),
-        listarEmpresasPorCadastro(owner, repo, branch),
+        carregarCadastroPublico(owner, repo, branch),
       ]);
-      return [...new Set([...(viaLogos || []), ...(viaCadastro || [])])];
+      return {
+        empresas: [...new Set([...(viaLogos || []), ...((cadastro?.empresas) || [])])],
+        funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
+        nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
+      };
     };
 
     const extrairFuncionarioDoPath = (path, item = null) => {
@@ -1312,7 +1342,7 @@
       }
     };
 
-    const construirCatalogoEmpresas = (items, empresasExtras = []) => {
+    const construirCatalogoEmpresas = (items, empresasExtras = [], funcionariosCadastro = new Map(), nomesEmpresaPorSlug = new Map()) => {
       const catalogo = new Map();
       const sementes = [...EMPRESAS_PADRAO, ...(Array.isArray(empresasExtras) ? empresasExtras : [])];
       for (const nomeBase of sementes) {
@@ -1336,6 +1366,23 @@
         const grupoEmp = catalogo.get(empSlug);
         if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
         grupoEmp.funcionarios.get(funcionario).push(it);
+      }
+      if (funcionariosCadastro instanceof Map) {
+        for (const [empSlug, nomesSet] of funcionariosCadastro.entries()) {
+          if (!empSlug) continue;
+          const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
+          if (!catalogo.has(empSlug)) {
+            const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
+            catalogo.set(empSlug, { nome: nomeEmp || empSlug, funcionarios: new Map() });
+          }
+          const grupoEmp = catalogo.get(empSlug);
+          const nomes = nomesSet instanceof Set ? [...nomesSet] : Array.isArray(nomesSet) ? nomesSet : [];
+          for (const nomeFunc of nomes) {
+            const nomeLimpo = String(nomeFunc || "").trim();
+            if (!nomeLimpo || isGrupoFuncionarioInvalido(nomeLimpo)) continue;
+            if (!grupoEmp.funcionarios.has(nomeLimpo)) grupoEmp.funcionarios.set(nomeLimpo, []);
+          }
+        }
       }
       return catalogo;
     };
@@ -1417,8 +1464,13 @@
       }
     };
 
-    const renderPublicoEmpresasFuncionarios = (items, empresasExtras = []) => {
-      const catalogo = construirCatalogoEmpresas(items, empresasExtras);
+    const renderPublicoEmpresasFuncionarios = (
+      items,
+      empresasExtras = [],
+      funcionariosCadastro = new Map(),
+      nomesEmpresaPorSlug = new Map(),
+    ) => {
+      const catalogo = construirCatalogoEmpresas(items, empresasExtras, funcionariosCadastro, nomesEmpresaPorSlug);
       const p = new URLSearchParams(window.location.search);
       const empresaSel = slugEmpresa(p.get("empresa") || "");
       if (!empresaSel) {
@@ -1583,8 +1635,13 @@
         if (isAdminMode) {
           mountFuncionarios(items);
         } else {
-          const empresasExtras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-          renderPublicoEmpresasFuncionarios(items, empresasExtras);
+          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
+          renderPublicoEmpresasFuncionarios(
+            items,
+            extras.empresas,
+            extras.funcionariosPorEmpresa,
+            extras.nomesEmpresaPorSlug,
+          );
         }
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
@@ -1593,12 +1650,27 @@
           if (isAdminMode) {
             mountFuncionarios(idx);
           } else {
-            const empresasExtras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-            renderPublicoEmpresasFuncionarios(idx, empresasExtras);
+            const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
+            renderPublicoEmpresasFuncionarios(
+              idx,
+              extras.empresas,
+              extras.funcionariosPorEmpresa,
+              extras.nomesEmpresaPorSlug,
+            );
           }
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
-          mountFuncionarios([]);
+          if (isAdminMode) {
+            mountFuncionarios([]);
+          } else {
+            const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
+            renderPublicoEmpresasFuncionarios(
+              [],
+              extras.empresas,
+              extras.funcionariosPorEmpresa,
+              extras.nomesEmpresaPorSlug,
+            );
+          }
           log(err.message, "err");
         }
       } finally {
@@ -1685,10 +1757,7 @@
     const montarUrlViewerPdf = (pdfUrl) => {
       const base = String(pdfUrl || "").trim();
       if (!base) return "";
-      if (isMobileDevice()) {
-        // Fallback para celulares que nao renderizam PDF inline em iframe.
-        return `https://docs.google.com/gview?embedded=1&url=${encodeURIComponent(base)}`;
-      }
+      if (isMobileDevice()) return base;
       return `${base}#toolbar=1&navpanes=0&scrollbar=1`;
     };
 
