@@ -671,8 +671,6 @@ class App(tk.Tk):
         self.title("CADNR - Sistema de Cadastro")
         self.geometry("860x460")
         self.minsize(780, 400)
-        self._window_icon_ref = None
-        self._configurar_icone_janela()
         self.protocol("WM_DELETE_WINDOW", self._on_app_close)
         self._configurar_estilo_abas()
         self.cidades_cache = {}
@@ -991,25 +989,6 @@ class App(tk.Tk):
         self.after(120, self._pos_inicializacao_pesada)
         self.after(800, self._sincronizar_documentos_salvos_pendentes)
         self.after(1200, self._monitorar_documentos_projeto)
-
-    def _configurar_icone_janela(self):
-        base_dir = Path(__file__).resolve().parent
-        candidatos = (
-            base_dir / "favicon.png",
-            base_dir / "favicon.ico",
-        )
-        for caminho in candidatos:
-            if not caminho.exists() or not caminho.is_file():
-                continue
-            try:
-                if caminho.suffix.lower() == ".ico":
-                    self.iconbitmap(default=str(caminho))
-                    return
-                self._window_icon_ref = tk.PhotoImage(file=str(caminho))
-                self.iconphoto(True, self._window_icon_ref)
-                return
-            except tk.TclError:
-                continue
 
     def _pos_inicializacao_pesada(self):
         alterou_nr = False

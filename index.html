@@ -4,10 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Projetta - Sistema de Consultas</title>
-  <link rel="icon" type="image/png" sizes="32x32" href="/documentos/favicon.png?v=20260318b" />
-  <link rel="icon" type="image/x-icon" href="/documentos/favicon.ico?v=20260318b" />
-  <link rel="shortcut icon" type="image/x-icon" href="/documentos/favicon.ico?v=20260318b" />
-  <link rel="apple-touch-icon" href="/documentos/favicon.png?v=20260318b" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/documentos/favicon.png?v=20260318c" />
+  <link rel="icon" type="image/x-icon" href="/documentos/favicon.ico?v=20260318c" />
+  <link rel="shortcut icon" type="image/x-icon" href="/documentos/favicon.ico?v=20260318c" />
+  <link rel="apple-touch-icon" href="/documentos/favicon.png?v=20260318c" />
   <!-- rebuild trigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -247,7 +247,8 @@
       padding-top: 124px;
       padding-bottom: 20px;
       min-height: 100vh;
-      display: block;
+      display: flex;
+      justify-content: center;
     }
     body.document-mode .wrap .panel {
       display: none !important;
@@ -256,7 +257,7 @@
       display: flex !important;
       flex-direction: column;
       align-items: center;
-      width: min(1100px, 100%);
+      width: min(1280px, calc(100vw - 56px));
       border: 0;
       border-radius: 14px;
       box-shadow: none;
@@ -281,11 +282,13 @@
       background: linear-gradient(135deg, var(--brand), var(--brand2));
     }
     .doc-frame {
-      width: min(980px, 94vw);
+      width: min(1220px, calc(100vw - 80px));
       height: min(78vh, 980px);
       border: 1px solid #d9e2ec;
       border-radius: 10px;
       background: #fff;
+      display: block;
+      margin: 0 auto;
     }
     .doc-msg {
       margin-top: 10px;
