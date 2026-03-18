@@ -695,6 +695,7 @@ class App(tk.Tk):
         self.cert_imprimir_funcionario_ids = []
         self.dados_path = Path(__file__).with_name("cadnr_dados.json")
         self.nr_certificados = self._nr_certificados_padrao()
+        self.nr_excluidas_por_empresa = {}
         self.nr_certificados_widgets = []
         self.nr_filtradas_indices = []
         self._ultima_falha_conversao = ""
@@ -730,6 +731,7 @@ class App(tk.Tk):
         self._docs_monitor_after_id = None
         self._docs_monitor_interval_ms = 3000
         self._docs_monitor_assinatura = ""
+        self._empresas_publicacao_assinatura = ""
 
         container = ttk.Frame(self, padding=16)
         container.pack(fill="both", expand=True)
@@ -1166,6 +1168,8 @@ class App(tk.Tk):
         if nome_pasta:
             padrao_pasta = re.escape(str(nome_pasta).strip())
             nome = re.sub(rf"\s*\(+\s*{padrao_pasta}\s*\)+\s*$", "", nome, flags=re.IGNORECASE)
+        # Remove sufixo automatico de arquivo duplicado (ex.: "_1", "_2").
+        nome = re.sub(r"_[0-9]+\s*$", "", nome)
         nome = re.sub(r"\s*[\(\)]+\s*$", "", nome).strip()
         nome = re.sub(r"\s+", " ", nome)
         if re.match(r"(?i)^nr\s*", nome):
@@ -1214,6 +1218,7 @@ class App(tk.Tk):
         if limpar_nr:
             self._limpar_nr_nao_usadas_no_projeto()
         nomes_pasta = self._nomes_nr_na_pasta_empresa(empresa_id)
+        chaves_bloqueadas = self._chaves_nr_excluidas_empresa(empresa_id)
         if nomes_pasta is None:
             self.nr_filtradas_indices = []
         else:
@@ -1225,6 +1230,8 @@ class App(tk.Tk):
                 if chave:
                     chaves_existentes.add(chave)
             for chave, nome_exibicao in nomes_pasta.items():
+                if chave in chaves_bloqueadas:
+                    continue
                 if chave in chaves_existentes:
                     continue
                 self.nr_certificados.append(
@@ -1241,7 +1248,10 @@ class App(tk.Tk):
             self.nr_filtradas_indices = [
                 idx
                 for idx, item in enumerate(self.nr_certificados)
-                if self._normalizar_nome_nr(item.get("nome", "")) in nomes_pasta
+                if (
+                    self._normalizar_nome_nr(item.get("nome", "")) in nomes_pasta
+                    and self._normalizar_nome_nr(item.get("nome", "")) not in chaves_bloqueadas
+                )
             ]
         self._render_campos_nr()
         self._atualizar_lista_nr_imprimir()
@@ -2171,6 +2181,44 @@ class App(tk.Tk):
     def _normalizar_nome_nr(nome):
         return re.sub(r"[^a-z0-9]+", "", str(nome or "").lower())
 
+    def _chaves_nr_excluidas_empresa(self, empresa_id):
+        if not isinstance(empresa_id, int):
+            return set()
+        itens = self.nr_excluidas_por_empresa.get(int(empresa_id), set())
+        if isinstance(itens, set):
+            return set(itens)
+        if isinstance(itens, list):
+            return {
+                self._normalizar_nome_nr(self._nome_nr_canonico(x))
+                for x in itens
+                if self._normalizar_nome_nr(self._nome_nr_canonico(x))
+            }
+        return set()
+
+    def _registrar_nr_excluida_empresa(self, empresa_id, nome_nr):
+        if not isinstance(empresa_id, int):
+            return
+        chave = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
+        if not chave:
+            return
+        atuais = self._chaves_nr_excluidas_empresa(empresa_id)
+        atuais.add(chave)
+        self.nr_excluidas_por_empresa[int(empresa_id)] = atuais
+
+    def _desregistrar_nr_excluida_empresa(self, empresa_id, nome_nr):
+        if not isinstance(empresa_id, int):
+            return
+        chave = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
+        if not chave:
+            return
+        atuais = self._chaves_nr_excluidas_empresa(empresa_id)
+        if chave in atuais:
+            atuais.remove(chave)
+            if atuais:
+                self.nr_excluidas_por_empresa[int(empresa_id)] = atuais
+            else:
+                self.nr_excluidas_por_empresa.pop(int(empresa_id), None)
+
     @staticmethod
     def _chaves_vinculo_empresa_nr(empresa):
         if not isinstance(empresa, dict):
@@ -2217,7 +2265,14 @@ class App(tk.Tk):
     def _nome_nr_canonico(nome):
         # Remove apenas sufixo de duplicacao automatica "(1)", "(2)" etc.
         # Mantem variantes validas como "NR 20 (08)" e "NR 20 (16)".
-        return re.sub(r"\s*\((\d+)\)\s*$", lambda m: "" if int(m.group(1)) < 8 else m.group(0), str(nome or "").strip(), flags=re.IGNORECASE)
+        base = str(nome or "").strip()
+        base = re.sub(r"_[0-9]+\s*$", "", base)
+        return re.sub(
+            r"\s*\((\d+)\)\s*$",
+            lambda m: "" if int(m.group(1)) < 8 else m.group(0),
+            base,
+            flags=re.IGNORECASE,
+        )
 
     def _nr_sem_coluna_de(self, nome_certificado):
         sem_de = {
@@ -7401,6 +7456,37 @@ class App(tk.Tk):
         entradas.sort()
         return ";".join(entradas)
 
+    def _assinatura_publicacao_empresas(self):
+        entradas = []
+        for empresa in self.empresas:
+            if not isinstance(empresa, dict):
+                continue
+            empresa_id = empresa.get("id")
+            nome = str(empresa.get("nome", "") or "").strip()
+            nome_pasta = str(empresa.get("nome_pasta", "") or "").strip()
+            logo_ref = str(empresa.get("logo", "") or "").strip()
+            logo_info = ""
+            caminho_logo = self._resolver_logo_empresa(logo_ref)
+            if caminho_logo is not None and caminho_logo.exists() and caminho_logo.is_file():
+                try:
+                    stat = caminho_logo.stat()
+                    logo_info = f"{caminho_logo.name}|{int(stat.st_mtime)}|{int(stat.st_size)}"
+                except OSError:
+                    logo_info = caminho_logo.name
+            entradas.append(f"{empresa_id}|{nome}|{nome_pasta}|{logo_ref}|{logo_info}")
+        entradas.sort()
+        return ";".join(entradas)
+
+    def _caminhos_publicacao_empresas(self):
+        caminhos = [self.dados_path]
+        for empresa in self.empresas:
+            if not isinstance(empresa, dict):
+                continue
+            caminho_logo = self._resolver_logo_empresa(empresa.get("logo", ""))
+            if caminho_logo is not None and caminho_logo.exists() and caminho_logo.is_file():
+                caminhos.append(caminho_logo)
+        return caminhos
+
     def _reaplicar_filtros_documentos(self):
         empresa_id = self._empresa_id_selecionada_main()
         if empresa_id is not None:
@@ -8075,6 +8161,7 @@ class App(tk.Tk):
 
         self.empresas = [e for e in self.empresas if e["id"] != empresa_id]
         self.funcionarios = [f for f in self.funcionarios if f["empresa_id"] != empresa_id]
+        self.nr_excluidas_por_empresa.pop(int(empresa_id), None)
         self._salvar_dados()
         self._atualizar_select_empresas()
         messagebox.showinfo("Exclusao", "Cadastro de empresa excluido com sucesso.")
@@ -8609,6 +8696,7 @@ class App(tk.Tk):
         funcionarios = dados.get("funcionarios", [])
         documentos = dados.get("documentos", [])
         documentos_salvos = dados.get("documentos_salvos", [])
+        nr_excluidas_brutas = dados.get("nr_excluidas_por_empresa", {})
         assinatura_digital = dados.get("assinatura_digital", {})
         github_config = dados.get("github_config", {})
         if not isinstance(empresas, list) or not isinstance(funcionarios, list):
@@ -8682,6 +8770,24 @@ class App(tk.Tk):
 
         self.empresas = sorted(empresas_validas, key=lambda x: x["id"])
         self.funcionarios = sorted(funcionarios_validos, key=lambda x: x["id"])
+        self._empresas_publicacao_assinatura = self._assinatura_publicacao_empresas()
+        nr_excluidas_por_empresa = {}
+        if isinstance(nr_excluidas_brutas, dict):
+            for k, lista in nr_excluidas_brutas.items():
+                try:
+                    empresa_id_chave = int(k)
+                except (TypeError, ValueError):
+                    continue
+                if empresa_id_chave not in ids_empresas or not isinstance(lista, list):
+                    continue
+                chaves = set()
+                for nome_nr in lista:
+                    chave = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
+                    if chave:
+                        chaves.add(chave)
+                if chaves:
+                    nr_excluidas_por_empresa[empresa_id_chave] = chaves
+        self.nr_excluidas_por_empresa = nr_excluidas_por_empresa
         documentos_validos = []
         if isinstance(documentos, list):
             for d in documentos:
@@ -8961,6 +9067,11 @@ class App(tk.Tk):
             "documentos": self.documentos,
             "documentos_salvos": self.documentos_salvos,
             "nr_certificados": nr_certificados,
+            "nr_excluidas_por_empresa": {
+                str(empresa_id): sorted(list(chaves))
+                for empresa_id, chaves in self.nr_excluidas_por_empresa.items()
+                if isinstance(empresa_id, int) and isinstance(chaves, (set, list, tuple)) and chaves
+            },
             "assinatura_digital": {
                 "habilitada": bool(self.assinatura_digital_habilitada),
                 "pfx": str(self.assinatura_digital_pfx or "").strip(),
@@ -8986,6 +9097,10 @@ class App(tk.Tk):
                 json.dumps(dados, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
+            assinatura_empresas_atual = self._assinatura_publicacao_empresas()
+            if assinatura_empresas_atual != self._empresas_publicacao_assinatura:
+                self._empresas_publicacao_assinatura = assinatura_empresas_atual
+                self._enfileirar_git_auto_commit(self._caminhos_publicacao_empresas())
         except OSError:
             messagebox.showerror(
                 "Erro",
@@ -9608,6 +9723,10 @@ class App(tk.Tk):
             return dias_valor
 
         def excluir_nr_selecionada():
+            idx_empresa = select_empresa_doc.current()
+            empresa_id_sel = None
+            if 0 <= idx_empresa < len(empresa_ids):
+                empresa_id_sel = empresa_ids[idx_empresa]
             idx_nr_sel = select_nr_dias.current()
             if idx_nr_sel < 0 or idx_nr_sel >= len(nr_indices):
                 messagebox.showwarning("Cadastro", "Selecione uma NR para excluir.")
@@ -9619,6 +9738,7 @@ class App(tk.Tk):
             nome_nr = str(self.nr_certificados[idx_nr].get("nome", "") or "").strip() or "NR"
             if not messagebox.askyesno("Confirmar exclusao", f"Deseja excluir a NR '{nome_nr}'?"):
                 return
+            self._registrar_nr_excluida_empresa(empresa_id_sel, nome_nr)
             self._remover_linha_nr(idx_nr)
             atualizar_nr_por_empresa()
             messagebox.showinfo("Cadastro", "NR excluida com sucesso.")
@@ -9736,6 +9856,24 @@ class App(tk.Tk):
                 atualizar_outros_por_empresa()
                 return
 
+            empresa_sel = next(
+                (e for e in self.empresas if isinstance(e, dict) and e.get("id") == empresa_id_sel),
+                None,
+            )
+            nome_empresa_ref = str(
+                (empresa_sel or {}).get("nome_pasta", "") or (empresa_sel or {}).get("nome", "")
+            ).strip()
+            nome_nr_excluida = self._nome_nr_do_arquivo(Path(caminho_sel).stem, nome_empresa_ref)
+            if re.match(r"(?i)^nr\b", str(nome_nr_excluida or "").strip()):
+                self._registrar_nr_excluida_empresa(empresa_id_sel, nome_nr_excluida)
+                chave_nr_excluida = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr_excluida))
+                if chave_nr_excluida:
+                    self.nr_certificados = [
+                        item
+                        for item in self.nr_certificados
+                        if self._normalizar_nome_nr(self._nome_nr_canonico(item.get("nome", ""))) != chave_nr_excluida
+                    ]
+
             documento["arquivos"] = arquivos
             documento["tipos"] = [
                 tipo for tipo in OUTROS_DOCUMENTOS_TIPOS
@@ -9750,8 +9888,10 @@ class App(tk.Tk):
                 self.documentos[doc_idx] = documento
 
             self._salvar_dados()
+            self._aplicar_filtro_nr_por_empresa(empresa_id_sel, limpar_nr=False)
             self._carregar_outros_documentos_empresa_selecionada()
             atualizar_outros_por_empresa()
+            atualizar_nr_por_empresa()
             messagebox.showinfo("Cadastro", "Documento excluido com sucesso.")
 
         ttk.Button(
@@ -9895,6 +10035,7 @@ class App(tk.Tk):
             if (not tipo_outro_novo) and caminho_nr_ref:
                 nome_nr_ref = self._nome_nr_do_arquivo(Path(caminho_nr_ref).stem, nome_empresa_arquivo)
                 if re.match(r"(?i)^nr\b", str(nome_nr_ref or "").strip()):
+                    self._desregistrar_nr_excluida_empresa(empresa_id_sel, nome_nr_ref)
                     chave_nr_ref = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr_ref))
                     idx_nr_existente = next(
                         (

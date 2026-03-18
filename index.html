@@ -4,8 +4,8 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Projetta - Sistema de Consultas</title>
-  <link rel="icon" type="image/png" href="./_logos_empresas/1_Projetta.png" />
-  <link rel="apple-touch-icon" href="./_logos_empresas/1_Projetta.png" />
+  <link rel="icon" type="image/png" href="./favicon.png" />
+  <link rel="apple-touch-icon" href="./favicon.png" />
   <!-- rebuild trigger -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
@@ -25,17 +25,21 @@
       margin: 0;
       color: var(--ink);
       font-family: "Segoe UI", Tahoma, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
       background:
         radial-gradient(circle at 10% 15%, #d9eeff 0%, transparent 35%),
         radial-gradient(circle at 90% 10%, #d8f7e6 0%, transparent 35%),
         var(--bg);
     }
     .wrap {
-      max-width: 1120px;
-      margin: 20px auto;
+      width: min(1120px, calc(100vw - 20px));
+      margin: 20px auto 0;
       padding: 14px;
       padding-top: 124px;
       padding-bottom: 20px;
+      flex: 1 0 auto;
     }
     .panel {
       background: var(--panel);
@@ -616,7 +620,7 @@
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
-    const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco"];
+    const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco", "WM Montagens Industriais"];
     const EMPRESA_ALIASES = {
       ad2: "AD2",
       projetta: "Projetta",
@@ -1128,6 +1132,36 @@
       }
     };
 
+    const listarEmpresasPorCadastro = async (owner, repo, branch) => {
+      const o = String(owner || "").trim();
+      const r = String(repo || "").trim();
+      const b = String(branch || "main").trim() || "main";
+      if (!o || !r) return [];
+      try {
+        const url = `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`;
+        const res = await fetch(url, { cache: "no-store" });
+        if (!res.ok) return [];
+        const data = await res.json();
+        const empresas = Array.isArray(data?.empresas) ? data.empresas : [];
+        const nomes = [];
+        for (const e of empresas) {
+          const nome = normalizarNomeEmpresa(String(e?.nome || "").trim());
+          if (nome) nomes.push(nome);
+        }
+        return [...new Set(nomes)];
+      } catch {
+        return [];
+      }
+    };
+
+    const obterEmpresasExtrasPublicas = async (owner, repo, branch) => {
+      const [viaLogos, viaCadastro] = await Promise.all([
+        listarEmpresasPorLogos(owner, repo, branch),
+        listarEmpresasPorCadastro(owner, repo, branch),
+      ]);
+      return [...new Set([...(viaLogos || []), ...(viaCadastro || [])])];
+    };
+
     const extrairFuncionarioDoPath = (path, item = null) => {
       const nomeItem = String(item?.funcionario || "").trim();
       if (!isGrupoFuncionarioInvalido(nomeItem)) return nomeItem;
@@ -1549,7 +1583,7 @@
         if (isAdminMode) {
           mountFuncionarios(items);
         } else {
-          const empresasExtras = await listarEmpresasPorLogos(owner, repo, branch);
+          const empresasExtras = await obterEmpresasExtrasPublicas(owner, repo, branch);
           renderPublicoEmpresasFuncionarios(items, empresasExtras);
         }
         log(`Total de PDFs listados: ${items.length}`, "ok");
@@ -1559,7 +1593,7 @@
           if (isAdminMode) {
             mountFuncionarios(idx);
           } else {
-            const empresasExtras = await listarEmpresasPorLogos(owner, repo, branch);
+            const empresasExtras = await obterEmpresasExtrasPublicas(owner, repo, branch);
             renderPublicoEmpresasFuncionarios(idx, empresasExtras);
           }
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
