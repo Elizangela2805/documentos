@@ -1098,7 +1098,20 @@
       if (!base) return "";
       const slug = slugEmpresa(base);
       if (!slug) return base;
-      return EMPRESA_ALIASES[slug] || base;
+      const aliasDireto = EMPRESA_ALIASES[slug];
+      if (aliasDireto) return aliasDireto;
+      const txt = String(base || "")
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, " ")
+        .trim();
+      if (/^wm(\s|$)/.test(txt) || txt.includes("wm montagens") || txt.includes("wm projetos")) return "WM Montagens Industriais";
+      if (/^ad2(\s|$)/.test(txt)) return "AD2";
+      if (/^rjm(\s|$)/.test(txt)) return "RJM";
+      if (/^uniferco(\s|$)/.test(txt)) return "Uniferco";
+      if (/^projetta(\s|$)/.test(txt) || txt.includes("projetta engenharia")) return "Projetta";
+      return base;
     };
 
     const extrairEmpresaDoItem = (it) => {
