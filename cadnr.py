@@ -1177,6 +1177,138 @@ class App(tk.Tk):
             nome = f"NR {resto}" if resto else "NR"
         return nome
 
+    def _chave_nr_por_nome_empresa(self, nome_arquivo, empresa):
+        if not isinstance(empresa, dict):
+            return ""
+        referencias = [
+            str(empresa.get("nome_pasta", "") or "").strip(),
+            str(empresa.get("nome", "") or "").strip(),
+            "",
+        ]
+        for referencia in referencias:
+            nome_nr = self._nome_nr_do_arquivo(nome_arquivo, referencia)
+            if not re.match(r"(?i)^nr\b", str(nome_nr or "").strip()):
+                continue
+            chave = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
+            if chave:
+                return chave
+        return ""
+
+    def _caminho_corresponde_nr_empresa(self, caminho_ref, empresa, chave_nr):
+        chave_alvo = self._normalizar_nome_nr(self._nome_nr_canonico(chave_nr))
+        if not chave_alvo:
+            return False
+        try:
+            caminho = Path(str(caminho_ref or "")).expanduser()
+            nome_base = str(caminho.stem or "").strip()
+        except Exception:
+            return False
+        if not nome_base:
+            return False
+        chave_arquivo = self._chave_nr_por_nome_empresa(nome_base, empresa)
+        return bool(chave_arquivo and chave_arquivo == chave_alvo)
+
+    def _excluir_nr_definitiva_no_projeto(self, empresa_id, nome_nr):
+        empresa = next(
+            (e for e in self.empresas if isinstance(e, dict) and e.get("id") == empresa_id),
+            None,
+        )
+        chave_alvo = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
+        if empresa is None or not chave_alvo:
+            return 0, 0
+
+        removidos_arquivos = 0
+        removidos_referencias = 0
+        for _base_dir, arquivo in list(self._iterar_arquivos_documentos_empresa(empresa)):
+            if not self._caminho_corresponde_nr_empresa(arquivo, empresa, chave_alvo):
+                continue
+            try:
+                if arquivo.exists() and arquivo.is_file():
+                    arquivo.unlink()
+                    removidos_arquivos += 1
+            except OSError:
+                pass
+            try:
+                qr = arquivo.parent / "_qrcodes" / f"{arquivo.stem}_qrcode.png"
+                if qr.exists() and qr.is_file():
+                    qr.unlink()
+            except OSError:
+                pass
+
+        novos_documentos_salvos = []
+        for item in self.documentos_salvos:
+            if not isinstance(item, dict):
+                continue
+            if item.get("empresa_id") != empresa_id:
+                novos_documentos_salvos.append(item)
+                continue
+            caminho_item = self._normalizar_caminho_documento_db(item.get("caminho", ""))
+            if self._caminho_corresponde_nr_empresa(caminho_item, empresa, chave_alvo):
+                removidos_referencias += 1
+                continue
+            novos_documentos_salvos.append(item)
+        self.documentos_salvos = novos_documentos_salvos
+
+        documentos_filtrados = []
+        for doc in self.documentos:
+            if not isinstance(doc, dict) or doc.get("empresa_id") != empresa_id:
+                documentos_filtrados.append(doc)
+                continue
+
+            doc_novo = dict(doc)
+            cert_ref = str(doc_novo.get("certificado_arquivo", "") or "").strip()
+            if cert_ref and self._caminho_corresponde_nr_empresa(cert_ref, empresa, chave_alvo):
+                doc_novo["certificado_arquivo"] = ""
+                removidos_referencias += 1
+
+            arquivos = doc_novo.get("arquivos", {})
+            if not isinstance(arquivos, dict):
+                arquivos = {}
+            novos_arquivos = {}
+            for tipo, valor in arquivos.items():
+                tipo_txt = str(tipo or "").strip()
+                if not tipo_txt:
+                    continue
+                if isinstance(valor, list):
+                    lista_valida = []
+                    for caminho_item in valor:
+                        caminho_txt = str(caminho_item or "").strip()
+                        if not caminho_txt:
+                            continue
+                        if self._caminho_corresponde_nr_empresa(caminho_txt, empresa, chave_alvo):
+                            removidos_referencias += 1
+                            continue
+                        lista_valida.append(caminho_txt)
+                    if lista_valida:
+                        novos_arquivos[tipo_txt] = lista_valida
+                else:
+                    caminho_txt = str(valor or "").strip()
+                    if not caminho_txt:
+                        continue
+                    if self._caminho_corresponde_nr_empresa(caminho_txt, empresa, chave_alvo):
+                        removidos_referencias += 1
+                        continue
+                    novos_arquivos[tipo_txt] = caminho_txt
+
+            doc_novo["arquivos"] = novos_arquivos
+            doc_novo["tipos"] = [
+                tipo
+                for tipo in OUTROS_DOCUMENTOS_TIPOS
+                if tipo in novos_arquivos
+                and (
+                    (isinstance(novos_arquivos.get(tipo), list) and any(str(x or "").strip() for x in novos_arquivos.get(tipo)))
+                    or (not isinstance(novos_arquivos.get(tipo), list) and str(novos_arquivos.get(tipo) or "").strip())
+                )
+            ]
+
+            if str(doc_novo.get("certificado_arquivo", "") or "").strip() or self._listar_arquivos_outros_documentos(doc_novo):
+                documentos_filtrados.append(doc_novo)
+            else:
+                removidos_referencias += 1
+
+        self.documentos = documentos_filtrados
+        return removidos_arquivos, removidos_referencias
+
     def _nomes_nr_na_pasta_empresa(self, empresa_id):
         if empresa_id is None:
             return None
@@ -9736,12 +9868,33 @@ class App(tk.Tk):
                 messagebox.showwarning("Cadastro", "NR selecionada invalida.")
                 return
             nome_nr = str(self.nr_certificados[idx_nr].get("nome", "") or "").strip() or "NR"
-            if not messagebox.askyesno("Confirmar exclusao", f"Deseja excluir a NR '{nome_nr}'?"):
+            if not messagebox.askyesno(
+                "Confirmar exclusao",
+                (
+                    f"Deseja excluir definitivamente a NR '{nome_nr}'?\n"
+                    "Essa acao remove os arquivos da NR no projeto para a empresa selecionada."
+                ),
+            ):
                 return
+            removidos_arquivos, removidos_refs = self._excluir_nr_definitiva_no_projeto(empresa_id_sel, nome_nr)
+            chave_nr = self._normalizar_nome_nr(self._nome_nr_canonico(nome_nr))
             self._registrar_nr_excluida_empresa(empresa_id_sel, nome_nr)
-            self._remover_linha_nr(idx_nr)
+            self.nr_certificados = [
+                item
+                for item in self.nr_certificados
+                if self._normalizar_nome_nr(self._nome_nr_canonico(item.get("nome", ""))) != chave_nr
+            ]
+            self._aplicar_filtro_nr_por_empresa(empresa_id_sel, limpar_nr=False)
+            self._salvar_dados()
             atualizar_nr_por_empresa()
-            messagebox.showinfo("Cadastro", "NR excluida com sucesso.")
+            messagebox.showinfo(
+                "Cadastro",
+                (
+                    "NR excluida definitivamente.\n"
+                    f"Arquivos removidos: {int(removidos_arquivos)}\n"
+                    f"Referencias limpas: {int(removidos_refs)}"
+                ),
+            )
 
         ttk.Button(
             f_nr_botao,
