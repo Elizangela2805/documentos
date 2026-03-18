@@ -644,6 +644,7 @@
       uniferco: "Uniferco",
       wm: "WM Montagens Industriais",
       wmmontagensindustriais: "WM Montagens Industriais",
+      wmprojetosconsultoriaemontagensltda: "WM Montagens Industriais",
     };
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const obterOwnerRepoBranch = () => ({
@@ -1184,7 +1185,8 @@
         const empresaPorCaminho = new Map();
         for (const e of empresas) {
           const eid = Number(e?.id);
-          const nome = normalizarNomeEmpresa(String(e?.nome || "").trim());
+          const nomeBase = String(e?.nome_pasta || e?.nome || "").trim();
+          const nome = normalizarNomeEmpresa(nomeBase);
           if (!nome) continue;
           nomes.push(nome);
           const slug = slugEmpresa(nome);
