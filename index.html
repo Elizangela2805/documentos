@@ -241,8 +241,9 @@
       background: #ffffff;
     }
     body.document-mode .wrap {
+      width: 100%;
       max-width: none;
-      margin: 0;
+      margin: 0 auto;
       padding: 18px;
       padding-top: 124px;
       padding-bottom: 20px;
@@ -257,7 +258,8 @@
       display: flex !important;
       flex-direction: column;
       align-items: center;
-      width: min(1280px, calc(100vw - 56px));
+      width: 100%;
+      max-width: 1280px;
       border: 0;
       border-radius: 14px;
       box-shadow: none;
@@ -282,7 +284,8 @@
       background: linear-gradient(135deg, var(--brand), var(--brand2));
     }
     .doc-frame {
-      width: min(1220px, calc(100vw - 80px));
+      width: 100%;
+      max-width: 1220px;
       height: min(78vh, 980px);
       border: 1px solid #d9e2ec;
       border-radius: 10px;
@@ -1147,6 +1150,7 @@
           funcionariosPorEmpresa: new Map(),
           nomesEmpresaPorSlug: new Map(),
           empresaPorFuncionario: new Map(),
+          empresaPorCaminho: new Map(),
         };
       }
       try {
@@ -1158,15 +1162,18 @@
             funcionariosPorEmpresa: new Map(),
             nomesEmpresaPorSlug: new Map(),
             empresaPorFuncionario: new Map(),
+            empresaPorCaminho: new Map(),
           };
         }
         const data = await res.json();
         const empresas = Array.isArray(data?.empresas) ? data.empresas : [];
         const funcionarios = Array.isArray(data?.funcionarios) ? data.funcionarios : [];
+        const documentos = Array.isArray(data?.documentos) ? data.documentos : [];
         const nomes = [];
         const nomesEmpresaPorId = new Map();
         const nomesEmpresaPorSlug = new Map();
         const empresaPorFuncionario = new Map();
+        const empresaPorCaminho = new Map();
         for (const e of empresas) {
           const eid = Number(e?.id);
           const nome = normalizarNomeEmpresa(String(e?.nome || "").trim());
@@ -1191,11 +1198,22 @@
           const chaveFunc = slugUrl(nomeFunc);
           if (chaveFunc) empresaPorFuncionario.set(chaveFunc, empSlug);
         }
+        for (const d of documentos) {
+          const empresaId = Number(d?.empresa_id);
+          if (!Number.isFinite(empresaId)) continue;
+          const nomeEmp = nomesEmpresaPorId.get(empresaId);
+          if (!nomeEmp) continue;
+          const empSlug = slugEmpresa(nomeEmp);
+          if (!empSlug) continue;
+          const caminho = normFolder(String(d?.caminho || ""));
+          if (caminho) empresaPorCaminho.set(caminho.toLowerCase(), empSlug);
+        }
         return {
           empresas: [...new Set(nomes)],
           funcionariosPorEmpresa,
           nomesEmpresaPorSlug,
           empresaPorFuncionario,
+          empresaPorCaminho,
         };
       } catch {
         return {
@@ -1203,6 +1221,7 @@
           funcionariosPorEmpresa: new Map(),
           nomesEmpresaPorSlug: new Map(),
           empresaPorFuncionario: new Map(),
+          empresaPorCaminho: new Map(),
         };
       }
     };
@@ -1217,6 +1236,7 @@
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
         empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
+        empresaPorCaminho: cadastro?.empresaPorCaminho instanceof Map ? cadastro.empresaPorCaminho : new Map(),
       };
     };
 
@@ -1376,6 +1396,7 @@
       funcionariosCadastro = new Map(),
       nomesEmpresaPorSlug = new Map(),
       empresaPorFuncionario = new Map(),
+      empresaPorCaminho = new Map(),
     ) => {
       const catalogo = new Map();
       const sementes = [...EMPRESAS_PADRAO, ...(Array.isArray(empresasExtras) ? empresasExtras : [])];
@@ -1391,14 +1412,21 @@
         if (nomeArq.startsWith("_diag_upload_")) continue;
         const funcionario = extrairFuncionarioPublicoDoPath(it.path, it);
         if (isGrupoFuncionarioInvalido(funcionario)) continue;
+        const pathKey = normFolder(it?.path || "").toLowerCase();
         const chaveFunc = slugUrl(funcionario);
         let empSlug = "";
+        if (pathKey && empresaPorCaminho instanceof Map) {
+          empSlug = String(empresaPorCaminho.get(pathKey) || "").trim();
+        }
         if (chaveFunc && empresaPorFuncionario instanceof Map) {
-          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
+          empSlug = empSlug || String(empresaPorFuncionario.get(chaveFunc) || "").trim();
         }
         if (!empSlug) {
           const empresa = extrairEmpresaDoItem(it);
-          empSlug = slugEmpresa(empresa);
+          const empInferida = slugEmpresa(empresa);
+          if (empInferida && (catalogo.has(empInferida) || (nomesEmpresaPorSlug instanceof Map && nomesEmpresaPorSlug.has(empInferida)))) {
+            empSlug = empInferida;
+          }
         }
         if (!empSlug) continue;
         if (!catalogo.has(empSlug)) {
@@ -1431,8 +1459,14 @@
     };
 
     const renderHomeEmpresas = (catalogo) => {
+      const empresaBloqueadaHome = (slug, nome) => {
+        const s = String(slug || "").trim().toLowerCase();
+        const n = String(nome || "").trim().toLowerCase();
+        return s === "sidnei-vilela-da-silva" || /\bsidnei\b/.test(n);
+      };
       const empresas = [...catalogo.entries()]
         .map(([slug, data]) => ({ slug, nome: data.nome }))
+        .filter((e) => !empresaBloqueadaHome(e.slug, e.nome))
         .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
       el.tituloLista.textContent = "Empresas";
       if (!empresas.length) {
@@ -1445,6 +1479,11 @@
     };
 
     const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
+      if (String(empresaSlug || "").trim().toLowerCase() === "sidnei-vilela-da-silva") {
+        el.tituloLista.textContent = "Empresas";
+        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
+        return;
+      }
       const grupoEmp = catalogo.get(empresaSlug);
       if (!grupoEmp) {
         el.tituloLista.textContent = "Empresas";
@@ -1513,6 +1552,7 @@
       funcionariosCadastro = new Map(),
       nomesEmpresaPorSlug = new Map(),
       empresaPorFuncionario = new Map(),
+      empresaPorCaminho = new Map(),
     ) => {
       const catalogo = construirCatalogoEmpresas(
         items,
@@ -1520,6 +1560,7 @@
         funcionariosCadastro,
         nomesEmpresaPorSlug,
         empresaPorFuncionario,
+        empresaPorCaminho,
       );
       const p = new URLSearchParams(window.location.search);
       const empresaSel = slugEmpresa(p.get("empresa") || "");
@@ -1689,6 +1730,7 @@
           extras.funcionariosPorEmpresa,
           extras.nomesEmpresaPorSlug,
           extras.empresaPorFuncionario,
+          extras.empresaPorCaminho,
         );
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
@@ -1701,6 +1743,7 @@
             extras.funcionariosPorEmpresa,
             extras.nomesEmpresaPorSlug,
             extras.empresaPorFuncionario,
+            extras.empresaPorCaminho,
           );
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
@@ -1711,6 +1754,7 @@
             extras.funcionariosPorEmpresa,
             extras.nomesEmpresaPorSlug,
             extras.empresaPorFuncionario,
+            extras.empresaPorCaminho,
           );
           log(err.message, "err");
         }
