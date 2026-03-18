@@ -1215,9 +1215,25 @@
         };
       }
       try {
-        const url = `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`;
-        const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) {
+        const urls = [
+          `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_publico.json`,
+          `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`,
+        ];
+        let data = null;
+        for (const url of urls) {
+          try {
+            const res = await fetch(url, { cache: "no-store" });
+            if (!res.ok) continue;
+            const body = await res.json();
+            if (body && typeof body === "object") {
+              data = body;
+              break;
+            }
+          } catch {
+            continue;
+          }
+        }
+        if (!data) {
           return {
             empresas: [],
             funcionariosPorEmpresa: new Map(),
@@ -1226,7 +1242,6 @@
             empresaPorCaminho: new Map(),
           };
         }
-        const data = await res.json();
         const empresas = Array.isArray(data?.empresas) ? data.empresas : [];
         const funcionarios = Array.isArray(data?.funcionarios) ? data.funcionarios : [];
         const documentos = Array.isArray(data?.documentos) ? data.documentos : [];

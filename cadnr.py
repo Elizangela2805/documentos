@@ -692,6 +692,7 @@ class App(tk.Tk):
         self.cert_imprimir_empresa_ids = []
         self.cert_imprimir_funcionario_ids = []
         self.dados_path = Path(__file__).with_name("cadnr_dados.json")
+        self.dados_publico_path = Path(__file__).with_name("cadnr_publico.json")
         self.nr_certificados = self._nr_certificados_padrao()
         self.nr_excluidas_por_empresa = {}
         self.nr_certificados_widgets = []
@@ -7589,7 +7590,7 @@ class App(tk.Tk):
         return ";".join(entradas)
 
     def _caminhos_publicacao_empresas(self):
-        caminhos = [self.dados_path]
+        caminhos = [self.dados_path, self.dados_publico_path]
         for empresa in self.empresas:
             if not isinstance(empresa, dict):
                 continue
@@ -9107,6 +9108,59 @@ class App(tk.Tk):
             self.github_token = str(github_config.get("token", "") or "").strip()
         self._aplicar_configuracao_github_ambiente()
 
+    def _gerar_dados_publicos_site(self):
+        empresas_publicas = []
+        for emp in self.empresas:
+            if not isinstance(emp, dict):
+                continue
+            empresas_publicas.append(
+                {
+                    "id": emp.get("id") if isinstance(emp.get("id"), int) else None,
+                    "nome": str(emp.get("nome", "") or "").strip(),
+                    "nome_pasta": str(emp.get("nome_pasta", "") or "").strip(),
+                    "logo": str(emp.get("logo", "") or "").strip(),
+                }
+            )
+
+        funcionarios_publicos = []
+        for func in self.funcionarios:
+            if not isinstance(func, dict):
+                continue
+            funcionarios_publicos.append(
+                {
+                    "id": func.get("id") if isinstance(func.get("id"), int) else None,
+                    "nome": str(func.get("nome", "") or "").strip(),
+                    "nome_pasta": str(func.get("nome_pasta", "") or "").strip(),
+                    "empresa_id": func.get("empresa_id")
+                    if isinstance(func.get("empresa_id"), int)
+                    else None,
+                }
+            )
+
+        documentos_publicos = []
+        for doc in self.documentos:
+            if not isinstance(doc, dict):
+                continue
+            documentos_publicos.append(
+                {
+                    "caminho": str(doc.get("caminho", "") or "").strip(),
+                    "empresa_id": doc.get("empresa_id")
+                    if isinstance(doc.get("empresa_id"), int)
+                    else None,
+                    "funcionario_id": doc.get("funcionario_id")
+                    if isinstance(doc.get("funcionario_id"), int)
+                    else None,
+                    "tipo_documento": str(doc.get("tipo_documento", "") or "").strip(),
+                }
+            )
+
+        return {
+            "updated_at": self._iso_datetime_now(),
+            "empresas": empresas_publicas,
+            "funcionarios": funcionarios_publicos,
+            "documentos": documentos_publicos,
+        }
+
     def _salvar_dados(self):
         self._sincronizar_vinculo_funcionarios_empresas()
         self._garantir_pastas_empresas()
@@ -9206,6 +9260,10 @@ class App(tk.Tk):
         try:
             self.dados_path.write_text(
                 json.dumps(dados, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            self.dados_publico_path.write_text(
+                json.dumps(self._gerar_dados_publicos_site(), ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
             assinatura_empresas_atual = self._assinatura_publicacao_empresas()
