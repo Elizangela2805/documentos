@@ -636,6 +636,8 @@
     const rawUrl = (owner, repo, branch, path) => `https://raw.githubusercontent.com/${owner}/${repo}/${branch}/${encodeURI(path)}`;
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
+    const CHAVE_ACESSO_LISTAS = "projetta2026";
+    const CHAVE_STORAGE_KEY = "cadnr_chave_listas_ok_v1";
     const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco", "WM Montagens Industriais"];
     const EMPRESA_ALIASES = {
       ad2: "AD2",
@@ -1935,6 +1937,42 @@
       return true;
     };
 
+    const paginaListaEmpresas = () => {
+      if (isAdminMode) return false;
+      const rota = obterRotaDocumentoDaUrl();
+      return !rota;
+    };
+
+    const bloquearTelaPorChave = () => {
+      el.tituloLista.textContent = "Acesso restrito";
+      el.listaFuncionarios.innerHTML = `<div class="small">Informe a chave de acesso para visualizar empresas e funcionarios.</div>`;
+    };
+
+    const validarAcessoListas = () => {
+      if (!paginaListaEmpresas()) return true;
+      const p = new URLSearchParams(window.location.search);
+      const chaveUrl = String(p.get("chave") || "").trim();
+      const chaveLocal = String(localStorage.getItem(CHAVE_STORAGE_KEY) || "").trim();
+
+      if (chaveUrl && chaveUrl === CHAVE_ACESSO_LISTAS) {
+        localStorage.setItem(CHAVE_STORAGE_KEY, CHAVE_ACESSO_LISTAS);
+        p.delete("chave");
+        const novaQuery = p.toString();
+        const novoPath = `${window.location.pathname}${novaQuery ? `?${novaQuery}` : ""}${window.location.hash || ""}`;
+        window.history.replaceState({}, "", novoPath);
+        return true;
+      }
+      if (chaveLocal && chaveLocal === CHAVE_ACESSO_LISTAS) return true;
+
+      const informada = String(window.prompt("Informe a chave de acesso:") || "").trim();
+      if (informada === CHAVE_ACESSO_LISTAS) {
+        localStorage.setItem(CHAVE_STORAGE_KEY, CHAVE_ACESSO_LISTAS);
+        return true;
+      }
+      bloquearTelaPorChave();
+      return false;
+    };
+
     if (isAdminMode) {
       syncFileListSelected();
       renderHistorico();
@@ -1943,6 +1981,7 @@
       redirecionarConsultaQr();
       const emModoDocumento = await abrirModoDocumento();
       if (emModoDocumento) return;
+      if (!validarAcessoListas()) return;
       atualizarLista();
     })();
   </script>
