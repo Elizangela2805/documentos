@@ -355,20 +355,28 @@
       .funcionario-docs ul { padding-left: 14px; }
       .funcionario-docs li { margin: 6px 0; }
       body.document-mode .wrap {
+        width: 100%;
         padding: 8px;
         padding-top: 114px;
         padding-bottom: 14px;
+        display: flex;
+        justify-content: center;
       }
       body.document-mode .panel.doc-view {
         padding: 8px;
         border-radius: 10px;
-        width: 100%;
+        width: min(100%, 560px);
+        margin: 0 auto;
+        align-items: center;
       }
       .doc-frame {
         width: 100%;
+        max-width: 560px;
         height: 68vh;
         min-height: 420px;
         border-radius: 8px;
+        margin-left: auto;
+        margin-right: auto;
       }
       .doc-actions { margin-top: 10px; }
       .doc-download-btn {
@@ -1459,14 +1467,8 @@
     };
 
     const renderHomeEmpresas = (catalogo) => {
-      const empresaBloqueadaHome = (slug, nome) => {
-        const s = String(slug || "").trim().toLowerCase();
-        const n = String(nome || "").trim().toLowerCase();
-        return s === "sidnei-vilela-da-silva" || /\bsidnei\b/.test(n);
-      };
       const empresas = [...catalogo.entries()]
         .map(([slug, data]) => ({ slug, nome: data.nome }))
-        .filter((e) => !empresaBloqueadaHome(e.slug, e.nome))
         .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
       el.tituloLista.textContent = "Empresas";
       if (!empresas.length) {
@@ -1479,11 +1481,6 @@
     };
 
     const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
-      if (String(empresaSlug || "").trim().toLowerCase() === "sidnei-vilela-da-silva") {
-        el.tituloLista.textContent = "Empresas";
-        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
-        return;
-      }
       const grupoEmp = catalogo.get(empresaSlug);
       if (!grupoEmp) {
         el.tituloLista.textContent = "Empresas";
