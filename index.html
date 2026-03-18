@@ -1138,17 +1138,32 @@
       const o = String(owner || "").trim();
       const r = String(repo || "").trim();
       const b = String(branch || "main").trim() || "main";
-      if (!o || !r) return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
+      if (!o || !r) {
+        return {
+          empresas: [],
+          funcionariosPorEmpresa: new Map(),
+          nomesEmpresaPorSlug: new Map(),
+          empresaPorFuncionario: new Map(),
+        };
+      }
       try {
         const url = `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`;
         const res = await fetch(url, { cache: "no-store" });
-        if (!res.ok) return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
+        if (!res.ok) {
+          return {
+            empresas: [],
+            funcionariosPorEmpresa: new Map(),
+            nomesEmpresaPorSlug: new Map(),
+            empresaPorFuncionario: new Map(),
+          };
+        }
         const data = await res.json();
         const empresas = Array.isArray(data?.empresas) ? data.empresas : [];
         const funcionarios = Array.isArray(data?.funcionarios) ? data.funcionarios : [];
         const nomes = [];
         const nomesEmpresaPorId = new Map();
         const nomesEmpresaPorSlug = new Map();
+        const empresaPorFuncionario = new Map();
         for (const e of empresas) {
           const eid = Number(e?.id);
           const nome = normalizarNomeEmpresa(String(e?.nome || "").trim());
@@ -1170,14 +1185,22 @@
           if (!empSlug) continue;
           if (!funcionariosPorEmpresa.has(empSlug)) funcionariosPorEmpresa.set(empSlug, new Set());
           funcionariosPorEmpresa.get(empSlug).add(nomeFunc);
+          const chaveFunc = slugUrl(nomeFunc);
+          if (chaveFunc) empresaPorFuncionario.set(chaveFunc, empSlug);
         }
         return {
           empresas: [...new Set(nomes)],
           funcionariosPorEmpresa,
           nomesEmpresaPorSlug,
+          empresaPorFuncionario,
         };
       } catch {
-        return { empresas: [], funcionariosPorEmpresa: new Map(), nomesEmpresaPorSlug: new Map() };
+        return {
+          empresas: [],
+          funcionariosPorEmpresa: new Map(),
+          nomesEmpresaPorSlug: new Map(),
+          empresaPorFuncionario: new Map(),
+        };
       }
     };
 
@@ -1190,6 +1213,7 @@
         empresas: [...new Set([...(viaLogos || []), ...((cadastro?.empresas) || [])])],
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
+        empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
       };
     };
 
@@ -1343,7 +1367,13 @@
       }
     };
 
-    const construirCatalogoEmpresas = (items, empresasExtras = [], funcionariosCadastro = new Map(), nomesEmpresaPorSlug = new Map()) => {
+    const construirCatalogoEmpresas = (
+      items,
+      empresasExtras = [],
+      funcionariosCadastro = new Map(),
+      nomesEmpresaPorSlug = new Map(),
+      empresaPorFuncionario = new Map(),
+    ) => {
       const catalogo = new Map();
       const sementes = [...EMPRESAS_PADRAO, ...(Array.isArray(empresasExtras) ? empresasExtras : [])];
       for (const nomeBase of sementes) {
@@ -1358,11 +1388,20 @@
         if (nomeArq.startsWith("_diag_upload_")) continue;
         const funcionario = extrairFuncionarioPublicoDoPath(it.path, it);
         if (isGrupoFuncionarioInvalido(funcionario)) continue;
-        const empresa = extrairEmpresaDoItem(it);
-        const empSlug = slugEmpresa(empresa);
+        const chaveFunc = slugUrl(funcionario);
+        let empSlug = "";
+        if (chaveFunc && empresaPorFuncionario instanceof Map) {
+          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
+        }
+        if (!empSlug) {
+          const empresa = extrairEmpresaDoItem(it);
+          empSlug = slugEmpresa(empresa);
+        }
         if (!empSlug) continue;
         if (!catalogo.has(empSlug)) {
-          catalogo.set(empSlug, { nome: empresa, funcionarios: new Map() });
+          const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
+          const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
+          catalogo.set(empSlug, { nome: nomeEmp || empSlug, funcionarios: new Map() });
         }
         const grupoEmp = catalogo.get(empSlug);
         if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
@@ -1470,8 +1509,15 @@
       empresasExtras = [],
       funcionariosCadastro = new Map(),
       nomesEmpresaPorSlug = new Map(),
+      empresaPorFuncionario = new Map(),
     ) => {
-      const catalogo = construirCatalogoEmpresas(items, empresasExtras, funcionariosCadastro, nomesEmpresaPorSlug);
+      const catalogo = construirCatalogoEmpresas(
+        items,
+        empresasExtras,
+        funcionariosCadastro,
+        nomesEmpresaPorSlug,
+        empresaPorFuncionario,
+      );
       const p = new URLSearchParams(window.location.search);
       const empresaSel = slugEmpresa(p.get("empresa") || "");
       if (!empresaSel) {
@@ -1642,6 +1688,7 @@
             extras.empresas,
             extras.funcionariosPorEmpresa,
             extras.nomesEmpresaPorSlug,
+            extras.empresaPorFuncionario,
           );
         }
         log(`Total de PDFs listados: ${items.length}`, "ok");
@@ -1657,6 +1704,7 @@
               extras.empresas,
               extras.funcionariosPorEmpresa,
               extras.nomesEmpresaPorSlug,
+              extras.empresaPorFuncionario,
             );
           }
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
@@ -1670,6 +1718,7 @@
               extras.empresas,
               extras.funcionariosPorEmpresa,
               extras.nomesEmpresaPorSlug,
+              extras.empresaPorFuncionario,
             );
           }
           log(err.message, "err");
@@ -1758,7 +1807,9 @@
     const montarUrlViewerPdf = (pdfUrl) => {
       const base = String(pdfUrl || "").trim();
       if (!base) return "";
-      if (isMobileDevice()) return base;
+      if (isMobileDevice()) {
+        return `https://mozilla.github.io/pdf.js/web/viewer.html?file=${encodeURIComponent(base)}#zoom=page-width`;
+      }
       return `${base}#toolbar=1&navpanes=0&scrollbar=1`;
     };
 
