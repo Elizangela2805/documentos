@@ -1106,11 +1106,11 @@
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, " ")
         .trim();
-      if (/^wm(\s|$)/.test(txt) || txt.includes("wm montagens") || txt.includes("wm projetos")) return "WM Montagens Industriais";
-      if (/^ad2(\s|$)/.test(txt)) return "AD2";
-      if (/^rjm(\s|$)/.test(txt)) return "RJM";
-      if (/^uniferco(\s|$)/.test(txt)) return "Uniferco";
-      if (/^projetta(\s|$)/.test(txt) || txt.includes("projetta engenharia")) return "Projetta";
+      if (/\bwm\b/.test(txt) || txt.includes("wm montagens") || txt.includes("wm projetos")) return "WM Montagens Industriais";
+      if (/\bad2\b/.test(txt)) return "AD2";
+      if (/\brjm\b/.test(txt)) return "RJM";
+      if (/\buniferco\b/.test(txt)) return "Uniferco";
+      if (/\bprojetta\b/.test(txt) || txt.includes("projetta engenharia")) return "Projetta";
       return base;
     };
 
