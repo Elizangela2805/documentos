@@ -617,6 +617,14 @@
     const blobUrl = (owner, repo, branch, path) => `https://github.com/${owner}/${repo}/blob/${branchEsc(branch)}/${encodeURI(path)}`;
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco"];
+    const EMPRESA_ALIASES = {
+      ad2: "AD2",
+      projetta: "Projetta",
+      rjm: "RJM",
+      uniferco: "Uniferco",
+      wm: "WM Montagens Industriais",
+      wmmontagensindustriais: "WM Montagens Industriais",
+    };
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const obterOwnerRepoBranch = () => ({
       owner: el.owner?.value?.trim() || "Elizangela2805",
@@ -1064,16 +1072,60 @@
 
     const slugEmpresa = (nome) => slugUrl(String(nome || "").trim());
 
+    const normalizarNomeEmpresa = (nome) => {
+      const base = String(nome || "").trim();
+      if (!base) return "";
+      const slug = slugEmpresa(base);
+      if (!slug) return base;
+      return EMPRESA_ALIASES[slug] || base;
+    };
+
     const extrairEmpresaDoItem = (it) => {
-      const empItem = String(it?.empresa || "").trim();
+      const empItem = normalizarNomeEmpresa(it?.empresa || "");
       if (empItem) return empItem;
+      const pathNorm = normFolder(it?.path || "");
+      if (pathNorm) {
+        const partes = pathNorm.split("/").filter(Boolean);
+        if (partes.length >= 2 && String(partes[0]).toLowerCase() === "_pdf_gerados") {
+          const primeiraPasta = String(partes[1] || "").trim();
+          if (primeiraPasta && !/\.pdf$/i.test(primeiraPasta) && !/^\d{8}$/.test(primeiraPasta)) {
+            const candidatoPath = normalizarNomeEmpresa(primeiraPasta);
+            if (candidatoPath) return candidatoPath;
+          }
+        }
+      }
       const nomeArq = String(it?.nome || normFolder(it?.path || "").split("/").pop() || "").replace(/\.pdf$/i, "");
       const mParen = nomeArq.match(/\(([^)]+)\)/g);
       if (mParen && mParen.length) {
-        const ultima = String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim();
+        const ultima = normalizarNomeEmpresa(String(mParen[mParen.length - 1] || "").replace(/[()]/g, "").trim());
         if (ultima) return ultima;
       }
       return "Projetta";
+    };
+
+    const listarEmpresasPorLogos = async (owner, repo, branch) => {
+      const o = String(owner || "").trim();
+      const r = String(repo || "").trim();
+      const b = String(branch || "main").trim() || "main";
+      if (!o || !r) return [];
+      try {
+        const url = `https://api.github.com/repos/${o}/${r}/contents/_logos_empresas?ref=${encodeURIComponent(b)}`;
+        const res = await fetch(url, { headers: { Accept: "application/vnd.github+json" } });
+        if (!res.ok) return [];
+        const data = await res.json();
+        if (!Array.isArray(data)) return [];
+        const empresas = [];
+        for (const item of data) {
+          const nomeArq = String(item?.name || "").trim();
+          const m = nomeArq.match(/^\d+_(.+)\.(png|jpg|jpeg|webp|bmp|gif)$/i);
+          if (!m) continue;
+          const nome = normalizarNomeEmpresa(String(m[1] || "").replace(/[_-]+/g, " ").trim());
+          if (nome) empresas.push(nome);
+        }
+        return [...new Set(empresas)];
+      } catch {
+        return [];
+      }
     };
 
     const extrairFuncionarioDoPath = (path, item = null) => {
@@ -1226,9 +1278,11 @@
       }
     };
 
-    const construirCatalogoEmpresas = (items) => {
+    const construirCatalogoEmpresas = (items, empresasExtras = []) => {
       const catalogo = new Map();
-      for (const nomePadrao of EMPRESAS_PADRAO) {
+      const sementes = [...EMPRESAS_PADRAO, ...(Array.isArray(empresasExtras) ? empresasExtras : [])];
+      for (const nomeBase of sementes) {
+        const nomePadrao = normalizarNomeEmpresa(nomeBase);
         const slug = slugEmpresa(nomePadrao);
         if (slug && !catalogo.has(slug)) {
           catalogo.set(slug, { nome: nomePadrao, funcionarios: new Map() });
@@ -1329,8 +1383,8 @@
       }
     };
 
-    const renderPublicoEmpresasFuncionarios = (items) => {
-      const catalogo = construirCatalogoEmpresas(items);
+    const renderPublicoEmpresasFuncionarios = (items, empresasExtras = []) => {
+      const catalogo = construirCatalogoEmpresas(items, empresasExtras);
       const p = new URLSearchParams(window.location.search);
       const empresaSel = slugEmpresa(p.get("empresa") || "");
       if (!empresaSel) {
@@ -1492,14 +1546,22 @@
             try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
           }
         }
-        if (isAdminMode) mountFuncionarios(items);
-        else renderPublicoEmpresasFuncionarios(items);
+        if (isAdminMode) {
+          mountFuncionarios(items);
+        } else {
+          const empresasExtras = await listarEmpresasPorLogos(owner, repo, branch);
+          renderPublicoEmpresasFuncionarios(items, empresasExtras);
+        }
         log(`Total de PDFs listados: ${items.length}`, "ok");
       } catch (err) {
         const idx = await carregarIndicePublico();
         if (idx.length) {
-          if (isAdminMode) mountFuncionarios(idx);
-          else renderPublicoEmpresasFuncionarios(idx);
+          if (isAdminMode) {
+            mountFuncionarios(idx);
+          } else {
+            const empresasExtras = await listarEmpresasPorLogos(owner, repo, branch);
+            renderPublicoEmpresasFuncionarios(idx, empresasExtras);
+          }
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
           mountFuncionarios([]);
