@@ -1679,48 +1679,36 @@
             try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
           }
         }
-        if (isAdminMode) {
-          mountFuncionarios(items);
-        } else {
+        const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
+        renderPublicoEmpresasFuncionarios(
+          items,
+          extras.empresas,
+          extras.funcionariosPorEmpresa,
+          extras.nomesEmpresaPorSlug,
+          extras.empresaPorFuncionario,
+        );
+        log(`Total de PDFs listados: ${items.length}`, "ok");
+      } catch (err) {
+        const idx = await carregarIndicePublico();
+        if (idx.length) {
           const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
           renderPublicoEmpresasFuncionarios(
-            items,
+            idx,
             extras.empresas,
             extras.funcionariosPorEmpresa,
             extras.nomesEmpresaPorSlug,
             extras.empresaPorFuncionario,
           );
-        }
-        log(`Total de PDFs listados: ${items.length}`, "ok");
-      } catch (err) {
-        const idx = await carregarIndicePublico();
-        if (idx.length) {
-          if (isAdminMode) {
-            mountFuncionarios(idx);
-          } else {
-            const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-            renderPublicoEmpresasFuncionarios(
-              idx,
-              extras.empresas,
-              extras.funcionariosPorEmpresa,
-              extras.nomesEmpresaPorSlug,
-              extras.empresaPorFuncionario,
-            );
-          }
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
-          if (isAdminMode) {
-            mountFuncionarios([]);
-          } else {
-            const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-            renderPublicoEmpresasFuncionarios(
-              [],
-              extras.empresas,
-              extras.funcionariosPorEmpresa,
-              extras.nomesEmpresaPorSlug,
-              extras.empresaPorFuncionario,
-            );
-          }
+          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
+          renderPublicoEmpresasFuncionarios(
+            [],
+            extras.empresas,
+            extras.funcionariosPorEmpresa,
+            extras.nomesEmpresaPorSlug,
+            extras.empresaPorFuncionario,
+          );
           log(err.message, "err");
         }
       } finally {
