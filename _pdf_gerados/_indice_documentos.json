@@ -1,36 +1,5 @@
 {
-  "updated_at": "2026-03-19T10:38:34.735Z",
-  "total": 3,
-  "items": [
-    {
-      "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
-      "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
-      "funcionario": "Sidnei Vilela da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/19032026",
-      "route_funcionario": "sidneivileladasilva",
-      "route_documento": "nr6",
-      "route_data": "19032026",
-      "route": "sidneivileladasilva/nr6/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 18 (08) (WM Sidnei Vilela da Silva.pdf",
-      "nome": "NR 18 (08) (WM Sidnei Vilela da Silva.pdf",
-      "funcionario": "Sidnei Vilela da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr18/19032026",
-      "route_funcionario": "sidneivileladasilva",
-      "route_documento": "nr18",
-      "route_data": "19032026",
-      "route": "sidneivileladasilva/nr18/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 35 (08) (WM Sidnei Vilela da Silva.pdf",
-      "nome": "NR 35 (08) (WM Sidnei Vilela da Silva.pdf",
-      "funcionario": "Sidnei Vilela da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr35/19032026",
-      "route_funcionario": "sidneivileladasilva",
-      "route_documento": "nr35",
-      "route_data": "19032026",
-      "route": "sidneivileladasilva/nr35/19032026"
-    }
-  ]
+  "updated_at": "2026-03-19T10:40:01.712Z",
+  "total": 0,
+  "items": []
 }
