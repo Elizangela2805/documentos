@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-19T12:59:35",
+  "updated_at": "2026-03-19T15:11:09",
   "empresas": [
     {
       "id": 1,
@@ -42,6 +42,12 @@
       "nome": "MG Monte Montagens Industriais LTDA",
       "nome_pasta": "MG Monte",
       "logo": "_logos_empresas/7_MG Monte.png"
+    },
+    {
+      "id": 8,
+      "nome": "3 mmm Guindastes e Serviços LTDA",
+      "nome_pasta": "3 MMM",
+      "logo": "_logos_empresas/8_3 MMM.jpeg"
     }
   ],
   "funcionarios": [
@@ -56,6 +62,12 @@
       "nome": "Rochael de Almeida Linhares Junior",
       "nome_pasta": "RJM",
       "empresa_id": 2
+    },
+    {
+      "id": 3,
+      "nome": "Emerson Pereira de Oliveira",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
     },
     {
       "id": 4,
@@ -158,6 +170,12 @@
       "nome": "Judson Cleyton Dias",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
+    },
+    {
+      "id": 21,
+      "nome": "Lucio Dirceu Zanatta",
+      "nome_pasta": "3 MMM",
+      "empresa_id": 8
     }
   ],
   "documentos": [
@@ -284,6 +302,12 @@
     {
       "caminho": "",
       "empresa_id": 6,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 8,
       "funcionario_id": null,
       "tipo_documento": ""
     }
