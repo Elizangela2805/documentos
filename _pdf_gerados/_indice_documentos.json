@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T10:50:49Z",
-  "total": 12,
+  "updated_at": "2026-03-19T10:52:52Z",
+  "total": 13,
   "items": [
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
@@ -121,6 +121,16 @@
       "route_documento": "nr10",
       "route_data": "19032026",
       "route": "douglasaparecidobenjamin/nr10/19032026"
+    },
+    {
+      "path": "_pdf_gerados/Claudinei Ribas/NR 6 (08) (WM Claudinei Ribas.pdf",
+      "nome": "NR 6 (08) (WM Claudinei Ribas.pdf",
+      "funcionario": "Claudinei Ribas",
+      "consulta": "https://elizangela2805.github.io/documentos/claudineiribas/nr6/19032026",
+      "route_funcionario": "claudineiribas",
+      "route_documento": "nr6",
+      "route_data": "19032026",
+      "route": "claudineiribas/nr6/19032026"
     }
   ]
 }
