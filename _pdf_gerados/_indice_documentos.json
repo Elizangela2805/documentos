@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T16:31:13Z",
-  "total": 26,
+  "updated_at": "2026-03-19T16:31:26Z",
+  "total": 27,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -177,6 +177,16 @@
       "route_documento": "ossoldadorprojettalucasferreiradasilvasantos",
       "route_data": "19032026",
       "route": "lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/19032026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/epi soldador Lucas Ferreira da Silva Santos.pdf",
+      "nome": "epi soldador Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "episoldadorlucasferreiradasilvasantos",
+      "route_data": "19032026",
+      "route": "lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026"
     }
   ]
 }
