@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T12:58:50Z",
-  "total": 28,
+  "updated_at": "2026-03-19T13:04:25.618Z",
+  "total": 21,
   "items": [
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
@@ -211,76 +211,6 @@
       "route_documento": "nr34",
       "route_data": "19032026",
       "route": "judsoncleytondias/nr34/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/NR 18 (120-guin Lucas Ferreira da Silva Santos.pdf",
-      "nome": "NR 18 (120-guin Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/nr18/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "nr18",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/nr18/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
-      "nome": "NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/nr35/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "nr35",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/nr35/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "nome": "anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/anuenciaprojettalucasferreiradasilvasantos/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "anuenciaprojettalucasferreiradasilvasantos",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/anuenciaprojettalucasferreiradasilvasantos/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/fittest (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "nome": "fittest (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/fittestprojettalucasferreiradasilvasantos/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "fittestprojettalucasferreiradasilvasantos",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/fittestprojettalucasferreiradasilvasantos/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "nome": "OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "ossoldadorprojettalucasferreiradasilvasantos",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/epi soldador Lucas Ferreira da Silva Santos.pdf",
-      "nome": "epi soldador Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "episoldadorlucasferreiradasilvasantos",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/carteirinha nr 18 (120-guin) (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "nome": "carteirinha nr 18 (120-guin) (Projetta) Lucas Ferreira da Silva Santos.pdf",
-      "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/carteirinhanr18120guinprojettalucasferreiradasilvasantos/19032026",
-      "route_funcionario": "lucasferreiradasilvasantos",
-      "route_documento": "carteirinhanr18120guinprojettalucasferreiradasilvasantos",
-      "route_data": "19032026",
-      "route": "lucasferreiradasilvasantos/carteirinhanr18120guinprojettalucasferreiradasilvasantos/19032026"
     }
   ]
 }
