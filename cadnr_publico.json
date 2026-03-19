@@ -1,5 +1,5 @@
 {
-  "updated_at": "",
+  "updated_at": "2026-03-19T09:15:14",
   "empresas": [
     {
       "id": 1,
@@ -36,6 +36,12 @@
       "nome": "VCMS Montagens Industriais LTDA",
       "nome_pasta": "VCMS Montagens",
       "logo": ""
+    },
+    {
+      "id": 7,
+      "nome": "MG Monte Montagens Industriais LTDA",
+      "nome_pasta": "MG Monte",
+      "logo": "_logos_empresas/7_MG Monte.png"
     }
   ],
   "funcionarios": [
