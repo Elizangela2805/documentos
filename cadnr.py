@@ -3310,6 +3310,13 @@ class App(tk.Tk):
             sufixo = str(m_nr.group(2) or "").strip()
             if sufixo not in {"pta"}:
                 sufixo = ""
+            if not sufixo:
+                # Diferencia variacoes de NR como "(16-emp)" e "(16-pr)".
+                m_var = re.search(r"\(\s*\d{1,3}\s*[-_]\s*(emp|pr)\s*\)", stem_ascii)
+                if not m_var:
+                    m_var = re.search(r"\b\d{1,3}\s*[-_]\s*(emp|pr)\b", stem_ascii)
+                if m_var:
+                    sufixo = str(m_var.group(1) or "").strip()
             return f"nr{numero}{sufixo}"
         slug = App._slug_url_texto(stem)
         return slug or "documento"
@@ -4543,6 +4550,10 @@ class App(tk.Tk):
             return None
         destino = Path(__file__).resolve().parent / nome_limpo
         destino.mkdir(parents=True, exist_ok=True)
+        # Garante versionamento da pasta mesmo quando ainda nao ha documentos.
+        gitkeep = destino / ".gitkeep"
+        if not gitkeep.exists():
+            gitkeep.write_text("", encoding="utf-8")
         return destino
 
     def _garantir_pastas_empresas(self):
@@ -4834,10 +4845,11 @@ class App(tk.Tk):
             return
 
     def _avisar_falha_git_auto(self, detalhe):
+        detalhe_txt = str(detalhe or "").strip()
         if self._aviso_git_auto_exibido:
             return
         self._aviso_git_auto_exibido = True
-        detalhe_txt = str(detalhe or "").strip() or "erro nao identificado"
+        detalhe_txt = detalhe_txt or "erro nao identificado"
         messagebox.showwarning(
             "Git Auto",
             "Nao foi possivel executar commit + push automatico.\n"
@@ -4974,6 +4986,27 @@ class App(tk.Tk):
                     saida_push = (proc_push.stderr or proc_push.stdout or "").strip()
                     saida_push_norm = saida_push.lower()
                     if "non-fast-forward" in saida_push_norm or "fetch first" in saida_push_norm:
+                        # Pull --rebase exige arvore de trabalho limpa. Quando ha edicoes locais
+                        # fora do lote auto-commitado, informa claramente a acao necessaria.
+                        proc_dirty = subprocess.run(
+                            ["git", "-C", str(repo_dir), "status", "--porcelain"],
+                            check=False,
+                            capture_output=True,
+                            text=True,
+                            timeout=20,
+                        )
+                        dirty_lines = [
+                            ln.strip()
+                            for ln in str(proc_dirty.stdout or "").splitlines()
+                            if ln.strip()
+                        ]
+                        if dirty_lines:
+                            raise RuntimeError(
+                                "Push rejeitado (non-fast-forward) e ha alteracoes locais pendentes; "
+                                "o pull --rebase automatico foi bloqueado. "
+                                "Sincronize com 'git pull --rebase --autostash origin main' "
+                                "ou commit/stash das alteracoes antes de tentar novamente."
+                            )
                         proc_pull_rebase = subprocess.run(
                             ["git", "-C", str(repo_dir), "pull", "--rebase"],
                             check=False,
@@ -5100,6 +5133,7 @@ class App(tk.Tk):
         caminho_pdf = Path(str(caminho_norm or "")).expanduser()
         if not caminho_pdf.is_absolute():
             caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
+        tipo_sync_norm = str(item.get("tipo_documento", "") or "").strip().casefold()
         if caminho_pdf.suffix.lower() == ".pdf":
             if self._assinatura_digital_ativa():
                 ok_assin, msg_assin = self._assinar_pdf_por_marcadores(caminho_pdf)
@@ -5116,7 +5150,12 @@ class App(tk.Tk):
             else:
                 item["assinatura_digital"] = "nao_configurada"
             self._sincronizar_pdf_na_area_de_trabalho(caminho_pdf, item.get("qrcode", ""))
-            self._sincronizar_pdf_no_github(caminho_pdf, item.get("qrcode", ""))
+        if caminho_pdf.suffix.lower() == ".pdf" or tipo_sync_norm == "carteirinha":
+            self._sincronizar_pdf_no_github(
+                caminho_pdf,
+                item.get("qrcode", ""),
+                tipo_documento=item.get("tipo_documento", ""),
+            )
         for idx, existente in enumerate(self.documentos_salvos):
             if str(existente.get("caminho", "") or "").strip() == caminho_norm:
                 self.documentos_salvos[idx] = item
@@ -5149,14 +5188,27 @@ class App(tk.Tk):
             caminho_pdf = Path(str(caminho_txt)).expanduser()
             if not caminho_pdf.is_absolute():
                 caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
-            if caminho_pdf.suffix.lower() != ".pdf" or not caminho_pdf.exists() or not caminho_pdf.is_file():
+            tipo_norm = str(item.get("tipo_documento", "") or "").strip().casefold()
+            if caminho_pdf.suffix.lower() != ".pdf" and tipo_norm != "carteirinha":
+                continue
+            if not caminho_pdf.exists() or not caminho_pdf.is_file():
+                if tipo_norm == "carteirinha":
+                    candidato_pdf = caminho_pdf.with_suffix(".pdf")
+                    if candidato_pdf.exists() and candidato_pdf.is_file():
+                        caminho_pdf = candidato_pdf
+            if not caminho_pdf.exists() or not caminho_pdf.is_file():
                 continue
             chave = str(caminho_pdf.resolve())
             if chave in vistos:
                 continue
             vistos.add(chave)
             caminho_qr = str(item.get("qrcode", "") or "").strip()
-            self._sincronizar_pdf_no_github(caminho_pdf, caminho_qr, avisar_falha=False)
+            self._sincronizar_pdf_no_github(
+                caminho_pdf,
+                caminho_qr,
+                avisar_falha=False,
+                tipo_documento=item.get("tipo_documento", ""),
+            )
 
     def _avisar_falha_desktop_sync(self, detalhe):
         if self._aviso_desktop_sync_exibido:
@@ -5241,12 +5293,21 @@ class App(tk.Tk):
         except Exception as exc:
             self._avisar_falha_desktop_sync(exc)
 
-    def _sincronizar_pdf_no_github(self, caminho_pdf, caminho_qr="", avisar_falha=True):
+    def _sincronizar_pdf_no_github(self, caminho_pdf, caminho_qr="", avisar_falha=True, tipo_documento=""):
         try:
             caminho = Path(str(caminho_pdf or "")).expanduser()
             if not caminho.is_absolute():
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
-            if caminho.suffix.lower() != ".pdf" or not caminho.exists() or not caminho.is_file():
+            tipo_norm = str(tipo_documento or "").strip().casefold()
+            if caminho.suffix.lower() != ".pdf":
+                # Para carteirinha, se a referencia vier em DOCX, tenta o PDF homonimo.
+                if tipo_norm == "carteirinha":
+                    candidato_pdf = caminho.with_suffix(".pdf")
+                    if candidato_pdf.exists() and candidato_pdf.is_file():
+                        caminho = candidato_pdf
+                if caminho.suffix.lower() != ".pdf":
+                    return
+            if not caminho.exists() or not caminho.is_file():
                 return
             # Publica o PDF no repositorio remoto do site via API.
             url_publicada = self._publicar_arquivo_no_site(caminho)
@@ -5370,7 +5431,7 @@ class App(tk.Tk):
         self,
         caminho_docx,
         caminho_qr,
-        tamanho_cm=1.8,
+        tamanho_cm=1.3,
         margem_esquerda_cm=0.1,
     ):
         inseriu_marcador, _ = self._inserir_imagem_por_marcador_docx(
@@ -6978,7 +7039,9 @@ class App(tk.Tk):
                 if tipo_norm in {"anuencia", "anuência"} and not nr35_selecionada:
                     falhas.append(f"{tipo_doc}: ignorado (NR 35 nao selecionada)")
                     continue
-                if tipo_norm == "carteirinha":
+                if tipo_norm in {"anuencia", "anuência"}:
+                    pass
+                elif tipo_norm == "carteirinha":
                     if not self._arquivo_vinculado_nr_carteirinha(caminho_ref):
                         falhas.append(f"{tipo_doc}: ignorado (carteirinha nao vinculada a NR selecionada)")
                         continue
@@ -7697,7 +7760,7 @@ class App(tk.Tk):
                     self._ultimo_qr_embutido_docx = self._inserir_qrcode_em_carteirinha_docx(
                         destino_docx,
                         caminho_qr_temp,
-                        tamanho_cm=1.8,
+                        tamanho_cm=1.3,
                         margem_esquerda_cm=0.1,
                     )
                 except Exception:
@@ -7815,6 +7878,10 @@ class App(tk.Tk):
         for empresa in self.empresas:
             if not isinstance(empresa, dict):
                 continue
+            nome_ref = str(empresa.get("nome_pasta", "") or empresa.get("nome", "") or "").strip()
+            pasta_empresa = self._criar_pasta_empresa_cadnr(nome_ref)
+            if pasta_empresa is not None:
+                caminhos.append(pasta_empresa / ".gitkeep")
             caminho_logo = self._resolver_logo_empresa(empresa.get("logo", ""))
             if caminho_logo is not None and caminho_logo.exists() and caminho_logo.is_file():
                 caminhos.append(caminho_logo)
@@ -7942,6 +8009,15 @@ class App(tk.Tk):
         for tipo, caminho in itens_documentos:
             tipo_norm = str(tipo).strip().casefold()
             if tipo_norm in {"anuencia", "anuência"} and not nr35_selecionada:
+                continue
+            if tipo_norm in {"anuencia", "anuência"}:
+                disponiveis.append(
+                    {
+                        "empresa_id": empresa_id_sel,
+                        "tipo": tipo,
+                        "caminho": caminho,
+                    }
+                )
                 continue
             if tipo_norm == "carteirinha":
                 if not self._arquivo_vinculado_nr_carteirinha(caminho):
@@ -8156,8 +8232,9 @@ class App(tk.Tk):
             # Se a NR marcada exige carga horaria, o arquivo deve conter a mesma carga.
             if cargas and not (cargas_arq & cargas):
                 # Fallback pragmatico: para subtipos de equipamento (ex.: munck/pr/emp),
-                # se o subtipo bate, aceitamos mesmo com carga diferente no nome.
-                if not (codigos and (codigos_arq & codigos)):
+                # se o arquivo nao informa carga mas informa o subtipo, aceitamos.
+                # Quando o arquivo informa carga (ex.: 16-pr vs 40-pr), exigimos a carga correta.
+                if cargas_arq or not (codigos and (codigos_arq & codigos)):
                     continue
             # Se a NR marcada exige subtipo/codigo, o arquivo deve conter o mesmo subtipo.
             if codigos and not (codigos_arq & codigos):
@@ -8391,7 +8468,9 @@ class App(tk.Tk):
         selecionados_sem_vinculo = []
         for tipo, caminho in selecionados:
             tipo_norm = str(tipo or "").strip().casefold()
-            if tipo_norm == "carteirinha":
+            if tipo_norm in {"anuencia", "anuência"}:
+                vinculado = True
+            elif tipo_norm == "carteirinha":
                 vinculado = self._arquivo_vinculado_nr_carteirinha(caminho)
             else:
                 if tipo_norm in {"ordem de servico", "ordem de serviço"}:

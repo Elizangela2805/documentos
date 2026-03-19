@@ -9,7 +9,7 @@
   <link rel="shortcut icon" type="image/x-icon" href="/documentos/favicon.ico?v=20260318c" />
   <link rel="apple-touch-icon" href="/documentos/favicon.png?v=20260318c" />
   <!-- rebuild trigger -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <script defer src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
   <style>
     :root {
       --bg: #eef4f8;
@@ -648,8 +648,15 @@
       const mNr = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b/);
       if (mNr) {
         const num = String(mNr[1] || "");
-        const suf = String(mNr[2] || "");
-        return `nr${num}${suf === "pta" ? "pta" : ""}`;
+        let suf = String(mNr[2] || "");
+        if (suf !== "pta") suf = "";
+        if (!suf) {
+          // Diferencia variacoes de NR como "(16-emp)" e "(16-pr)".
+          const mVar = stemNorm.match(/\(\s*\d{1,3}\s*[-_]\s*(emp|pr)\s*\)/)
+            || stemNorm.match(/\b\d{1,3}\s*[-_]\s*(emp|pr)\b/);
+          if (mVar) suf = String(mVar[1] || "");
+        }
+        return `nr${num}${suf}`;
       }
       return slugUrl(stem) || "documento";
     };
@@ -680,6 +687,8 @@
     const PAGES_BASE_FIXED = "https://elizangela2805.github.io/documentos";
     const CHAVE_ACESSO_LISTAS = "projetta2026";
     const CHAVE_STORAGE_KEY = "cadnr_chave_listas_ok_v1";
+    const CACHE_TTL_EMPRESAS_MS = 5 * 60 * 1000;
+    let cacheEmpresasExtras = { chave: "", at: 0, data: null };
     const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco", "WM Montagens Industriais"];
     const EMPRESA_ALIASES = {
       ad2: "AD2",
@@ -1346,17 +1355,31 @@
     };
 
     const obterEmpresasExtrasPublicas = async (owner, repo, branch) => {
-      const [viaLogos, cadastro] = await Promise.all([
-        listarEmpresasPorLogos(owner, repo, branch),
-        carregarCadastroPublico(owner, repo, branch),
-      ]);
-      return {
+      const chaveCache = `${String(owner || "").trim().toLowerCase()}/${String(repo || "").trim().toLowerCase()}@${String(branch || "main").trim().toLowerCase()}`;
+      const agora = Date.now();
+      if (
+        cacheEmpresasExtras.data
+        && cacheEmpresasExtras.chave === chaveCache
+        && (agora - Number(cacheEmpresasExtras.at || 0)) < CACHE_TTL_EMPRESAS_MS
+      ) {
+        return cacheEmpresasExtras.data;
+      }
+
+      const cadastro = await carregarCadastroPublico(owner, repo, branch);
+      let viaLogos = [];
+      if (!Array.isArray(cadastro?.empresas) || !cadastro.empresas.length) {
+        // Fallback apenas quando o cadastro publico nao traz empresas.
+        viaLogos = await listarEmpresasPorLogos(owner, repo, branch);
+      }
+      const resultado = {
         empresas: [...new Set([...(viaLogos || []), ...((cadastro?.empresas) || [])])],
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
         empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
         empresaPorCaminho: cadastro?.empresaPorCaminho instanceof Map ? cadastro.empresaPorCaminho : new Map(),
       };
+      cacheEmpresasExtras = { chave: chaveCache, at: agora, data: resultado };
+      return resultado;
     };
 
     const extrairFuncionarioDoPath = (path, item = null) => {
