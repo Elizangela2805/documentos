@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T10:55:14Z",
-  "total": 16,
+  "updated_at": "2026-03-19T10:55:59Z",
+  "total": 17,
   "items": [
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
@@ -161,6 +161,16 @@
       "route_documento": "nr12",
       "route_data": "19032026",
       "route": "isacmarcelino/nr12/19032026"
+    },
+    {
+      "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "nome": "NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "funcionario": "Paulo Roberto Mantovanini Junior",
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19032026",
+      "route_funcionario": "paulorobertomantovaninijunior",
+      "route_documento": "nr6",
+      "route_data": "19032026",
+      "route": "paulorobertomantovaninijunior/nr6/19032026"
     }
   ]
 }
