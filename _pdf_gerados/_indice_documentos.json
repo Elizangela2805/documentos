@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T12:30:41.264Z",
-  "total": 21,
+  "updated_at": "2026-03-19T12:41:52Z",
+  "total": 22,
   "items": [
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
@@ -211,6 +211,16 @@
       "route_documento": "nr34",
       "route_data": "19032026",
       "route": "judsoncleytondias/nr34/19032026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/NR Lucas Ferreira da Silva Santos.pdf",
+      "nome": "NR Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/nrlucasferreiradasilvasantos/19032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "nrlucasferreiradasilvasantos",
+      "route_data": "19032026",
+      "route": "lucasferreiradasilvasantos/nrlucasferreiradasilvasantos/19032026"
     }
   ]
 }
