@@ -5055,7 +5055,14 @@ class App(tk.Tk):
             if inserir_qr_pdf and caminho_pdf.suffix.lower() == ".pdf":
                 tipo_norm = str(item.get("tipo_documento", "") or "").strip().casefold()
                 origem_norm = str(item.get("origem", "") or "").strip().casefold()
-                if tipo_norm in {"fit test", "fittest"}:
+                qr_ja_embutido_docx = bool(
+                    tipo_norm == "carteirinha" and bool(getattr(self, "_ultimo_qr_embutido_docx", False))
+                )
+                if qr_ja_embutido_docx:
+                    # Para carteirinha, quando o QR ja entrou no DOCX antes da conversao,
+                    # evita inserir novamente no PDF final.
+                    pass
+                elif tipo_norm in {"fit test", "fittest"}:
                     self._inserir_qrcode_no_pdf(
                         caminho_pdf,
                         qr_caminho,
@@ -5086,7 +5093,10 @@ class App(tk.Tk):
                         qr_caminho,
                         tamanho_cm=2.0,
                     )
-                self._limpar_metadados_pdf(caminho_pdf)
+                if not qr_ja_embutido_docx:
+                    self._limpar_metadados_pdf(caminho_pdf)
+                if tipo_norm == "carteirinha":
+                    self._ultimo_qr_embutido_docx = False
         caminho_pdf = Path(str(caminho_norm or "")).expanduser()
         if not caminho_pdf.is_absolute():
             caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
@@ -6816,12 +6826,19 @@ class App(tk.Tk):
             shutil.move(str(temp_saida), str(caminho))
             return True, ""
         except Exception as ex:
+            msg = str(ex or "")
+            msg_norm = msg.lower()
+            if ("xmp" in msg_norm) and ("parse" in msg_norm):
+                ok_rebuild, msg_rebuild = self._recriar_pdf_sem_xmp(caminho)
+                if ok_rebuild:
+                    return True, ""
+                msg = str(msg_rebuild or msg)
             try:
                 if temp_saida.exists():
                     temp_saida.unlink()
             except OSError:
                 pass
-            return False, str(ex)
+            return False, msg
 
     @staticmethod
     def _xmp_minimo_pdf():
@@ -6974,7 +6991,11 @@ class App(tk.Tk):
                             falhas.append(f"{tipo_doc}: ignorado (OS sem vinculo com a funcao selecionada)")
                             continue
                     elif tipo_norm == "ficha de epi":
-                        if not self._arquivo_epi_compativel_funcao(caminho_ref, funcao_selecionada):
+                        if not self._arquivo_epi_compativel_funcao(
+                            caminho_ref,
+                            funcao_selecionada,
+                            funcionario.get("rg", ""),
+                        ):
                             falhas.append(f"{tipo_doc}: ignorado (EPI sem vinculo com a funcao selecionada)")
                             continue
                     else:
@@ -7019,8 +7040,7 @@ class App(tk.Tk):
                         continue
                     limpou_meta, _ = self._limpar_metadados_pdf(destino_pdf)
                     if not limpou_meta:
-                        falhas.append(f"{tipo_doc}: falha ao limpar metadados do PDF")
-                        continue
+                        falhas.append(f"{tipo_doc}: aviso - metadados do PDF nao foram limpos")
                 else:
                     tipo_os = tipo_norm in {"ordem de servico", "ordem de serviço"}
                     tipo_fit_test = tipo_norm in {"fit test", "fittest"}
@@ -7065,13 +7085,7 @@ class App(tk.Tk):
                         continue
                     limpou_meta, _ = self._limpar_metadados_pdf(destino_pdf)
                     if not limpou_meta:
-                        if temp_param_docx is not None:
-                            try:
-                                temp_param_docx.unlink(missing_ok=True)
-                            except OSError:
-                                pass
-                        falhas.append(f"{tipo_doc}: falha ao limpar metadados do PDF")
-                        continue
+                        falhas.append(f"{tipo_doc}: aviso - metadados do PDF nao foram limpos")
                     if temp_param_docx is not None:
                         try:
                             temp_param_docx.unlink(missing_ok=True)
@@ -7161,7 +7175,7 @@ class App(tk.Tk):
                 if self._converter_docx_para_pdf(docx_path, pdf_destino):
                     limpou_meta, _ = self._limpar_metadados_pdf(pdf_destino)
                     if not limpou_meta:
-                        continue
+                        pass
                     self._registrar_documento_salvo(
                         pdf_destino,
                         origem="imprimir_nr",
@@ -7653,9 +7667,49 @@ class App(tk.Tk):
                     return False, f"falha ao inserir LOGO3: {motivo_logo3}"
 
         if tipo_doc_norm == "carteirinha":
-            # Carteirinha segue o mesmo fluxo dos demais documentos:
-            # QR gerado no registro final e inserido no PDF.
-            self._ultimo_qr_embutido_docx = False
+            # Embute o QR diretamente na carteirinha (DOCX) antes de converter para PDF.
+            # O payload aponta para o PDF de saida, quando informado.
+            caminho_qr_ref = str(caminho_documento_saida or "").strip()
+            if not caminho_qr_ref:
+                caminho_qr_ref = str(destino_docx.with_suffix(".pdf"))
+            payload_qr = self._montar_payload_qrcode_documento(
+                caminho_qr_ref,
+                permitir_arquivo_inexistente=True,
+            )
+            if payload_qr:
+                caminho_qr_temp = None
+                try:
+                    import qrcode
+
+                    arq_tmp = tempfile.NamedTemporaryFile(suffix=".png", delete=False)
+                    arq_tmp.close()
+                    caminho_qr_temp = Path(arq_tmp.name)
+                    qr = qrcode.QRCode(
+                        version=None,
+                        error_correction=qrcode.constants.ERROR_CORRECT_M,
+                        box_size=10,
+                        border=4,
+                    )
+                    qr.add_data(payload_qr)
+                    qr.make(fit=True)
+                    img = qr.make_image()
+                    img.save(str(caminho_qr_temp))
+                    self._ultimo_qr_embutido_docx = self._inserir_qrcode_em_carteirinha_docx(
+                        destino_docx,
+                        caminho_qr_temp,
+                        tamanho_cm=1.8,
+                        margem_esquerda_cm=0.1,
+                    )
+                except Exception:
+                    self._ultimo_qr_embutido_docx = False
+                finally:
+                    if caminho_qr_temp is not None:
+                        try:
+                            caminho_qr_temp.unlink(missing_ok=True)
+                        except OSError:
+                            pass
+            else:
+                self._ultimo_qr_embutido_docx = False
 
         return True, ""
 
@@ -7899,7 +7953,11 @@ class App(tk.Tk):
                     if not self._arquivo_ordem_servico_compativel_funcao(caminho, funcao_selecionada):
                         continue
                 elif tipo_norm == "ficha de epi":
-                    if not self._arquivo_epi_compativel_funcao(caminho, funcao_selecionada):
+                    if not self._arquivo_epi_compativel_funcao(
+                        caminho,
+                        funcao_selecionada,
+                        (funcionario_sel or {}).get("rg", ""),
+                    ):
                         continue
                 else:
                     if not self._arquivo_vinculado_nr_documento(caminho):
@@ -7955,20 +8013,54 @@ class App(tk.Tk):
             return True
         return False
 
-    def _arquivo_epi_compativel_funcao(self, caminho_arquivo, funcao_selecionada):
+    def _arquivo_epi_compativel_funcao(self, caminho_arquivo, funcao_selecionada, rg_selecionado=""):
         funcao_norm = self._normalizar_texto_filtro(funcao_selecionada)
         if not funcao_norm:
             return False
-        nome_norm = self._normalizar_texto_filtro(Path(str(caminho_arquivo or "")).stem)
+        nome_base = Path(str(caminho_arquivo or "")).stem
+        nome_norm = self._normalizar_texto_filtro(nome_base)
         if not nome_norm:
             return False
         if "epi" not in nome_norm:
             return False
+        compativel_funcao = False
         if funcao_norm in nome_norm:
+            compativel_funcao = True
+        else:
+            tokens_funcao = [tok for tok in funcao_norm.split() if len(tok) >= 4]
+            if tokens_funcao and all(tok in nome_norm for tok in tokens_funcao):
+                compativel_funcao = True
+        if not compativel_funcao:
+            return False
+
+        # Filtro adicional de RG1 para Ficha de EPI:
+        # se o nome do arquivo indicar um RG, exige compatibilidade com o RG do funcionario.
+        rg_sel_dig = re.sub(r"\D", "", str(rg_selecionado or ""))
+        if not rg_sel_dig:
             return True
-        tokens_funcao = [tok for tok in funcao_norm.split() if len(tok) >= 4]
-        if tokens_funcao and all(tok in nome_norm for tok in tokens_funcao):
+
+        nome_base_txt = str(nome_base or "")
+        nome_base_low = nome_base_txt.lower()
+        if "rg" not in nome_base_low:
             return True
+
+        candidatos_rg = []
+        for m in re.finditer(r"\brg\s*[:\-]?\s*([0-9][0-9\.\-\/]{4,})", nome_base_txt, flags=re.IGNORECASE):
+            dig = re.sub(r"\D", "", m.group(1))
+            if len(dig) >= 5:
+                candidatos_rg.append(dig)
+        if not candidatos_rg:
+            # Fallback: usa grupos numericos longos quando o nome contem "rg".
+            for grp in re.findall(r"\d{5,14}", nome_base_txt):
+                candidatos_rg.append(str(grp))
+        if not candidatos_rg:
+            return True
+
+        for rg_doc in candidatos_rg:
+            if rg_doc == rg_sel_dig:
+                return True
+            if rg_doc in rg_sel_dig or rg_sel_dig in rg_doc:
+                return True
         return False
 
     def _arquivo_vinculado_funcao(self, caminho_arquivo, funcao_selecionada):
@@ -8308,7 +8400,11 @@ class App(tk.Tk):
                         continue
                     vinculado = self._arquivo_ordem_servico_compativel_funcao(caminho, funcao_selecionada)
                 elif tipo_norm == "ficha de epi":
-                    vinculado = self._arquivo_epi_compativel_funcao(caminho, funcao_selecionada)
+                    vinculado = self._arquivo_epi_compativel_funcao(
+                        caminho,
+                        funcao_selecionada,
+                        funcionario_sel.get("rg", ""),
+                    )
                 else:
                     if not self._arquivo_vinculado_nr_documento(caminho):
                         selecionados_sem_vinculo.append((tipo, caminho))

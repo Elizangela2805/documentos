@@ -466,6 +466,9 @@
       <div class="field" style="margin-top:10px;">
         <label for="token">Token de publicacao</label>
         <input id="token" type="password" placeholder="ghp_..." />
+        <div class="actions" style="margin-top:6px;">
+          <button id="btnLimparToken" type="button" class="alt small-btn">Limpar token salvo</button>
+        </div>
       </div>
 
       <div class="box">
@@ -541,6 +544,7 @@
       folder: document.getElementById("folder"),
       dateFolder: document.getElementById("dateFolder"),
       token: document.getElementById("token"),
+      btnLimparToken: document.getElementById("btnLimparToken"),
       pdfs: document.getElementById("pdfs"),
       listaArquivos: document.getElementById("listaArquivos"),
       btnEnviar: document.getElementById("btnEnviar"),
@@ -568,6 +572,7 @@
     const DB_NAME = "projetta_pdf_db";
     const DB_VERSION = 1;
     const STORE_PDFS = "pdfs";
+    const TOKEN_STORAGE_KEY = "projetta_token_publicacao";
     const nowStamp = () => new Date().toISOString().slice(0, 10);
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
@@ -584,6 +589,43 @@
       const yyyy = String(d.getFullYear());
       return `${dd}${mm}${yyyy}`;
     };
+    const lerTokenSalvo = () => {
+      try {
+        return String(localStorage.getItem(TOKEN_STORAGE_KEY) || "").trim();
+      } catch (_err) {
+        return "";
+      }
+    };
+    const salvarTokenLocal = (token) => {
+      try {
+        const t = String(token || "").trim();
+        if (t) localStorage.setItem(TOKEN_STORAGE_KEY, t);
+        else localStorage.removeItem(TOKEN_STORAGE_KEY);
+      } catch (_err) {
+        // Ignora falhas de storage no navegador.
+      }
+    };
+    const aplicarTokenSalvoNoCampo = () => {
+      if (!el.token) return;
+      if (String(el.token.value || "").trim()) return;
+      const salvo = lerTokenSalvo();
+      if (salvo) el.token.value = salvo;
+    };
+    aplicarTokenSalvoNoCampo();
+    if (el.token) {
+      el.token.addEventListener("change", () => salvarTokenLocal(el.token.value));
+      el.token.addEventListener("blur", () => salvarTokenLocal(el.token.value));
+    }
+    if (el.btnLimparToken) {
+      el.btnLimparToken.addEventListener("click", () => {
+        salvarTokenLocal("");
+        if (el.token) {
+          el.token.value = "";
+          el.token.focus();
+        }
+        log("Token salvo removido do navegador.");
+      });
+    }
     const extrairDataSlug = (path) => {
       const texto = String(path || "");
       let m = texto.match(/(?:^|[^0-9])([0-3][0-9])[-_/]?([01][0-9])[-_/]?([0-9]{4})(?:[^0-9]|$)/);
@@ -1371,8 +1413,16 @@
       const branch = el.branch.value.trim() || "main";
       let token = el.token.value.trim();
       if (!token) {
-        token = String(window.prompt("Informe o token para excluir os arquivos no site:") || "").trim();
-        if (token) el.token.value = token;
+        token = lerTokenSalvo();
+        const tokenInformado = String(
+          window.prompt("Informe o token para excluir os arquivos no site:", token || "")
+          || ""
+        ).trim();
+        token = tokenInformado || token;
+        if (token) {
+          el.token.value = token;
+          salvarTokenLocal(token);
+        }
       }
       return { owner, repo, branch, token };
     };
