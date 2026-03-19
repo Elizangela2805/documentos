@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-19T12:27:42Z",
-  "total": 22,
+  "updated_at": "2026-03-19T12:30:41.264Z",
+  "total": 21,
   "items": [
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
@@ -211,16 +211,6 @@
       "route_documento": "nr34",
       "route_data": "19032026",
       "route": "judsoncleytondias/nr34/19032026"
-    },
-    {
-      "path": "_pdf_gerados/Elizangela Aparecida de Oliveira/NR Elizangela Aparecida de Oliveira.pdf",
-      "nome": "NR Elizangela Aparecida de Oliveira.pdf",
-      "funcionario": "Elizangela Aparecida de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/nrelizangelaaparecidadeoliveira/19032026",
-      "route_funcionario": "elizangelaaparecidadeoliveira",
-      "route_documento": "nrelizangelaaparecidadeoliveira",
-      "route_data": "19032026",
-      "route": "elizangelaaparecidadeoliveira/nrelizangelaaparecidadeoliveira/19032026"
     }
   ]
 }
