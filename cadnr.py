@@ -15,6 +15,7 @@ import subprocess
 import tempfile
 import html
 import os
+import sys
 import unicodedata
 import hashlib
 import socket
@@ -22,6 +23,61 @@ import threading
 import time
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+
+
+def _configurar_ambiente_tcl_tk():
+    candidatos_base = []
+    try:
+        candidatos_base.append(Path(sys.executable).resolve().parent)
+    except Exception:
+        pass
+    try:
+        candidatos_base.append(Path(__file__).resolve().parent)
+    except Exception:
+        pass
+
+    vistos = set()
+    bases = []
+    for base in candidatos_base:
+        if not isinstance(base, Path):
+            continue
+        chave = str(base).casefold()
+        if chave in vistos:
+            continue
+        vistos.add(chave)
+        bases.append(base)
+
+    tcl_encontrado = ""
+    tk_encontrado = ""
+    for base in bases:
+        for rel_tcl, rel_tk in (
+            ("tcl/tcl8.6", "tcl/tk8.6"),
+            ("lib/tcl8.6", "lib/tk8.6"),
+            ("tcl8.6", "tk8.6"),
+        ):
+            cand_tcl = (base / rel_tcl).resolve()
+            cand_tk = (base / rel_tk).resolve()
+            if (cand_tcl / "init.tcl").exists() and (cand_tk / "tk.tcl").exists():
+                tcl_encontrado = str(cand_tcl)
+                tk_encontrado = str(cand_tk)
+                break
+        if tcl_encontrado and tk_encontrado:
+            break
+
+    if tcl_encontrado:
+        os.environ["TCL_LIBRARY"] = tcl_encontrado
+    if tk_encontrado:
+        os.environ["TK_LIBRARY"] = tk_encontrado
+
+    if hasattr(os, "add_dll_directory"):
+        for base in bases:
+            dll_dir = (base / "DLLs").resolve()
+            if dll_dir.exists() and dll_dir.is_dir():
+                try:
+                    os.add_dll_directory(str(dll_dir))
+                except OSError:
+                    pass
+
 
 try:
     from PIL import Image, ImageTk
@@ -668,7 +724,7 @@ class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("CADNR - Sistema de Cadastro")
+        self.title("CADNR - Sistema de Cadastro [docx-fix]")
         self.geometry("860x460")
         self.minsize(780, 400)
         self.protocol("WM_DELETE_WINDOW", self._on_app_close)
@@ -3655,8 +3711,27 @@ class App(tk.Tk):
                 self._docs_monitor_after_id = None
         except Exception:
             pass
+        self._aguardar_git_auto_commit()
         self._encerrar_servidor_qr_local()
         self.destroy()
+
+    def _aguardar_git_auto_commit(self, timeout_segundos=12.0):
+        try:
+            limite = time.monotonic() + max(0.5, float(timeout_segundos))
+        except Exception:
+            limite = time.monotonic() + 12.0
+
+        while time.monotonic() < limite:
+            with self._git_auto_commit_lock:
+                pendentes = bool(self._git_auto_commit_pendentes)
+                thread = self._git_auto_commit_thread
+            if (not pendentes) and (thread is None or not thread.is_alive()):
+                return True
+            if thread is not None and thread.is_alive():
+                thread.join(timeout=0.2)
+            else:
+                time.sleep(0.1)
+        return False
 
     def _resolver_caminho_assinatura_pfx(self, slot=1):
         if int(slot) == 1:
@@ -4780,6 +4855,32 @@ class App(tk.Tk):
         except Exception:
             return ""
 
+    def _mensagem_git_auto_commit(self, alterados):
+        itens = [str(i or "").strip().replace("\\", "/").lower() for i in (alterados or [])]
+        itens = [i for i in itens if i]
+        if not itens:
+            return "Auto save: atualizacao"
+
+        mudou_empresas = any(
+            i in {"cadnr_dados.json", "cadnr_publico.json"}
+            or i.startswith("_logos_empresas/")
+            for i in itens
+        )
+        mudou_docs = any(
+            i.startswith("_pdf_gerados/")
+            or i.startswith("_tmp_nrxml/")
+            for i in itens
+        )
+
+        foco = str(alterados[0] or "").strip() if alterados else "atualizacao"
+        if mudou_empresas and mudou_docs:
+            return f"Auto save docs e empresas: {foco}"
+        if mudou_empresas:
+            return f"Auto save empresas: {foco}"
+        if mudou_docs:
+            return f"Auto save docs: {foco}"
+        return f"Auto save: {foco}"
+
     def _enfileirar_git_auto_commit(self, caminhos):
         if not self._git_auto_commit_habilitado:
             return
@@ -4798,7 +4899,7 @@ class App(tk.Tk):
                 return
             self._git_auto_commit_thread = threading.Thread(
                 target=self._worker_git_auto_commit,
-                daemon=True,
+                daemon=False,
             )
             self._git_auto_commit_thread.start()
 
@@ -4848,8 +4949,7 @@ class App(tk.Tk):
                 if not alterados:
                     continue
 
-                foco = alterados[0]
-                msg = f"Auto save docs: {foco}"
+                msg = self._mensagem_git_auto_commit(alterados)
                 proc_commit = subprocess.run(
                     ["git", "-C", str(repo_dir), "commit", "-m", msg, "--", *alterados],
                     check=False,
@@ -4871,7 +4971,35 @@ class App(tk.Tk):
                     timeout=60,
                 )
                 if proc_push.returncode != 0:
-                    raise RuntimeError((proc_push.stderr or proc_push.stdout or "git push falhou").strip())
+                    saida_push = (proc_push.stderr or proc_push.stdout or "").strip()
+                    saida_push_norm = saida_push.lower()
+                    if "non-fast-forward" in saida_push_norm or "fetch first" in saida_push_norm:
+                        proc_pull_rebase = subprocess.run(
+                            ["git", "-C", str(repo_dir), "pull", "--rebase"],
+                            check=False,
+                            capture_output=True,
+                            text=True,
+                            timeout=90,
+                        )
+                        if proc_pull_rebase.returncode != 0:
+                            detalhe_pull = (proc_pull_rebase.stderr or proc_pull_rebase.stdout or "").strip()
+                            raise RuntimeError(
+                                detalhe_pull or "git pull --rebase falhou apos push rejeitado"
+                            )
+                        proc_push_retry = subprocess.run(
+                            ["git", "-C", str(repo_dir), "push"],
+                            check=False,
+                            capture_output=True,
+                            text=True,
+                            timeout=60,
+                        )
+                        if proc_push_retry.returncode != 0:
+                            detalhe_push2 = (proc_push_retry.stderr or proc_push_retry.stdout or "").strip()
+                            raise RuntimeError(
+                                detalhe_push2 or "git push falhou apos pull --rebase"
+                            )
+                    else:
+                        raise RuntimeError(saida_push or "git push falhou")
 
             except Exception as exc:
                 try:
@@ -5376,11 +5504,49 @@ class App(tk.Tk):
         caminho_img = Path(imagem_path)
         if not caminho_docx.exists() or not caminho_img.exists():
             return False, "Arquivo DOCX ou imagem nao encontrado."
+
+        def _adicionar_user_site_no_path():
+            try:
+                import site
+
+                user_site = site.getusersitepackages()
+                if isinstance(user_site, str):
+                    user_site = [user_site]
+                for pasta in (user_site or []):
+                    pasta_txt = str(pasta or "").strip()
+                    if pasta_txt and pasta_txt not in sys.path:
+                        sys.path.append(pasta_txt)
+            except Exception:
+                pass
+
+        _adicionar_user_site_no_path()
         try:
             from docx import Document
             from docx.shared import Cm
-        except Exception:
-            return False, "Dependencia ausente: python-docx (pip install python-docx)."
+        except Exception as exc_import:
+            # Tenta auto-instalar no mesmo Python que executa o app.
+            try:
+                subprocess.run(
+                    [sys.executable, "-m", "pip", "install", "--user", "python-docx"],
+                    check=False,
+                    capture_output=True,
+                    text=True,
+                    timeout=90,
+                )
+            except Exception:
+                pass
+            _adicionar_user_site_no_path()
+            try:
+                from docx import Document
+                from docx.shared import Cm
+            except Exception as exc_import_retry:
+                exe = str(sys.executable or "").strip()
+                detalhe = str(exc_import_retry or exc_import or "").strip()
+                return (
+                    False,
+                    "Dependencia ausente: python-docx. "
+                    f"Python em uso: {exe}. Erro: {detalhe}",
+                )
 
         lista_marcadores = [str(m).strip() for m in (marcadores or []) if str(m).strip()]
         if not lista_marcadores:
@@ -7590,7 +7756,8 @@ class App(tk.Tk):
         return ";".join(entradas)
 
     def _caminhos_publicacao_empresas(self):
-        caminhos = [self.dados_path, self.dados_publico_path]
+        # Nao inclui cadnr_dados.json no git auto: arquivo local/privado (gitignored).
+        caminhos = [self.dados_publico_path]
         for empresa in self.empresas:
             if not isinstance(empresa, dict):
                 continue
@@ -9267,9 +9434,10 @@ class App(tk.Tk):
                 encoding="utf-8",
             )
             assinatura_empresas_atual = self._assinatura_publicacao_empresas()
-            if assinatura_empresas_atual != self._empresas_publicacao_assinatura:
-                self._empresas_publicacao_assinatura = assinatura_empresas_atual
-                self._enfileirar_git_auto_commit(self._caminhos_publicacao_empresas())
+            self._empresas_publicacao_assinatura = assinatura_empresas_atual
+            # Usa o mesmo comportamento dos documentos: sempre enfileira publicacao
+            # apos salvar, e o Git decide se houve alteracao real para commit/push.
+            self._enfileirar_git_auto_commit(self._caminhos_publicacao_empresas())
         except OSError:
             messagebox.showerror(
                 "Erro",
@@ -10589,5 +10757,23 @@ class App(tk.Tk):
 
 
 if __name__ == "__main__":
-    app = App()
-    app.mainloop()
+    _configurar_ambiente_tcl_tk()
+    try:
+        app = App()
+        app.mainloop()
+    except tk.TclError as exc:
+        detalhe = str(exc or "").strip()
+        detalhe_lower = detalhe.lower()
+        if "init.tcl" in detalhe_lower:
+            py_base = Path(sys.executable).resolve().parent
+            print("Falha ao iniciar interface Tk (Tcl/Tk).")
+            print(f"Python: {sys.executable}")
+            print(f"TCL_LIBRARY: {os.environ.get('TCL_LIBRARY', '')}")
+            print(f"TK_LIBRARY: {os.environ.get('TK_LIBRARY', '')}")
+            print("")
+            print("Corrija com uma reinstalacao limpa do Python (incluindo Tcl/Tk):")
+            print(f"1) Desinstale o Python atual: {py_base.parent}")
+            print("2) Reinstale Python 3.13/3.12 (64-bit) com Tcl/Tk habilitado")
+            print("3) Execute novamente: python cadnr.py")
+            raise SystemExit(1)
+        raise
