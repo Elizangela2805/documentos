@@ -1,11 +1,28 @@
 ﻿import json
 import re
-import tkinter as tk
+import os
+import sys
+try:
+    import tkinter as tk
+    from tkinter import filedialog, messagebox, ttk
+except ModuleNotFoundError:
+    msg = (
+        "Tkinter nao esta disponivel neste ambiente.\n\n"
+        "Se estiver executando o script (.py), instale/repare o Python com Tcl/Tk.\n"
+        "Se estiver usando o executavel, execute a versao mais recente de dist/release CADNR.exe."
+    )
+    try:
+        import ctypes
+
+        ctypes.windll.user32.MessageBoxW(0, msg, "CADNR - Erro Tkinter", 0x10)
+    except Exception:
+        pass
+    print(msg, file=sys.stderr)
+    raise SystemExit(1)
 import calendar
 import base64
 from datetime import date, datetime, timedelta
 from pathlib import Path
-from tkinter import filedialog, messagebox, ttk
 from urllib import error, parse, request
 import gzip
 import zipfile
@@ -14,8 +31,6 @@ import filecmp
 import subprocess
 import tempfile
 import html
-import os
-import sys
 import unicodedata
 import hashlib
 import socket
@@ -27,6 +42,13 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 def _configurar_ambiente_tcl_tk():
     candidatos_base = []
+    if getattr(sys, "frozen", False):
+        meipass = getattr(sys, "_MEIPASS", "")
+        if meipass:
+            try:
+                candidatos_base.append(Path(meipass).resolve())
+            except Exception:
+                pass
     try:
         candidatos_base.append(Path(sys.executable).resolve().parent)
     except Exception:
@@ -51,6 +73,7 @@ def _configurar_ambiente_tcl_tk():
     tk_encontrado = ""
     for base in bases:
         for rel_tcl, rel_tk in (
+            ("_tcl_data", "_tk_data"),
             ("tcl/tcl8.6", "tcl/tk8.6"),
             ("lib/tcl8.6", "lib/tk8.6"),
             ("tcl8.6", "tk8.6"),
@@ -77,6 +100,88 @@ def _configurar_ambiente_tcl_tk():
                     os.add_dll_directory(str(dll_dir))
                 except OSError:
                     pass
+
+
+def _bases_recurso():
+    bases = []
+    if getattr(sys, "frozen", False):
+        meipass = getattr(sys, "_MEIPASS", "")
+        if meipass:
+            try:
+                bases.append(Path(meipass).resolve())
+            except Exception:
+                pass
+    try:
+        bases.append(Path(__file__).resolve().parent)
+    except Exception:
+        pass
+    return bases
+
+
+def _diretorio_base_app():
+    if getattr(sys, "frozen", False):
+        try:
+            return Path(sys.executable).resolve().parent
+        except Exception:
+            pass
+    try:
+        return Path(__file__).resolve().parent
+    except Exception:
+        return Path.cwd()
+
+
+def _aplicar_icone_cadnr(janela):
+    for base in _bases_recurso():
+        ico = (base / "cadnr_icon.ico").resolve()
+        if ico.exists():
+            try:
+                janela.iconbitmap(str(ico))
+                return
+            except tk.TclError:
+                pass
+    for base in _bases_recurso():
+        png = (base / "logo_cadnr.png").resolve()
+        if png.exists():
+            try:
+                janela._icone_cadnr_ref = tk.PhotoImage(file=str(png))
+                janela.iconphoto(True, janela._icone_cadnr_ref)
+                return
+            except tk.TclError:
+                pass
+
+
+def _resolver_arquivo_dados(nome_arquivo):
+    if not getattr(sys, "frozen", False):
+        return Path(__file__).with_name(nome_arquivo)
+
+    exe_dir = _diretorio_base_app()
+    destino = exe_dir / nome_arquivo
+    if destino.exists():
+        return destino
+
+    candidatos_origem = [
+        Path.cwd() / nome_arquivo,
+        exe_dir.parent / nome_arquivo,
+    ]
+    try:
+        candidatos_origem.append(_diretorio_base_app() / nome_arquivo)
+    except Exception:
+        pass
+
+    vistos = set()
+    for origem in candidatos_origem:
+        chave = str(origem).casefold()
+        if chave in vistos:
+            continue
+        vistos.add(chave)
+        if not origem.exists() or not origem.is_file():
+            continue
+        try:
+            destino.write_bytes(origem.read_bytes())
+            break
+        except OSError:
+            continue
+    return destino
 
 
 try:
@@ -724,7 +829,8 @@ class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("CADNR - Sistema de Cadastro [docx-fix]")
+        self.title("CADNR - Sistema de Cadastro")
+        _aplicar_icone_cadnr(self)
         self.geometry("860x460")
         self.minsize(780, 400)
         self.protocol("WM_DELETE_WINDOW", self._on_app_close)
@@ -747,8 +853,8 @@ class App(tk.Tk):
         self.outros_docs_imprimir = []
         self.cert_imprimir_empresa_ids = []
         self.cert_imprimir_funcionario_ids = []
-        self.dados_path = Path(__file__).with_name("cadnr_dados.json")
-        self.dados_publico_path = Path(__file__).with_name("cadnr_publico.json")
+        self.dados_path = _resolver_arquivo_dados("cadnr_dados.json")
+        self.dados_publico_path = _resolver_arquivo_dados("cadnr_publico.json")
         self.nr_certificados = self._nr_certificados_padrao()
         self.nr_excluidas_por_empresa = {}
         self.nr_certificados_widgets = []
@@ -3021,7 +3127,7 @@ class App(tk.Tk):
         caminho_rel = str(caminho_relativo or "").strip().replace("\\", "/")
         if not caminho_rel:
             return None
-        base = Path(__file__).resolve().parent.resolve()
+        base = _diretorio_base_app().resolve()
         try:
             candidato = (base / caminho_rel).resolve()
             candidato.relative_to(base)
@@ -3032,13 +3138,13 @@ class App(tk.Tk):
     def _url_local_qr_para_arquivo(self, caminho_arquivo, permitir_inexistente=False):
         caminho = Path(str(caminho_arquivo or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         if (not permitir_inexistente) and (not caminho.exists() or not caminho.is_file()):
             return ""
         if not self._iniciar_servidor_qr_local():
             return ""
         try:
-            base = Path(__file__).resolve().parent.resolve()
+            base = _diretorio_base_app().resolve()
             rel = caminho.resolve().relative_to(base)
             rel_txt = str(rel).replace("\\", "/")
             return f"{self._qr_http_base_url}/qr-file/{parse.quote(rel_txt, safe='/')}"
@@ -3302,8 +3408,18 @@ class App(tk.Tk):
         stem_ascii = "".join(ch for ch in stem_ascii if not unicodedata.combining(ch))
         stem_ascii = stem_ascii.lower()
         if "carteirinha" in stem_ascii:
-            slug_cart = App._slug_url_texto(stem_ascii)
-            return slug_cart or "carteirinha"
+            # Mantem slug curto para reduzir densidade do QR na carteirinha.
+            m_nr_cart = re.search(r"\bnr\s*0*([0-9]{1,3})\b", stem_ascii)
+            nr_cart = str(m_nr_cart.group(1) or "").strip() if m_nr_cart else ""
+            m_sub_cart = re.search(r"\b(emp|pr|garra|munck|pta|pemt|guin|andaime|and)\b", stem_ascii)
+            sub_cart = str(m_sub_cart.group(1) or "").strip() if m_sub_cart else ""
+            if sub_cart == "and":
+                sub_cart = "andaime"
+            if nr_cart and sub_cart:
+                return f"carteirinha{nr_cart}{sub_cart}"
+            if nr_cart:
+                return f"carteirinha{nr_cart}"
+            return "carteirinha"
         m_nr = re.search(r"\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b", stem_ascii)
         if m_nr:
             numero = str(m_nr.group(1) or "").strip()
@@ -4548,7 +4664,7 @@ class App(tk.Tk):
         nome_limpo = self._obter_nome_arquivo_seguro(nome_pasta, "")
         if not nome_limpo:
             return None
-        destino = Path(__file__).resolve().parent / nome_limpo
+        destino = _diretorio_base_app() / nome_limpo
         destino.mkdir(parents=True, exist_ok=True)
         # Garante versionamento da pasta mesmo quando ainda nao ha documentos.
         gitkeep = destino / ".gitkeep"
@@ -4571,7 +4687,7 @@ class App(tk.Tk):
 
     @staticmethod
     def _pasta_logos_empresas():
-        return Path(__file__).resolve().parent / "_logos_empresas"
+        return _diretorio_base_app() / "_logos_empresas"
 
     @staticmethod
     def _resolver_logo_empresa(logo_ref):
@@ -4580,7 +4696,7 @@ class App(tk.Tk):
             return None
         caminho_logo = Path(logo_txt)
         if not caminho_logo.is_absolute():
-            caminho_logo = Path(__file__).resolve().parent / caminho_logo
+            caminho_logo = _diretorio_base_app() / caminho_logo
         return caminho_logo
 
     def _caminho_logo_empresa(self, empresa):
@@ -4857,7 +4973,7 @@ class App(tk.Tk):
         )
 
     def _normalizar_caminho_git_relativo(self, caminho):
-        base = Path(__file__).resolve().parent.resolve()
+        base = _diretorio_base_app().resolve()
         p = Path(str(caminho or "")).expanduser()
         if not p.is_absolute():
             p = (base / p).resolve()
@@ -4916,7 +5032,7 @@ class App(tk.Tk):
             self._git_auto_commit_thread.start()
 
     def _worker_git_auto_commit(self):
-        repo_dir = Path(__file__).resolve().parent
+        repo_dir = _diretorio_base_app()
         while True:
             with self._git_auto_commit_lock:
                 if not self._git_auto_commit_pendentes:
@@ -5054,7 +5170,7 @@ class App(tk.Tk):
         if not caminho_norm:
             return
         try:
-            base_repo = Path(__file__).resolve().parent.resolve()
+            base_repo = _diretorio_base_app().resolve()
             caminho_abs = Path(str(caminho_norm)).expanduser()
             if not caminho_abs.is_absolute():
                 caminho_abs = (base_repo / caminho_abs).resolve()
@@ -5084,7 +5200,7 @@ class App(tk.Tk):
             caminhos_git.append(qr_caminho)
             caminho_pdf = Path(str(caminho_norm or "")).expanduser()
             if not caminho_pdf.is_absolute():
-                caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
+                caminho_pdf = (_diretorio_base_app() / caminho_pdf).resolve()
             if inserir_qr_pdf and caminho_pdf.suffix.lower() == ".pdf":
                 tipo_norm = str(item.get("tipo_documento", "") or "").strip().casefold()
                 origem_norm = str(item.get("origem", "") or "").strip().casefold()
@@ -5120,6 +5236,14 @@ class App(tk.Tk):
                         margem_inferior_cm=1.5,
                         somente_ultima_pagina=True,
                     )
+                elif tipo_norm == "carteirinha":
+                    self._inserir_qrcode_no_pdf(
+                        caminho_pdf,
+                        qr_caminho,
+                        tamanho_cm=1.3,
+                        margem_esquerda_cm=0.2,
+                        margem_inferior_cm=0.2,
+                    )
                 else:
                     self._inserir_qrcode_no_pdf(
                         caminho_pdf,
@@ -5132,7 +5256,7 @@ class App(tk.Tk):
                     self._ultimo_qr_embutido_docx = False
         caminho_pdf = Path(str(caminho_norm or "")).expanduser()
         if not caminho_pdf.is_absolute():
-            caminho_pdf = (Path(__file__).resolve().parent / caminho_pdf).resolve()
+            caminho_pdf = (_diretorio_base_app() / caminho_pdf).resolve()
         tipo_sync_norm = str(item.get("tipo_documento", "") or "").strip().casefold()
         if caminho_pdf.suffix.lower() == ".pdf":
             if self._assinatura_digital_ativa():
@@ -5349,7 +5473,7 @@ class App(tk.Tk):
             return ""
         caminho = Path(caminho_txt).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         # Padrao oficial de destino do QR: rota amigavel no site
         # /nomedofuncionario/documento/data
         url_consulta = self._url_site_consulta_para_arquivo(caminho)
@@ -5377,7 +5501,7 @@ class App(tk.Tk):
         if base_url:
             base_url = re.sub(r"/+$", "", base_url)
             try:
-                rel = caminho.resolve().relative_to(Path(__file__).resolve().parent.resolve())
+                rel = caminho.resolve().relative_to(_diretorio_base_app().resolve())
                 rel_txt = str(rel).replace("\\", "/")
             except Exception:
                 rel_txt = caminho.name
@@ -5400,7 +5524,7 @@ class App(tk.Tk):
         try:
             caminho = Path(caminho_txt).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             if not caminho.exists() or not caminho.is_file():
                 return ""
             if caminho.suffix.lower() in {".png", ".jpg", ".jpeg"} and caminho.stem.lower().endswith("_qrcode"):
@@ -5410,18 +5534,23 @@ class App(tk.Tk):
             pasta_qr.mkdir(parents=True, exist_ok=True)
             destino_qr = pasta_qr / f"{caminho.stem}_qrcode.png"
             payload = self._montar_payload_qrcode_documento(caminho)
+            tipo_norm = str(tipo_documento or "").strip().casefold()
 
             import qrcode
 
             qr = qrcode.QRCode(
                 version=None,
-                error_correction=qrcode.constants.ERROR_CORRECT_M,
-                box_size=10,
+                error_correction=(
+                    qrcode.constants.ERROR_CORRECT_L
+                    if tipo_norm == "carteirinha"
+                    else qrcode.constants.ERROR_CORRECT_M
+                ),
+                box_size=16 if tipo_norm == "carteirinha" else 10,
                 border=4,
             )
             qr.add_data(payload)
             qr.make(fit=True)
-            img = qr.make_image()
+            img = qr.make_image(fill_color="black", back_color="white")
             img.save(str(destino_qr))
             return self._normalizar_caminho_documento_db(destino_qr)
         except Exception:
@@ -5431,77 +5560,19 @@ class App(tk.Tk):
         self,
         caminho_docx,
         caminho_qr,
-        tamanho_cm=1.3,
+        tamanho_cm=1.8,
         margem_esquerda_cm=0.1,
     ):
         inseriu_marcador, _ = self._inserir_imagem_por_marcador_docx(
             caminho_docx,
             caminho_qr,
-            ["qrcode1", "qrcode", "qr code", "qr_code", "qr"],
+            ["qrcode1"],
             largura_cm=float(tamanho_cm),
             altura_cm=float(tamanho_cm),
             incluir_cabecalho_rodape=False,
         )
         if inseriu_marcador:
             return True
-        try:
-            from docx import Document
-            from docx.shared import Cm
-            from docx.enum.table import WD_ALIGN_VERTICAL
-            from docx.enum.text import WD_ALIGN_PARAGRAPH
-        except Exception:
-            return False
-
-        try:
-            doc = Document(str(caminho_docx))
-            tabelas_alvo = []
-            for tabela in doc.tables:
-                texto_tabela = " ".join(cell.text or "" for row in tabela.rows for cell in row.cells)
-                texto_norm = self._normalizar_texto_filtro(texto_tabela)
-                score = 0
-                if "operador" in texto_norm:
-                    score += 5
-                if "nr" in texto_norm:
-                    score += 2
-                if score > 0:
-                    tabelas_alvo.append((score, tabela))
-            if tabelas_alvo:
-                tabelas_alvo = [t for _, t in sorted(tabelas_alvo, key=lambda x: x[0], reverse=True)]
-            else:
-                tabelas_alvo = list(doc.tables)
-
-            for tabela in tabelas_alvo:
-                if not tabela.rows:
-                    continue
-                # Posiciona no canto inferior esquerdo da tabela alvo.
-                cell = tabela.rows[-1].cells[0] if tabela.rows[-1].cells else None
-                if cell is None:
-                    continue
-                try:
-                    cell.vertical_alignment = WD_ALIGN_VERTICAL.BOTTOM
-                except Exception:
-                    pass
-                p = cell.paragraphs[-1] if cell.paragraphs else cell.add_paragraph()
-                try:
-                    p.alignment = WD_ALIGN_PARAGRAPH.LEFT
-                except Exception:
-                    pass
-                try:
-                    p.paragraph_format.left_indent = Cm(float(margem_esquerda_cm))
-                    p.paragraph_format.space_before = Cm(0)
-                    p.paragraph_format.space_after = Cm(0)
-                except Exception:
-                    pass
-                run = p.add_run()
-                run.add_picture(
-                    str(caminho_qr),
-                    width=Cm(float(tamanho_cm)),
-                    height=Cm(float(tamanho_cm)),
-                )
-                doc.save(str(caminho_docx))
-                return True
-        except Exception:
-            return False
         return False
 
     def _inserir_qrcode_no_pdf(
@@ -5522,9 +5593,9 @@ class App(tk.Tk):
             pdf = Path(str(caminho_pdf or "")).expanduser()
             qr = Path(str(caminho_qr or "")).expanduser()
             if not pdf.is_absolute():
-                pdf = (Path(__file__).resolve().parent / pdf).resolve()
+                pdf = (_diretorio_base_app() / pdf).resolve()
             if not qr.is_absolute():
-                qr = (Path(__file__).resolve().parent / qr).resolve()
+                qr = (_diretorio_base_app() / qr).resolve()
             if not pdf.exists() or not qr.exists():
                 return False, "arquivo PDF ou QR nao encontrado"
 
@@ -5539,10 +5610,18 @@ class App(tk.Tk):
             margem_inferior = float(margem_inferior_cm) * pt_por_cm
             paginas_alvo = [doc[-1]] if bool(somente_ultima_pagina) else list(doc)
             for pagina in paginas_alvo:
-                x0 = max(0.0, margem_esquerda)
-                y1 = pagina.rect.height - margem_inferior
-                y0 = max(0.0, y1 - tam)
-                x1 = x0 + tam
+                largura_pag = float(pagina.rect.width)
+                altura_pag = float(pagina.rect.height)
+                tam_max = max(8.0, min(largura_pag - 2.0, altura_pag - 2.0))
+                tam_eff = max(8.0, min(tam, tam_max))
+
+                x0_pref = max(0.0, margem_esquerda)
+                x0 = min(x0_pref, max(0.0, largura_pag - tam_eff))
+                x1 = x0 + tam_eff
+
+                y1_pref = altura_pag - margem_inferior
+                y1 = min(max(tam_eff, y1_pref), altura_pag)
+                y0 = y1 - tam_eff
                 rect = fitz.Rect(x0, y0, x1, y1)
                 pagina.insert_image(rect, filename=str(qr), keep_proportion=True, overlay=True)
 
@@ -7730,15 +7809,17 @@ class App(tk.Tk):
                     return False, f"falha ao inserir LOGO3: {motivo_logo3}"
 
         if tipo_doc_norm == "carteirinha":
-            # Embute o QR diretamente na carteirinha (DOCX) antes de converter para PDF.
-            # O payload aponta para o PDF de saida, quando informado.
+            # Para carteirinha, usa o marcador textual "qrcode1" no DOCX.
             caminho_qr_ref = str(caminho_documento_saida or "").strip()
             if not caminho_qr_ref:
                 caminho_qr_ref = str(destino_docx.with_suffix(".pdf"))
-            payload_qr = self._montar_payload_qrcode_documento(
-                caminho_qr_ref,
-                permitir_arquivo_inexistente=True,
-            )
+            # Forca rota HTML amigavel para leitura do QR no site.
+            payload_qr = self._url_site_consulta_para_arquivo(caminho_qr_ref)
+            if not payload_qr:
+                payload_qr = self._montar_payload_qrcode_documento(
+                    caminho_qr_ref,
+                    permitir_arquivo_inexistente=True,
+                )
             if payload_qr:
                 caminho_qr_temp = None
                 try:
@@ -7749,18 +7830,18 @@ class App(tk.Tk):
                     caminho_qr_temp = Path(arq_tmp.name)
                     qr = qrcode.QRCode(
                         version=None,
-                        error_correction=qrcode.constants.ERROR_CORRECT_M,
-                        box_size=10,
+                        error_correction=qrcode.constants.ERROR_CORRECT_L,
+                        box_size=16,
                         border=4,
                     )
                     qr.add_data(payload_qr)
                     qr.make(fit=True)
-                    img = qr.make_image()
+                    img = qr.make_image(fill_color="black", back_color="white")
                     img.save(str(caminho_qr_temp))
                     self._ultimo_qr_embutido_docx = self._inserir_qrcode_em_carteirinha_docx(
                         destino_docx,
                         caminho_qr_temp,
-                        tamanho_cm=1.3,
+                        tamanho_cm=1.8,
                         margem_esquerda_cm=0.1,
                     )
                 except Exception:
@@ -7779,7 +7860,7 @@ class App(tk.Tk):
     def _iterar_arquivos_documentos_empresa(self, empresa):
         if not isinstance(empresa, dict):
             return
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         pastas_vistas = set()
         for pasta_nome in self._pastas_candidatas_empresa(empresa):
             if not pasta_nome:
