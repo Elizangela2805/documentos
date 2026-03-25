@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-25T17:58:35Z",
-  "total": 34,
+  "updated_at": "2026-03-25T17:58:47Z",
+  "total": 35,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -209,6 +209,16 @@
       "route_documento": "nr35",
       "route_data": "25032026",
       "route": "ricardocesarbortoleto/nr35/25032026"
+    },
+    {
+      "path": "_pdf_gerados/Ricardo Cesar Bortoleto/anuencia (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "nome": "anuencia (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "Ricardo Cesar Bortoleto",
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/anuenciaunifercoricardocesarbortoleto/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "anuenciaunifercoricardocesarbortoleto",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/anuenciaunifercoricardocesarbortoleto/25032026"
     }
   ]
 }
