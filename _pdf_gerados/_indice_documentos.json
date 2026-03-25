@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-25T17:22:29.805Z",
+  "updated_at": "2026-03-25T17:23:58Z",
   "total": 33,
   "items": [
     {
@@ -180,7 +180,11 @@
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 6 (06 Ricardo Cesar Bortoleto.pdf",
       "nome": "NR 6 (06 Ricardo Cesar Bortoleto.pdf",
       "funcionario": "Ricardo Cesar Bortoleto",
-      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr6/25032026"
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr6/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "nr6",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/nr6/25032026"
     },
     {
       "path": "_pdf_gerados/Sidnei Vilela da Silva/NR 18 (08) (WM Sidnei Vilela da Silva.pdf",
