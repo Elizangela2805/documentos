@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-25T17:34:45Z",
-  "total": 30,
+  "updated_at": "2026-03-25T17:35:02Z",
+  "total": 31,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -189,6 +189,16 @@
       "route_documento": "nr11",
       "route_data": "25032026",
       "route": "ricardocesarbortoleto/nr11/25032026"
+    },
+    {
+      "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 12 (08-Garra Ricardo Cesar Bortoleto.pdf",
+      "nome": "NR 12 (08-Garra Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "Ricardo Cesar Bortoleto",
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr12/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "nr12",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/nr12/25032026"
     }
   ]
 }
