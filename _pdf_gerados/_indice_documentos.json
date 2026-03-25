@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-25T17:45:45.349Z",
-  "total": 33,
+  "updated_at": "2026-03-25T17:58:35Z",
+  "total": 34,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -199,6 +199,16 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/25032026"
+    },
+    {
+      "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 35 (08 Ricardo Cesar Bortoleto.pdf",
+      "nome": "NR 35 (08 Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "Ricardo Cesar Bortoleto",
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr35/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "nr35",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/nr35/25032026"
     }
   ]
 }
