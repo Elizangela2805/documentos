@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-25T17:17:46Z",
+  "updated_at": "2026-03-25T17:18:03Z",
   "total": 32,
   "items": [
     {
@@ -156,7 +156,11 @@
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/carteirinha nr 11 (16-garra) (Uniferco) Ricardo Cesar Bortoleto.pdf",
       "nome": "carteirinha nr 11 (16-garra) (Uniferco) Ricardo Cesar Bortoleto.pdf",
       "funcionario": "Ricardo Cesar Bortoleto",
-      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/carteirinhanr1116garraunifercoricardocesarbortoleto/25032026"
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/carteirinhanr1116garraunifercoricardocesarbortoleto/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "carteirinhanr1116garraunifercoricardocesarbortoleto",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/carteirinhanr1116garraunifercoricardocesarbortoleto/25032026"
     },
     {
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 11 (16-garra Ricardo Cesar Bortoleto.pdf",
