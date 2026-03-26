@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-26T19:29:31Z",
-  "total": 36,
+  "updated_at": "2026-03-26T19:29:44Z",
+  "total": 37,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -221,6 +221,16 @@
       "route_documento": "nr1",
       "route_data": "26032026",
       "route": "gustavohilariomonsaodasilva/nr1/26032026"
+    },
+    {
+      "path": "_pdf_gerados/Gustavo Hilário Monsão da Silva/NR 34 (08 Gustavo Hilário Monsão da Silva.pdf",
+      "nome": "NR 34 (08 Gustavo Hilário Monsão da Silva.pdf",
+      "funcionario": "Gustavo Hilário Monsão da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/gustavohilariomonsaodasilva/nr34/26032026",
+      "route_funcionario": "gustavohilariomonsaodasilva",
+      "route_documento": "nr34",
+      "route_data": "26032026",
+      "route": "gustavohilariomonsaodasilva/nr34/26032026"
     }
   ]
 }
