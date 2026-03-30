@@ -1281,6 +1281,8 @@
       }
       try {
         const urls = [
+          pagesUrl("", "", "cadnr_publico.json"),
+          pagesUrl("", "", "cadnr_dados.json"),
           `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_publico.json`,
           `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/cadnr_dados.json`,
         ];
