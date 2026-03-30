@@ -1565,11 +1565,13 @@
         const pathKey = normFolder(it?.path || "").toLowerCase();
         const chaveFunc = slugUrl(funcionario);
         let empSlug = "";
-        if (pathKey && empresaPorCaminho instanceof Map) {
-          empSlug = String(empresaPorCaminho.get(pathKey) || "").trim();
-        }
+        // Regra principal: respeitar o cadastro do projeto (funcionario -> empresa).
         if (chaveFunc && empresaPorFuncionario instanceof Map) {
-          empSlug = empSlug || String(empresaPorFuncionario.get(chaveFunc) || "").trim();
+          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
+        }
+        // Fallback: usar vinculo por caminho do documento quando nao houver cadastro.
+        if (!empSlug && pathKey && empresaPorCaminho instanceof Map) {
+          empSlug = String(empresaPorCaminho.get(pathKey) || "").trim();
         }
         if (!empSlug) {
           const empresa = extrairEmpresaDoItem(it);
