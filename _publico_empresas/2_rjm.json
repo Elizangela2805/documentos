@@ -1,0 +1,109 @@
+{
+  "updated_at": "2026-03-30T07:30:58",
+  "empresa": {
+    "id": 2,
+    "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
+    "nome_pasta": "RJM",
+    "logo": "_logos_empresas/2_RJM.png"
+  },
+  "funcionarios": [
+    {
+      "id": 24,
+      "nome": "Cleber de Souza Euzebio",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 4,
+      "nome": "Paulo Henrique de Souza Matos",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 2,
+      "nome": "Rochael de Almeida Linhares Junior",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
