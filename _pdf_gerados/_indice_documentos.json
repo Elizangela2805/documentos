@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-30T10:30:41Z",
-  "total": 38,
+  "updated_at": "2026-03-30T10:30:55Z",
+  "total": 39,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -233,6 +233,16 @@
       "route_documento": "nr6",
       "route_data": "30032026",
       "route": "cleberdesouzaeuzebio/nr6/30032026"
+    },
+    {
+      "path": "_pdf_gerados/Cleber de Souza Euzebio/NR 18 (08 Cleber de Souza Euzebio.pdf",
+      "nome": "NR 18 (08 Cleber de Souza Euzebio.pdf",
+      "funcionario": "Cleber de Souza Euzebio",
+      "consulta": "https://elizangela2805.github.io/documentos/cleberdesouzaeuzebio/nr18/30032026",
+      "route_funcionario": "cleberdesouzaeuzebio",
+      "route_documento": "nr18",
+      "route_data": "30032026",
+      "route": "cleberdesouzaeuzebio/nr18/30032026"
     }
   ]
 }
