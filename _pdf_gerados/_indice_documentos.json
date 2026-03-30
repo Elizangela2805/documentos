@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-30T19:27:51Z",
-  "total": 46,
+  "updated_at": "2026-03-30T19:28:12Z",
+  "total": 47,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -305,6 +305,16 @@
       "route_documento": "fittestunifercoivaldovicentedasilva",
       "route_data": "30032026",
       "route": "ivaldovicentedasilva/fittestunifercoivaldovicentedasilva/30032026"
+    },
+    {
+      "path": "_pdf_gerados/Ivaldo Vicente da Silva/anuencia (Uniferco) Ivaldo Vicente da Silva.pdf",
+      "nome": "anuencia (Uniferco) Ivaldo Vicente da Silva.pdf",
+      "funcionario": "Ivaldo Vicente da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/anuenciaunifercoivaldovicentedasilva/30032026",
+      "route_funcionario": "ivaldovicentedasilva",
+      "route_documento": "anuenciaunifercoivaldovicentedasilva",
+      "route_data": "30032026",
+      "route": "ivaldovicentedasilva/anuenciaunifercoivaldovicentedasilva/30032026"
     }
   ]
 }
