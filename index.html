@@ -689,16 +689,29 @@
     const CHAVE_STORAGE_KEY = "cadnr_chave_listas_ok_v1";
     const CACHE_TTL_EMPRESAS_MS = 5 * 60 * 1000;
     let cacheEmpresasExtras = { chave: "", at: 0, data: null };
-    const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco", "WM Montagens Industriais"];
+    const EMPRESAS_PADRAO = [
+      "3 MMM",
+      "AD2",
+      "MG Monte",
+      "Projetta",
+      "RJM",
+      "Uniferco",
+      "VCMS Montagens",
+      "WM Montagens Industriais",
+    ];
     const EMPRESA_ALIASES = {
       ad2: "AD2",
       projetta: "Projetta",
       rjm: "RJM",
       uniferco: "Uniferco",
+      "3mmm": "3 MMM",
+      mgmonte: "MG Monte",
+      vcmsmontagens: "VCMS Montagens",
       wm: "WM Montagens Industriais",
       wmmontagensindustriais: "WM Montagens Industriais",
       wmprojetosconsultoriaemontagensltda: "WM Montagens Industriais",
     };
+    const EMPRESAS_PERMITIDAS_SLUG = new Set(EMPRESAS_PADRAO.map((n) => slugUrl(n)).filter(Boolean));
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const obterOwnerRepoBranch = () => ({
       owner: el.owner?.value?.trim() || "Elizangela2805",
@@ -1411,7 +1424,7 @@
         .map((n) => normalizarNomeEmpresa(n))
         .filter(Boolean);
       const resultado = {
-        empresas: empresasMescladas,
+        empresas: empresasMescladas.filter((n) => EMPRESAS_PERMITIDAS_SLUG.has(slugEmpresa(n))),
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
         empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
@@ -1616,6 +1629,7 @@
           const empresa = extrairEmpresaDoItem(it);
           empSlug = slugEmpresa(empresa);
         }
+        if (!EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
         if (!empSlug) continue;
         if (!catalogo.has(empSlug)) {
           const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
@@ -1628,7 +1642,7 @@
       }
       if (funcionariosCadastro instanceof Map) {
         for (const [empSlug, nomesSet] of funcionariosCadastro.entries()) {
-          if (!empSlug) continue;
+          if (!empSlug || !EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
           const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
           if (!catalogo.has(empSlug)) {
             const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
