@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-03-30T19:26:13Z",
-  "total": 40,
+  "updated_at": "2026-03-30T19:26:27Z",
+  "total": 41,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -245,6 +245,16 @@
       "route_documento": "nr1",
       "route_data": "30032026",
       "route": "ivaldovicentedasilva/nr1/30032026"
+    },
+    {
+      "path": "_pdf_gerados/Ivaldo Vicente da Silva/NR 6 (06 Ivaldo Vicente da Silva.pdf",
+      "nome": "NR 6 (06 Ivaldo Vicente da Silva.pdf",
+      "funcionario": "Ivaldo Vicente da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr6/30032026",
+      "route_funcionario": "ivaldovicentedasilva",
+      "route_documento": "nr6",
+      "route_data": "30032026",
+      "route": "ivaldovicentedasilva/nr6/30032026"
     }
   ]
 }
