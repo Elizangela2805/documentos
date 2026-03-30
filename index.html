@@ -918,29 +918,6 @@
       await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, "Atualiza indice de documentos");
     };
 
-    const removerFuncionarioDoIndiceRemoto = async (funcionarioNome) => {
-      const owner = el.owner.value.trim();
-      const repo = el.repo.value.trim();
-      const branch = el.branch.value.trim() || "main";
-      const token = el.token.value.trim();
-      if (!owner || !repo || !token) return;
-      const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
-      const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
-      const itens = Array.isArray(data.items) ? data.items : [];
-      const root = normFolder(el.folder.value);
-      const prefix = root ? `${root}/${funcionarioNome}/` : `${funcionarioNome}/`;
-      const filtrados = itens.filter((it) => {
-        const p = normFolder(String(it?.path || ""));
-        return !(p === prefix.slice(0, -1) || p.startsWith(prefix));
-      });
-      const payload = {
-        updated_at: new Date().toISOString(),
-        total: filtrados.length,
-        items: filtrados,
-      };
-      await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, `Atualiza indice apos exclusao de ${funcionarioNome}`);
-    };
-
     const caminhosRelacionadosAoPdf = (pdfPath) => {
       const p = normFolder(pdfPath);
       if (!p || !p.toLowerCase().endsWith(".pdf")) return [];
@@ -956,12 +933,59 @@
       return [...out];
     };
 
-    const excluirFuncionarioPublico = async (empresaNome, funcionarioNome, docs, btnRef = null) => {
-      const pathsBase = (Array.isArray(docs) ? docs : [])
+    const removerPdfsDoIndiceRemoto = async (owner, repo, branch, token, pdfPaths, commitMsg) => {
+      const alvosPdf = new Set(
+        (Array.isArray(pdfPaths) ? pdfPaths : [])
+          .map((p) => normFolder(String(p || "")))
+          .filter((p) => p && p.toLowerCase().endsWith(".pdf"))
+      );
+      if (!alvosPdf.size) return;
+      const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
+      const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
+      const itens = Array.isArray(data.items) ? data.items : [];
+      const filtrados = itens.filter((it) => {
+        const pathItem = normFolder(String(it?.path || ""));
+        return !alvosPdf.has(pathItem);
+      });
+      const payload = {
+        updated_at: new Date().toISOString(),
+        total: filtrados.length,
+        items: filtrados,
+      };
+      await githubPutJsonFile(
+        owner,
+        repo,
+        branch,
+        REPO_INDEX_PATH,
+        token,
+        payload,
+        commitMsg || "Atualiza indice apos exclusao de documentos",
+      );
+    };
+
+    const excluirDocumentosSelecionadosRemoto = async (owner, repo, branch, token, docs, commitMsg) => {
+      const docsSelecionados = Array.isArray(docs) ? docs : [];
+      const pathsBase = docsSelecionados
         .map((d) => normFolder(String(d?.path || "")))
         .filter((p) => p && p.toLowerCase().endsWith(".pdf"));
-      if (!pathsBase.length) {
-        window.alert("Nenhum documento encontrado para exclusao.");
+      if (!pathsBase.length) return 0;
+      const alvos = new Set();
+      for (const p of pathsBase) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
+      for (const alvo of [...alvos]) {
+        try {
+          await githubDeleteFile(owner, repo, branch, alvo, token, commitMsg || "Excluir documentos selecionados");
+        } catch (err) {
+          if (!String(err?.message || "").includes(" 404 ")) throw err;
+        }
+      }
+      await removerPdfsDoIndiceRemoto(owner, repo, branch, token, pathsBase, commitMsg);
+      return pathsBase.length;
+    };
+
+    const excluirDocumentosSelecionadosPublico = async (empresaNome, funcionarioNome, docs, btnRef = null) => {
+      const selecionados = Array.isArray(docs) ? docs : [];
+      if (!selecionados.length) {
+        window.alert("Selecione ao menos um documento.");
         return;
       }
       const { owner, repo, branch, token } = obterConfigEscrita();
@@ -969,73 +993,24 @@
         window.alert("Informe owner, repositorio e token para excluir.");
         return;
       }
-      const ok = window.confirm(`Excluir definitivamente ${funcionarioNome} da empresa ${empresaNome}?`);
+      const ok = window.confirm(
+        `Excluir ${selecionados.length} documento(s) selecionado(s) de ${funcionarioNome} (${empresaNome})?`
+      );
       if (!ok) return;
       if (btnRef) btnRef.disabled = true;
       try {
-        const alvos = new Set();
-        for (const p of pathsBase) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
-        const funcSlugAlvo = slugUrl(String(funcionarioNome || "").trim());
-        const funcNomeAlvo = String(funcionarioNome || "").trim().toLowerCase();
-        const empNomeAlvo = String(empresaNome || "").trim().toLowerCase();
-        const slugsAlvo = new Set(
-          (Array.isArray(docs) ? docs : []).map((d) => {
-            const rf = String(d?.route_funcionario || "").trim().toLowerCase();
-            return rf || extrairFuncionarioSlug(String(d?.path || ""));
-          }).filter(Boolean)
+        const qtd = await excluirDocumentosSelecionadosRemoto(
+          owner,
+          repo,
+          branch,
+          token,
+          selecionados,
+          `Excluir documentos selecionados de ${funcionarioNome}`
         );
-        if (funcSlugAlvo) slugsAlvo.add(funcSlugAlvo);
-
-        // Reforco: remove tambem PDFs adicionais do funcionario/empresa caso o indice esteja desatualizado.
-        let extras = [];
-        try {
-          const todos = await listRepoPdfs(owner, repo, branch, normFolder(el.folder.value), token);
-          extras = todos.filter((it) => {
-            const func = String(extrairFuncionarioDoPath(it.path, it) || "").trim().toLowerCase();
-            const emp = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
-            const slugPath = String(extrairFuncionarioSlug(it.path) || "").trim().toLowerCase();
-            if (slugPath && slugsAlvo.has(slugPath)) return true;
-            return func === String(funcionarioNome || "").trim().toLowerCase()
-              && emp === String(empresaNome || "").trim().toLowerCase();
-          }).map((it) => normFolder(it.path));
-        } catch {}
-        for (const p of extras) caminhosRelacionadosAoPdf(p).forEach((x) => alvos.add(x));
-
-        for (const alvo of [...alvos]) {
-          try {
-            await githubDeleteFile(owner, repo, branch, alvo, token, `Excluir documentos de ${funcionarioNome}`);
-          } catch (err) {
-            if (!String(err?.message || "").includes(" 404 ")) throw err;
-          }
-        }
-
-        const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
-        const data = atual?.data && typeof atual.data === "object" ? atual.data : {};
-        const itens = Array.isArray(data.items) ? data.items : [];
-        const alvosPdf = new Set([...alvos].map((p) => normFolder(p)).filter((p) => p.toLowerCase().endsWith(".pdf")));
-        const filtrados = itens.filter((it) => {
-          const pathItem = normFolder(String(it?.path || ""));
-          if (alvosPdf.has(pathItem)) return false;
-          const routeFunc = String(it?.route_funcionario || "").trim().toLowerCase();
-          if (routeFunc && slugsAlvo.has(routeFunc)) return false;
-          const funcItem = String(it?.funcionario || "").trim().toLowerCase();
-          const empItem = String(extrairEmpresaDoItem(it) || "").trim().toLowerCase();
-          const slugItem = String(extrairFuncionarioSlug(pathItem) || "").trim().toLowerCase();
-          if (slugItem && slugsAlvo.has(slugItem)) return false;
-          if (funcItem && funcItem === funcNomeAlvo && (!empNomeAlvo || empItem === empNomeAlvo)) return false;
-          return true;
-        });
-        const payload = {
-          updated_at: new Date().toISOString(),
-          total: filtrados.length,
-          items: filtrados,
-        };
-        await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, payload, `Atualiza indice apos exclusao de ${funcionarioNome}`);
-
         await atualizarLista();
-        window.alert(`Funcionario ${funcionarioNome} excluido com sucesso.`);
+        window.alert(`${qtd} documento(s) excluido(s) com sucesso.`);
       } catch (err) {
-        window.alert(String(err?.message || err || "Falha ao excluir funcionario."));
+        window.alert(String(err?.message || err || "Falha ao excluir documentos selecionados."));
       } finally {
         if (btnRef) btnRef.disabled = false;
       }
@@ -1509,7 +1484,6 @@
         el.listaFuncionarios.innerHTML = `<div class="small">Nenhum PDF encontrado na pasta configurada.</div>`;
         return;
       }
-      const root = normFolder(el.folder.value);
       const grupos = new Map();
       for (const it of items) {
         const funcionario = extrairFuncionarioDoPath(it.path, it);
@@ -1525,7 +1499,6 @@
       el.listaFuncionarios.innerHTML = "";
       for (const nome of nomes) {
         const docs = grupos.get(nome).sort((a, b) => a.path.localeCompare(b.path, "pt-BR"));
-        const funcionarioPath = root ? `${root}/${nome}` : nome;
         const details = document.createElement("details");
         details.className = "funcionario-item";
         const summary = document.createElement("summary");
@@ -1536,56 +1509,63 @@
         body.className = "funcionario-docs";
         const acoes = document.createElement("div");
         acoes.style.marginBottom = "8px";
-        const btnExcluirFunc = document.createElement("button");
-        btnExcluirFunc.type = "button";
-        btnExcluirFunc.className = "warn small-btn";
-        btnExcluirFunc.textContent = "Excluir funcionario";
-        btnExcluirFunc.addEventListener("click", async (ev) => {
+        const selecionaveis = [];
+        const btnExcluirSel = document.createElement("button");
+        btnExcluirSel.type = "button";
+        btnExcluirSel.className = "warn small-btn";
+        btnExcluirSel.textContent = "Excluir documentos selecionados";
+        btnExcluirSel.addEventListener("click", async (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
+          const docsSelecionados = selecionaveis.filter((x) => x.chk.checked).map((x) => x.doc);
+          if (!docsSelecionados.length) {
+            log(`Selecione ao menos um documento de ${nome} para excluir.`, "err");
+            return;
+          }
           const { owner, repo, branch, token } = obterConfigEscrita();
           if (!owner || !repo || !token) {
             log("Preencha owner, repositorio e token para excluir.", "err");
             return;
           }
-          const ok = window.confirm(`Excluir todos os documentos de ${nome}?`);
+          const ok = window.confirm(`Excluir ${docsSelecionados.length} documento(s) selecionado(s) de ${nome}?`);
           if (!ok) return;
-          btnExcluirFunc.disabled = true;
+          btnExcluirSel.disabled = true;
           try {
-            const files = await listRepoFiles(owner, repo, branch, funcionarioPath, token);
-            if (!files.length) {
-              log(`Nenhum arquivo encontrado para ${nome}.`);
-              return;
-            }
-            for (const f of files.sort((a, b) => b.path.length - a.path.length)) {
-              try {
-                await githubDeleteFile(owner, repo, branch, f.path, token, `Excluir documentos de ${nome}`);
-              } catch (err) {
-                if (!String(err?.message || "").includes(" 404 ")) throw err;
-              }
-            }
-            await removerFuncionarioDoIndiceRemoto(nome);
-            log(`Documentos de ${nome} excluidos com sucesso.`, "ok");
+            const qtd = await excluirDocumentosSelecionadosRemoto(
+              owner,
+              repo,
+              branch,
+              token,
+              docsSelecionados,
+              `Excluir documentos selecionados de ${nome}`
+            );
+            log(`${qtd} documento(s) de ${nome} excluido(s) com sucesso.`, "ok");
             await atualizarLista();
           } catch (err) {
             log(err.message, "err");
           } finally {
-            btnExcluirFunc.disabled = false;
+            btnExcluirSel.disabled = false;
           }
         });
-        acoes.appendChild(btnExcluirFunc);
+        acoes.appendChild(btnExcluirSel);
         body.appendChild(acoes);
         const ul = document.createElement("ul");
         for (const doc of docs) {
           const fileName = doc.path.split("/").pop();
           const li = document.createElement("li");
+          const chk = document.createElement("input");
+          chk.type = "checkbox";
+          chk.style.marginRight = "8px";
+          chk.setAttribute("aria-label", `Selecionar ${fileName}`);
           const a = document.createElement("a");
           a.className = "muted-link";
           a.target = "_blank";
           a.rel = "noopener";
           a.href = linkConsultaItem(doc);
           a.textContent = `Abrir ${fileName}`;
+          li.appendChild(chk);
           li.appendChild(a);
+          selecionaveis.push({ chk, doc });
           ul.appendChild(li);
         }
         body.appendChild(ul);
@@ -1708,29 +1688,37 @@
         body.className = "funcionario-docs";
         const acoes = document.createElement("div");
         acoes.style.marginBottom = "8px";
-        const btnExcluirFunc = document.createElement("button");
-        btnExcluirFunc.type = "button";
-        btnExcluirFunc.className = "warn small-btn";
-        btnExcluirFunc.textContent = "Excluir funcionario";
-        btnExcluirFunc.addEventListener("click", async (ev) => {
+        const selecionaveis = [];
+        const btnExcluirSel = document.createElement("button");
+        btnExcluirSel.type = "button";
+        btnExcluirSel.className = "warn small-btn";
+        btnExcluirSel.textContent = "Excluir documentos selecionados";
+        btnExcluirSel.addEventListener("click", async (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          await excluirFuncionarioPublico(grupoEmp.nome, nome, docs, btnExcluirFunc);
+          const docsSelecionados = selecionaveis.filter((x) => x.chk.checked).map((x) => x.doc);
+          await excluirDocumentosSelecionadosPublico(grupoEmp.nome, nome, docsSelecionados, btnExcluirSel);
         });
-        acoes.appendChild(btnExcluirFunc);
+        acoes.appendChild(btnExcluirSel);
         body.appendChild(acoes);
 
         const ul = document.createElement("ul");
         for (const doc of docs) {
           const fileName = String(doc?.nome || doc?.path || "").split("/").pop();
           const li = document.createElement("li");
+          const chk = document.createElement("input");
+          chk.type = "checkbox";
+          chk.style.marginRight = "8px";
+          chk.setAttribute("aria-label", `Selecionar ${fileName}`);
           const a = document.createElement("a");
           a.className = "muted-link";
           a.target = "_blank";
           a.rel = "noopener";
           a.href = linkConsultaItem(doc);
           a.textContent = `Abrir ${fileName}`;
+          li.appendChild(chk);
           li.appendChild(a);
+          selecionaveis.push({ chk, doc });
           ul.appendChild(li);
         }
         body.appendChild(ul);
