@@ -689,8 +689,6 @@
     const CHAVE_STORAGE_KEY = "cadnr_chave_listas_ok_v1";
     const CACHE_TTL_EMPRESAS_MS = 5 * 60 * 1000;
     let cacheEmpresasExtras = { chave: "", at: 0, data: null };
-    let cacheIndiceEmpresasPublicas = { chave: "", at: 0, data: null };
-    const cacheDetalheEmpresaPublica = new Map();
     const EMPRESAS_PADRAO = ["AD2", "Projetta", "RJM", "Uniferco", "WM Montagens Industriais"];
     const EMPRESA_ALIASES = {
       ad2: "AD2",
@@ -725,7 +723,6 @@
       return consulta || `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
-    const PUBLIC_EMPRESAS_INDEX_PATH = "_publico_empresas/index.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
@@ -1191,13 +1188,13 @@
         .filter(Boolean);
       if (gruposComFechamento.length) {
         const candidato = normalizarNomeEmpresa(gruposComFechamento[gruposComFechamento.length - 1]);
-        if (candidato && !/^\d+$/.test(candidato) && isEmpresaConhecida(candidato)) return candidato;
+        if (candidato && !/^\d+$/.test(candidato)) return candidato;
       }
 
       const grupoAberto = nome.match(/\(([^()]*)$/);
       if (grupoAberto && grupoAberto[1]) {
         const candidato = normalizarNomeEmpresa(String(grupoAberto[1] || "").trim());
-        if (candidato && !/^\d+$/.test(candidato) && isEmpresaConhecida(candidato)) return candidato;
+        if (candidato && !/^\d+$/.test(candidato)) return candidato;
       }
 
       const tentativaDireta = normalizarNomeEmpresa(nome);
@@ -1207,7 +1204,7 @@
 
     const extrairEmpresaDoItem = (it) => {
       const empItem = normalizarNomeEmpresa(it?.empresa || "");
-      if (empItem && isEmpresaConhecida(empItem)) return empItem;
+      if (empItem) return empItem;
       const pathNorm = normFolder(it?.path || "");
       const funcionarioItem = String(it?.funcionario || "").trim();
       if (pathNorm) {
@@ -1219,7 +1216,7 @@
             const funcSlug = slugUrl(funcionarioItem);
             if (!funcSlug || pastaSlug !== funcSlug) {
               const candidatoPath = normalizarNomeEmpresa(primeiraPasta);
-              if (candidatoPath && isEmpresaConhecida(candidatoPath)) return candidatoPath;
+              if (candidatoPath) return candidatoPath;
             }
           }
         }
@@ -1383,104 +1380,6 @@
       };
       cacheEmpresasExtras = { chave: chaveCache, at: agora, data: resultado };
       return resultado;
-    };
-
-    const _lerJsonComFallbackUrls = async (urls = []) => {
-      for (const url of urls) {
-        const urlTxt = String(url || "").trim();
-        if (!urlTxt) continue;
-        try {
-          const res = await fetch(urlTxt, { cache: "no-store" });
-          if (!res.ok) continue;
-          const body = await res.json();
-          if (body && typeof body === "object") return body;
-        } catch {
-          continue;
-        }
-      }
-      return null;
-    };
-
-    const carregarIndiceEmpresasPublicas = async (owner, repo, branch) => {
-      const o = String(owner || "").trim();
-      const r = String(repo || "").trim();
-      const b = String(branch || "main").trim() || "main";
-      const chaveCache = `${o.toLowerCase()}/${r.toLowerCase()}@${b.toLowerCase()}`;
-      const agora = Date.now();
-      if (
-        cacheIndiceEmpresasPublicas.data
-        && cacheIndiceEmpresasPublicas.chave === chaveCache
-        && (agora - Number(cacheIndiceEmpresasPublicas.at || 0)) < CACHE_TTL_EMPRESAS_MS
-      ) {
-        return cacheIndiceEmpresasPublicas.data;
-      }
-
-      const body = await _lerJsonComFallbackUrls([
-        pagesUrl("", "", PUBLIC_EMPRESAS_INDEX_PATH),
-        o && r ? rawUrl(o, r, b, PUBLIC_EMPRESAS_INDEX_PATH) : "",
-      ]);
-      if (!body || !Array.isArray(body?.empresas)) return null;
-
-      const empresas = [];
-      for (const item of body.empresas) {
-        if (!item || typeof item !== "object") continue;
-        const nome = normalizarNomeEmpresa(String(item?.empresa_nome || "").trim());
-        const arquivo = normFolder(String(item?.arquivo || "").trim());
-        if (!nome || !arquivo) continue;
-        const slug = slugEmpresa(String(item?.empresa_slug || "").trim() || nome);
-        if (!slug) continue;
-        empresas.push({
-          slug,
-          nome,
-          arquivo,
-          empresa_id: Number(item?.empresa_id),
-          total_funcionarios: Number(item?.total_funcionarios || 0),
-          total_documentos: Number(item?.total_documentos || 0),
-        });
-      }
-
-      const data = {
-        updated_at: String(body?.updated_at || "").trim(),
-        empresas: empresas.sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR")),
-      };
-      cacheIndiceEmpresasPublicas = { chave: chaveCache, at: agora, data };
-      return data;
-    };
-
-    const carregarDetalheEmpresaPublica = async (owner, repo, branch, empresaSlug, indice = null) => {
-      const slug = slugEmpresa(empresaSlug || "");
-      if (!slug) return null;
-      const o = String(owner || "").trim();
-      const r = String(repo || "").trim();
-      const b = String(branch || "main").trim() || "main";
-      const chaveCache = `${o.toLowerCase()}/${r.toLowerCase()}@${b.toLowerCase()}::${slug}`;
-      const agora = Date.now();
-      const cacheItem = cacheDetalheEmpresaPublica.get(chaveCache);
-      if (cacheItem && (agora - Number(cacheItem.at || 0)) < CACHE_TTL_EMPRESAS_MS) {
-        return cacheItem.data;
-      }
-
-      const indiceRef = indice || await carregarIndiceEmpresasPublicas(o, r, b);
-      if (!indiceRef || !Array.isArray(indiceRef.empresas)) return null;
-      const meta = indiceRef.empresas.find((e) => String(e?.slug || "") === slug);
-      if (!meta) return null;
-
-      const arquivo = normFolder(String(meta?.arquivo || "").trim());
-      if (!arquivo) return null;
-      const body = await _lerJsonComFallbackUrls([
-        pagesUrl("", "", arquivo),
-        o && r ? rawUrl(o, r, b, arquivo) : "",
-      ]);
-      if (!body || typeof body !== "object") return null;
-
-      const data = {
-        meta,
-        empresa: body?.empresa && typeof body.empresa === "object" ? body.empresa : {},
-        funcionarios: Array.isArray(body?.funcionarios) ? body.funcionarios : [],
-        documentos: Array.isArray(body?.documentos) ? body.documentos : [],
-      };
-      cacheDetalheEmpresaPublica.set(chaveCache, { at: agora, data });
-      return data;
     };
 
     const extrairFuncionarioDoPath = (path, item = null) => {
@@ -1706,7 +1605,10 @@
       return catalogo;
     };
 
-    const _renderListaEmpresas = (empresas = []) => {
+    const renderHomeEmpresas = (catalogo) => {
+      const empresas = [...catalogo.entries()]
+        .map(([slug, data]) => ({ slug, nome: data.nome }))
+        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
       el.tituloLista.textContent = "Empresas";
       if (!empresas.length) {
         el.listaFuncionarios.innerHTML = `<div class="small">Nenhuma empresa encontrada.</div>`;
@@ -1717,17 +1619,15 @@
       }</div>`;
     };
 
-    const renderHomeEmpresas = (catalogo) => {
-      const empresas = [...catalogo.entries()]
-        .map(([slug, data]) => ({ slug, nome: data.nome }))
-        .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-      _renderListaEmpresas(empresas);
-    };
-
-    const _renderEmpresaComGrupos = (empresaNome, gruposFuncionarios = new Map()) => {
-      const nomeTitulo = String(empresaNome || "").trim();
-      el.tituloLista.textContent = (nomeTitulo || "Empresa").toUpperCase();
-      const funcionarios = [...gruposFuncionarios.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
+    const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
+      const grupoEmp = catalogo.get(empresaSlug);
+      if (!grupoEmp) {
+        el.tituloLista.textContent = "Empresas";
+        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
+        return;
+      }
+      el.tituloLista.textContent = grupoEmp.nome.toUpperCase();
+      const funcionarios = [...grupoEmp.funcionarios.keys()].sort((a, b) => a.localeCompare(b, "pt-BR"));
       if (!funcionarios.length) {
         el.listaFuncionarios.innerHTML = `<a class="empresa-back" href="./">&larr; Voltar para empresas</a><div class="small">Nenhum documento disponivel para esta empresa.</div>`;
         return;
@@ -1740,7 +1640,7 @@
       el.listaFuncionarios.appendChild(voltar);
 
       for (const nome of funcionarios) {
-        const docs = (gruposFuncionarios.get(nome) || []).slice().sort((a, b) => String(a.path || "").localeCompare(String(b.path || ""), "pt-BR"));
+        const docs = (grupoEmp.funcionarios.get(nome) || []).slice().sort((a, b) => String(a.path || "").localeCompare(String(b.path || ""), "pt-BR"));
         const details = document.createElement("details");
         details.className = "funcionario-item";
         const summary = document.createElement("summary");
@@ -1758,7 +1658,7 @@
         btnExcluirFunc.addEventListener("click", async (ev) => {
           ev.preventDefault();
           ev.stopPropagation();
-          await excluirFuncionarioPublico(nomeTitulo, nome, docs, btnExcluirFunc);
+          await excluirFuncionarioPublico(grupoEmp.nome, nome, docs, btnExcluirFunc);
         });
         acoes.appendChild(btnExcluirFunc);
         body.appendChild(acoes);
@@ -1782,62 +1682,7 @@
       }
     };
 
-    const renderEmpresaFuncionarios = (empresaSlug, catalogo) => {
-      const grupoEmp = catalogo.get(empresaSlug);
-      if (!grupoEmp) {
-        el.tituloLista.textContent = "Empresas";
-        el.listaFuncionarios.innerHTML = `<div class="small">Empresa nao encontrada.</div>`;
-        return;
-      }
-      _renderEmpresaComGrupos(grupoEmp.nome, grupoEmp.funcionarios);
-    };
-
-    const renderEmpresaFuncionariosDoCadastroLeve = (empresaSlug, detalheEmpresa) => {
-      if (!detalheEmpresa || typeof detalheEmpresa !== "object") return false;
-      const empresaNome = normalizarNomeEmpresa(
-        String(detalheEmpresa?.empresa?.nome || detalheEmpresa?.empresa?.nome_pasta || detalheEmpresa?.meta?.nome || "").trim()
-      );
-      if (!empresaNome) return false;
-
-      const funcionarios = Array.isArray(detalheEmpresa?.funcionarios) ? detalheEmpresa.funcionarios : [];
-      const documentos = Array.isArray(detalheEmpresa?.documentos) ? detalheEmpresa.documentos : [];
-      const nomesPorId = new Map();
-      const grupos = new Map();
-      for (const f of funcionarios) {
-        if (!f || typeof f !== "object") continue;
-        const nome = String(f?.nome || "").trim();
-        if (!nome || isGrupoFuncionarioInvalido(nome)) continue;
-        const fid = Number(f?.id);
-        if (Number.isFinite(fid)) nomesPorId.set(fid, nome);
-        if (!grupos.has(nome)) grupos.set(nome, []);
-      }
-
-      for (const d of documentos) {
-        if (!d || typeof d !== "object") continue;
-        const caminho = normFolder(String(d?.caminho || "").trim());
-        if (!caminho) continue;
-        const fid = Number(d?.funcionario_id);
-        let nome = "";
-        if (Number.isFinite(fid)) nome = String(nomesPorId.get(fid) || "").trim();
-        if (!nome) nome = extrairFuncionarioPublicoDoPath(caminho, { funcionario: "" });
-        if (!nome || isGrupoFuncionarioInvalido(nome)) continue;
-        if (!grupos.has(nome)) grupos.set(nome, []);
-        grupos.get(nome).push({
-          path: caminho,
-          nome: String(caminho.split("/").pop() || "").trim(),
-          funcionario: nome,
-          empresa: empresaNome,
-        });
-      }
-
-      _renderEmpresaComGrupos(empresaNome, grupos);
-      return true;
-    };
-
-    const renderPublicoEmpresasFuncionarios = async (
-      owner,
-      repo,
-      branch,
+    const renderPublicoEmpresasFuncionarios = (
       items,
       empresasExtras = [],
       funcionariosCadastro = new Map(),
@@ -1845,32 +1690,6 @@
       empresaPorFuncionario = new Map(),
       empresaPorCaminho = new Map(),
     ) => {
-      const p = new URLSearchParams(window.location.search);
-      const empresaSel = slugEmpresa(p.get("empresa") || "");
-      const usarCadastroLeve = !isAdminMode;
-      const indicePublico = usarCadastroLeve
-        ? await carregarIndiceEmpresasPublicas(owner, repo, branch)
-        : null;
-
-      if (!empresaSel && indicePublico && Array.isArray(indicePublico.empresas) && indicePublico.empresas.length) {
-        const nomesIndice = indicePublico.empresas.map((e) => normalizarNomeEmpresa(e?.nome)).filter(Boolean);
-        const nomesExtras = Array.isArray(empresasExtras) ? empresasExtras.map((e) => normalizarNomeEmpresa(e)).filter(Boolean) : [];
-        const nomesTotais = [...new Set([...nomesIndice, ...nomesExtras])];
-        const empresas = nomesTotais
-          .map((nome) => ({ slug: slugEmpresa(nome), nome }))
-          .filter((e) => e.slug && e.nome)
-          .sort((a, b) => a.nome.localeCompare(b.nome, "pt-BR"));
-        _renderListaEmpresas(empresas);
-        return;
-      }
-
-      if (empresaSel && indicePublico && Array.isArray(indicePublico.empresas) && indicePublico.empresas.length) {
-        const detalhe = await carregarDetalheEmpresaPublica(owner, repo, branch, empresaSel, indicePublico);
-        if (detalhe && renderEmpresaFuncionariosDoCadastroLeve(empresaSel, detalhe)) {
-          return;
-        }
-      }
-
       const catalogo = construirCatalogoEmpresas(
         items,
         empresasExtras,
@@ -1879,6 +1698,8 @@
         empresaPorFuncionario,
         empresaPorCaminho,
       );
+      const p = new URLSearchParams(window.location.search);
+      const empresaSel = slugEmpresa(p.get("empresa") || "");
       if (!empresaSel) {
         renderHomeEmpresas(catalogo);
         return;
@@ -2039,10 +1860,7 @@
           }
         }
         const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-        await renderPublicoEmpresasFuncionarios(
-          owner,
-          repo,
-          branch,
+        renderPublicoEmpresasFuncionarios(
           items,
           extras.empresas,
           extras.funcionariosPorEmpresa,
@@ -2055,10 +1873,7 @@
         const idx = await carregarIndicePublico();
         if (idx.length) {
           const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-          await renderPublicoEmpresasFuncionarios(
-            owner,
-            repo,
-            branch,
+          renderPublicoEmpresasFuncionarios(
             idx,
             extras.empresas,
             extras.funcionariosPorEmpresa,
@@ -2069,10 +1884,7 @@
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
           const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
-          await renderPublicoEmpresasFuncionarios(
-            owner,
-            repo,
-            branch,
+          renderPublicoEmpresasFuncionarios(
             [],
             extras.empresas,
             extras.funcionariosPorEmpresa,
