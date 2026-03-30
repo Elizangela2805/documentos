@@ -723,6 +723,7 @@
       return consulta || `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
+    const PUBLIC_EMPRESAS_INDEX_PATH = "_publico_empresas/index.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
       el.status.value += `[${logTs()}] ${prefix} ${msg}\n`;
@@ -1354,6 +1355,33 @@
       }
     };
 
+    const carregarEmpresasIndicePublico = async (owner, repo, branch) => {
+      const o = String(owner || "").trim();
+      const r = String(repo || "").trim();
+      const b = String(branch || "main").trim() || "main";
+      const urls = [
+        pagesUrl("", "", PUBLIC_EMPRESAS_INDEX_PATH),
+        o && r ? rawUrl(o, r, b, PUBLIC_EMPRESAS_INDEX_PATH) : "",
+      ].filter(Boolean);
+      for (const url of urls) {
+        try {
+          const res = await fetch(url, { cache: "no-store" });
+          if (!res.ok) continue;
+          const body = await res.json();
+          const empresas = Array.isArray(body?.empresas) ? body.empresas : [];
+          const nomes = [];
+          for (const item of empresas) {
+            const nome = normalizarNomeEmpresa(String(item?.empresa_nome || "").trim());
+            if (nome) nomes.push(nome);
+          }
+          if (nomes.length) return [...new Set(nomes)];
+        } catch {
+          continue;
+        }
+      }
+      return [];
+    };
+
     const obterEmpresasExtrasPublicas = async (owner, repo, branch) => {
       const chaveCache = `${String(owner || "").trim().toLowerCase()}/${String(repo || "").trim().toLowerCase()}@${String(branch || "main").trim().toLowerCase()}`;
       const agora = Date.now();
@@ -1365,14 +1393,25 @@
         return cacheEmpresasExtras.data;
       }
 
-      const cadastro = await carregarCadastroPublico(owner, repo, branch);
+      const [cadastro, empresasIndice] = await Promise.all([
+        carregarCadastroPublico(owner, repo, branch),
+        carregarEmpresasIndicePublico(owner, repo, branch),
+      ]);
       let viaLogos = [];
-      if (!Array.isArray(cadastro?.empresas) || !cadastro.empresas.length) {
-        // Fallback apenas quando o cadastro publico nao traz empresas.
+      if (
+        (!Array.isArray(cadastro?.empresas) || !cadastro.empresas.length)
+        && (!Array.isArray(empresasIndice) || !empresasIndice.length)
+      ) {
+        // Fallback apenas quando cadastro + indice publico nao trazem empresas.
         viaLogos = await listarEmpresasPorLogos(owner, repo, branch);
       }
+      const empresasMescladas = [
+        ...new Set([...(cadastro?.empresas || []), ...(empresasIndice || []), ...(viaLogos || [])]),
+      ]
+        .map((n) => normalizarNomeEmpresa(n))
+        .filter(Boolean);
       const resultado = {
-        empresas: [...new Set([...(viaLogos || []), ...((cadastro?.empresas) || [])])],
+        empresas: empresasMescladas,
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
         empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
