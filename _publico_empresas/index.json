@@ -1,9 +1,9 @@
 {
-  "updated_at": "2026-03-30T07:30:58",
+  "updated_at": "2026-03-30T16:47:38",
   "empresas": [
     {
       "empresa_id": 1,
-      "empresa_nome": "Projetta Engenharia Consultoria e Treinamentos LTDA",
+      "empresa_nome": "Projetta",
       "empresa_slug": "projetta",
       "arquivo": "_publico_empresas/1_projetta.json",
       "total_funcionarios": 4,
@@ -11,7 +11,7 @@
     },
     {
       "empresa_id": 2,
-      "empresa_nome": "RJM Instalações Elétricas e Mecânicas LTDA",
+      "empresa_nome": "RJM",
       "empresa_slug": "rjm",
       "arquivo": "_publico_empresas/2_rjm.json",
       "total_funcionarios": 3,
@@ -19,7 +19,7 @@
     },
     {
       "empresa_id": 3,
-      "empresa_nome": "AD2 Castro Consultoria e Serviços LTDA",
+      "empresa_nome": "AD2",
       "empresa_slug": "ad2",
       "arquivo": "_publico_empresas/3_ad2.json",
       "total_funcionarios": 3,
@@ -27,15 +27,15 @@
     },
     {
       "empresa_id": 4,
-      "empresa_nome": "UNF Comércio de Ferro e Aço LTDA",
+      "empresa_nome": "Uniferco",
       "empresa_slug": "uniferco",
       "arquivo": "_publico_empresas/4_uniferco.json",
-      "total_funcionarios": 3,
+      "total_funcionarios": 4,
       "total_documentos": 1
     },
     {
       "empresa_id": 5,
-      "empresa_nome": "WM Projetos Consultoria e Montagens LTDA",
+      "empresa_nome": "WM Montagens Industriais",
       "empresa_slug": "wm-montagens-industriais",
       "arquivo": "_publico_empresas/5_wm-montagens-industriais.json",
       "total_funcionarios": 7,
@@ -43,7 +43,7 @@
     },
     {
       "empresa_id": 6,
-      "empresa_nome": "VCMS Montagens Industriais LTDA",
+      "empresa_nome": "VCMS Montagens",
       "empresa_slug": "vcms-montagens",
       "arquivo": "_publico_empresas/6_vcms-montagens.json",
       "total_funcionarios": 3,
@@ -51,7 +51,7 @@
     },
     {
       "empresa_id": 7,
-      "empresa_nome": "MG Monte Montagens Industriais LTDA",
+      "empresa_nome": "MG Monte",
       "empresa_slug": "mg-monte",
       "arquivo": "_publico_empresas/7_mg-monte.json",
       "total_funcionarios": 0,
@@ -59,7 +59,7 @@
     },
     {
       "empresa_id": 8,
-      "empresa_nome": "3 mmm Guindastes e Serviços LTDA",
+      "empresa_nome": "3 MMM",
       "empresa_slug": "3-mmm",
       "arquivo": "_publico_empresas/8_3-mmm.json",
       "total_funcionarios": 1,

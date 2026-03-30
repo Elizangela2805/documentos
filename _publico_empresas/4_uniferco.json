@@ -1,0 +1,43 @@
+{
+  "updated_at": "2026-03-30T16:47:38",
+  "empresa": {
+    "id": 4,
+    "nome": "UNF Comércio de Ferro e Aço LTDA",
+    "nome_pasta": "Uniferco",
+    "logo": "_logos_empresas/4_Uniferco.png"
+  },
+  "funcionarios": [
+    {
+      "id": 9,
+      "nome": "Adilson Aparecido das Neves Junior",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 23,
+      "nome": "Gustavo Hilário Monsão da Silva",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 25,
+      "nome": "Ivaldo Vicente da Silva",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 22,
+      "nome": "Ricardo Cesar Bortoleto",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 4,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
