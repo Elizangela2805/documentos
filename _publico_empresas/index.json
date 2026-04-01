@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-03-30T16:47:38",
+  "updated_at": "2026-04-01T14:53:30",
   "empresas": [
     {
       "empresa_id": 1,
@@ -14,7 +14,7 @@
       "empresa_nome": "RJM",
       "empresa_slug": "rjm",
       "arquivo": "_publico_empresas/2_rjm.json",
-      "total_funcionarios": 3,
+      "total_funcionarios": 4,
       "total_documentos": 13
     },
     {
