@@ -491,18 +491,6 @@
         </div>
       </div>
 
-      <div class="box">
-        <h3 style="margin:0 0 8px 0;font-size:1rem;">Cadastro Publico (Site)</h3>
-        <div class="actions" style="margin-bottom:8px;">
-          <button id="btnRecarregarCadastroSite" class="alt small-btn" type="button">Recarregar cadastro</button>
-          <button id="btnNovaEmpresaSite" class="small-btn" type="button">Nova empresa</button>
-          <button id="btnEditarEmpresaSite" class="small-btn" type="button">Editar empresa</button>
-          <button id="btnNovoFuncionarioSite" class="small-btn" type="button">Novo funcionario</button>
-          <button id="btnEditarFuncionarioSite" class="small-btn" type="button">Editar funcionario</button>
-        </div>
-        <div id="cadastroResumoSite" class="small">Cadastro nao carregado.</div>
-      </div>
-
       <textarea id="status" class="status" readonly></textarea>
     </div>
 
@@ -562,11 +550,6 @@
       btnEnviar: document.getElementById("btnEnviar"),
       btnAtualizar: document.getElementById("btnAtualizar"),
       btnLimparLog: document.getElementById("btnLimparLog"),
-      btnRecarregarCadastroSite: document.getElementById("btnRecarregarCadastroSite"),
-      btnNovaEmpresaSite: document.getElementById("btnNovaEmpresaSite"),
-      btnEditarEmpresaSite: document.getElementById("btnEditarEmpresaSite"),
-      btnNovoFuncionarioSite: document.getElementById("btnNovoFuncionarioSite"),
-      btnEditarFuncionarioSite: document.getElementById("btnEditarFuncionarioSite"),
       btnLimparHistorico: document.getElementById("btnLimparHistorico"),
       filtroFuncionarioDb: document.getElementById("filtroFuncionarioDb"),
       btnFiltrarHistorico: document.getElementById("btnFiltrarHistorico"),
@@ -574,7 +557,6 @@
       autoUpload: document.getElementById("autoUpload"),
       status: document.getElementById("status"),
       listaFuncionarios: document.getElementById("listaFuncionarios"),
-      cadastroResumoSite: document.getElementById("cadastroResumoSite"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
       painelDocumento: document.getElementById("painelDocumento"),
       btnDownloadDocumento: document.getElementById("btnDownloadDocumento"),
@@ -729,6 +711,7 @@
       wmmontagensindustriais: "WM Montagens Industriais",
       wmprojetosconsultoriaemontagensltda: "WM Montagens Industriais",
     };
+    const EMPRESAS_PERMITIDAS_SLUG = new Set(EMPRESAS_PADRAO.map((n) => slugUrl(n)).filter(Boolean));
     const pagesUrl = (_owner, _repo, path) => `${PAGES_BASE_FIXED}/${encodeURI(path)}`;
     const obterOwnerRepoBranch = () => ({
       owner: el.owner?.value?.trim() || "Elizangela2805",
@@ -753,7 +736,6 @@
       return consulta || `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
-    const CADASTRO_PUBLICO_PATH = "cadnr_publico.json";
     const PUBLIC_EMPRESAS_INDEX_PATH = "_publico_empresas/index.json";
     const log = (msg, type = "") => {
       const prefix = type === "err" ? "[ERRO]" : type === "ok" ? "[OK]" : "[INFO]";
@@ -911,224 +893,6 @@
         throw new Error(`Falha ao salvar indice (${path}): ${res.status} ${data.message || ""}`);
       }
       return res.json();
-    };
-
-    let cadastroPublicoAdmin = null;
-    const deepCopyJson = (obj) => JSON.parse(JSON.stringify(obj || {}));
-    const slugEmpresaArquivo = (nome, empresaId = null) => {
-      const base = String(nome || "").trim()
-        .normalize("NFD")
-        .replace(/[\u0300-\u036f]/g, "")
-        .toLowerCase()
-        .replace(/[^a-z0-9]+/g, "-")
-        .replace(/^-+|-+$/g, "");
-      if (base) return base;
-      return Number.isFinite(Number(empresaId)) ? `empresa-${Number(empresaId)}` : "empresa";
-    };
-    const normalizarCadastroPublico = (data) => {
-      const src = (data && typeof data === "object") ? data : {};
-      const empresas = Array.isArray(src.empresas) ? src.empresas : [];
-      const funcionarios = Array.isArray(src.funcionarios) ? src.funcionarios : [];
-      const documentos = Array.isArray(src.documentos) ? src.documentos : [];
-      return {
-        updated_at: String(src.updated_at || new Date().toISOString()),
-        empresas: empresas
-          .filter((e) => e && typeof e === "object")
-          .map((e) => ({
-            id: Number.isFinite(Number(e.id)) ? Number(e.id) : null,
-            nome: String(e.nome || "").trim(),
-            nome_pasta: String(e.nome_pasta || "").trim(),
-            logo: String(e.logo || "").trim(),
-          }))
-          .filter((e) => Number.isFinite(e.id) && (e.nome || e.nome_pasta)),
-        funcionarios: funcionarios
-          .filter((f) => f && typeof f === "object")
-          .map((f) => ({
-            id: Number.isFinite(Number(f.id)) ? Number(f.id) : null,
-            nome: String(f.nome || "").trim(),
-            nome_pasta: String(f.nome_pasta || "").trim(),
-            empresa_id: Number.isFinite(Number(f.empresa_id)) ? Number(f.empresa_id) : null,
-          }))
-          .filter((f) => Number.isFinite(f.id) && f.nome && Number.isFinite(f.empresa_id)),
-        documentos: documentos
-          .filter((d) => d && typeof d === "object")
-          .map((d) => ({
-            caminho: String(d.caminho || "").trim(),
-            empresa_id: Number.isFinite(Number(d.empresa_id)) ? Number(d.empresa_id) : null,
-            funcionario_id: Number.isFinite(Number(d.funcionario_id)) ? Number(d.funcionario_id) : null,
-            tipo_documento: String(d.tipo_documento || "").trim(),
-          }))
-          .filter((d) => d.caminho),
-      };
-    };
-    const montarArquivosPublicoEmpresas = (cadastro) => {
-      const base = normalizarCadastroPublico(cadastro);
-      const empMap = new Map();
-      for (const e of base.empresas) empMap.set(Number(e.id), e);
-      const funcsPorEmp = new Map();
-      for (const f of base.funcionarios) {
-        const idEmp = Number(f.empresa_id);
-        if (!Number.isFinite(idEmp)) continue;
-        if (!funcsPorEmp.has(idEmp)) funcsPorEmp.set(idEmp, []);
-        funcsPorEmp.get(idEmp).push(f);
-      }
-      const docsPorEmp = new Map();
-      for (const d of base.documentos) {
-        const idEmp = Number(d.empresa_id);
-        if (!Number.isFinite(idEmp)) continue;
-        if (!docsPorEmp.has(idEmp)) docsPorEmp.set(idEmp, []);
-        docsPorEmp.get(idEmp).push(d);
-      }
-      const arquivos = [];
-      const indiceEmpresas = [];
-      for (const e of base.empresas) {
-        const idEmp = Number(e.id);
-        const nomeRef = String(e.nome_pasta || e.nome || "").trim();
-        const slug = slugEmpresaArquivo(nomeRef, idEmp);
-        const nomeArquivo = `${idEmp}_${slug}.json`;
-        const caminho = `_publico_empresas/${nomeArquivo}`;
-        const funcs = (funcsPorEmp.get(idEmp) || []).slice().sort((a, b) => String(a.nome || "").localeCompare(String(b.nome || ""), "pt-BR"));
-        const docs = (docsPorEmp.get(idEmp) || []).slice();
-        arquivos.push({
-          path: caminho,
-          payload: {
-            updated_at: new Date().toISOString(),
-            empresa: empMap.get(idEmp) || e,
-            funcionarios: funcs,
-            documentos: docs,
-          },
-        });
-        indiceEmpresas.push({
-          empresa_id: idEmp,
-          empresa_nome: nomeRef,
-          empresa_slug: slug,
-          arquivo: caminho,
-          total_funcionarios: funcs.length,
-          total_documentos: docs.length,
-        });
-      }
-      return {
-        arquivos,
-        indice: {
-          updated_at: new Date().toISOString(),
-          empresas: indiceEmpresas.sort((a, b) => Number(a.empresa_id) - Number(b.empresa_id)),
-        },
-      };
-    };
-    const carregarCadastroPublicoRemoto = async (owner, repo, branch, token = "") => {
-      const o = String(owner || "").trim();
-      const r = String(repo || "").trim();
-      const b = String(branch || "main").trim() || "main";
-      if (!o || !r) return normalizarCadastroPublico({});
-      if (String(token || "").trim()) {
-        try {
-          const j = await githubGetJsonFile(o, r, b, CADASTRO_PUBLICO_PATH, token);
-          if (j && j.data && typeof j.data === "object") return normalizarCadastroPublico(j.data);
-        } catch (_err) {
-          // segue fallback publico
-        }
-      }
-      const urls = [
-        pagesUrl("", "", CADASTRO_PUBLICO_PATH),
-        `https://raw.githubusercontent.com/${o}/${r}/${encodeURIComponent(b)}/${CADASTRO_PUBLICO_PATH}`,
-      ];
-      for (const url of urls) {
-        try {
-          const res = await fetch(url, { cache: "no-store" });
-          if (!res.ok) continue;
-          const body = await res.json();
-          if (body && typeof body === "object") return normalizarCadastroPublico(body);
-        } catch (_err) {
-          continue;
-        }
-      }
-      return normalizarCadastroPublico({});
-    };
-    const atualizarResumoCadastroPublico = () => {
-      if (!el.cadastroResumoSite) return;
-      if (!cadastroPublicoAdmin) {
-        el.cadastroResumoSite.textContent = "Cadastro nao carregado.";
-        return;
-      }
-      const qtdEmp = Array.isArray(cadastroPublicoAdmin.empresas) ? cadastroPublicoAdmin.empresas.length : 0;
-      const qtdFunc = Array.isArray(cadastroPublicoAdmin.funcionarios) ? cadastroPublicoAdmin.funcionarios.length : 0;
-      const atualizado = String(cadastroPublicoAdmin.updated_at || "").trim() || "-";
-      el.cadastroResumoSite.textContent = `Empresas: ${qtdEmp} | Funcionarios: ${qtdFunc} | updated_at: ${atualizado}`;
-    };
-    const carregarCadastroPublicoAdmin = async (forcar = false) => {
-      if (cadastroPublicoAdmin && !forcar) return cadastroPublicoAdmin;
-      const owner = String(el.owner?.value || "").trim();
-      const repo = String(el.repo?.value || "").trim();
-      const branch = String(el.branch?.value || "").trim() || "main";
-      const token = String(el.token?.value || "").trim() || lerTokenSalvo();
-      cadastroPublicoAdmin = await carregarCadastroPublicoRemoto(owner, repo, branch, token);
-      atualizarResumoCadastroPublico();
-      return cadastroPublicoAdmin;
-    };
-    const salvarCadastroPublicoComMutacao = async (mutator, commitMsg) => {
-      const cfg = obterConfigEscrita();
-      if (!cfg?.owner || !cfg?.repo || !cfg?.token) {
-        window.alert("Informe owner, repositorio e token para salvar o cadastro publico.");
-        return false;
-      }
-      try {
-        const atual = await carregarCadastroPublicoRemoto(cfg.owner, cfg.repo, cfg.branch, cfg.token);
-        const base = deepCopyJson(atual);
-        const resultado = mutator(base);
-        const novo = normalizarCadastroPublico(resultado && typeof resultado === "object" ? resultado : base);
-        novo.updated_at = new Date().toISOString();
-        await githubPutJsonFile(
-          cfg.owner,
-          cfg.repo,
-          cfg.branch,
-          CADASTRO_PUBLICO_PATH,
-          cfg.token,
-          novo,
-          commitMsg || "Atualiza cadastro publico",
-        );
-        const artefatos = montarArquivosPublicoEmpresas(novo);
-        await githubPutJsonFile(
-          cfg.owner,
-          cfg.repo,
-          cfg.branch,
-          PUBLIC_EMPRESAS_INDEX_PATH,
-          cfg.token,
-          artefatos.indice,
-          commitMsg || "Atualiza indice publico de empresas",
-        );
-        for (const arq of artefatos.arquivos) {
-          await githubPutJsonFile(
-            cfg.owner,
-            cfg.repo,
-            cfg.branch,
-            arq.path,
-            cfg.token,
-            arq.payload,
-            commitMsg || `Atualiza cadastro publico ${arq.path}`,
-          );
-        }
-        cadastroPublicoAdmin = novo;
-        cacheEmpresasExtras = { chave: "", at: 0, data: null };
-        atualizarResumoCadastroPublico();
-        return true;
-      } catch (err) {
-        const msg = String(err?.message || err || "Falha ao salvar cadastro publico.");
-        window.alert(msg);
-        log(msg, "err");
-        return false;
-      }
-    };
-    const listarEmpresasPrompt = (cad) => {
-      const empresas = Array.isArray(cad?.empresas) ? cad.empresas : [];
-      return empresas
-        .map((e) => `${Number(e.id)} - ${String(e.nome_pasta || e.nome || "").trim()}`)
-        .join("\n");
-    };
-    const listarFuncionariosPrompt = (cad) => {
-      const empresas = new Map((Array.isArray(cad?.empresas) ? cad.empresas : []).map((e) => [Number(e.id), String(e.nome_pasta || e.nome || "").trim()]));
-      return (Array.isArray(cad?.funcionarios) ? cad.funcionarios : [])
-        .map((f) => `${Number(f.id)} - ${String(f.nome || "").trim()} [${empresas.get(Number(f.empresa_id)) || f.empresa_id}]`)
-        .join("\n");
     };
 
     const salvarIndiceRemoto = async (items) => {
@@ -1540,7 +1304,7 @@
         }
         const funcionariosPorEmpresa = new Map();
         for (const f of funcionarios) {
-          const nomeFunc = String(f?.nome || f?.nome_pasta || "").trim();
+          const nomeFunc = String(f?.nome || "").trim();
           if (!nomeFunc) continue;
           const empresaId = Number(f?.empresa_id);
           if (!Number.isFinite(empresaId)) continue;
@@ -1608,11 +1372,10 @@
       return [];
     };
 
-    const obterEmpresasExtrasPublicas = async (owner, repo, branch, forceRefresh = false) => {
+    const obterEmpresasExtrasPublicas = async (owner, repo, branch) => {
       const chaveCache = `${String(owner || "").trim().toLowerCase()}/${String(repo || "").trim().toLowerCase()}@${String(branch || "main").trim().toLowerCase()}`;
       const agora = Date.now();
       if (
-        !forceRefresh
         cacheEmpresasExtras.data
         && cacheEmpresasExtras.chave === chaveCache
         && (agora - Number(cacheEmpresasExtras.at || 0)) < CACHE_TTL_EMPRESAS_MS
@@ -1638,7 +1401,7 @@
         .map((n) => normalizarNomeEmpresa(n))
         .filter(Boolean);
       const resultado = {
-        empresas: empresasMescladas,
+        empresas: empresasMescladas.filter((n) => EMPRESAS_PERMITIDAS_SLUG.has(slugEmpresa(n))),
         funcionariosPorEmpresa: cadastro?.funcionariosPorEmpresa instanceof Map ? cadastro.funcionariosPorEmpresa : new Map(),
         nomesEmpresaPorSlug: cadastro?.nomesEmpresaPorSlug instanceof Map ? cadastro.nomesEmpresaPorSlug : new Map(),
         empresaPorFuncionario: cadastro?.empresaPorFuncionario instanceof Map ? cadastro.empresaPorFuncionario : new Map(),
@@ -1848,6 +1611,7 @@
           const empresa = extrairEmpresaDoItem(it);
           empSlug = slugEmpresa(empresa);
         }
+        if (!EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
         if (!empSlug) continue;
         if (!catalogo.has(empSlug)) {
           const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
@@ -1860,7 +1624,7 @@
       }
       if (funcionariosCadastro instanceof Map) {
         for (const [empSlug, nomesSet] of funcionariosCadastro.entries()) {
-          if (!empSlug) continue;
+          if (!empSlug || !EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
           const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
           if (!catalogo.has(empSlug)) {
             const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
@@ -2140,7 +1904,7 @@
             try { await salvarIndiceRemoto(items); } catch (err) { log(err.message, "err"); }
           }
         }
-        const extras = await obterEmpresasExtrasPublicas(owner, repo, branch, true);
+        const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
         renderPublicoEmpresasFuncionarios(
           items,
           extras.empresas,
@@ -2153,7 +1917,7 @@
       } catch (err) {
         const idx = await carregarIndicePublico();
         if (idx.length) {
-          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch, true);
+          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
           renderPublicoEmpresasFuncionarios(
             idx,
             extras.empresas,
@@ -2164,7 +1928,7 @@
           );
           log(`Total de PDFs listados via indice publico: ${idx.length}`, "ok");
         } else {
-          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch, true);
+          const extras = await obterEmpresasExtrasPublicas(owner, repo, branch);
           renderPublicoEmpresasFuncionarios(
             [],
             extras.empresas,
@@ -2178,125 +1942,6 @@
       } finally {
         el.btnAtualizar.disabled = false;
       }
-    };
-
-    const acaoNovaEmpresaSite = async () => {
-      await carregarCadastroPublicoAdmin(true);
-      const nome = String(window.prompt("Razao social da nova empresa:") || "").trim();
-      if (!nome) return;
-      const nomePasta = String(window.prompt("Nome curto/pasta da empresa:", nome) || "").trim();
-      const logo = String(window.prompt("Logo (opcional, ex.: _logos_empresas/2_RJM.png):", "") || "").trim();
-      const ok = await salvarCadastroPublicoComMutacao((cad) => {
-        const empresas = Array.isArray(cad.empresas) ? cad.empresas : [];
-        const idNovo = empresas.reduce((m, e) => Math.max(m, Number(e?.id) || 0), 0) + 1;
-        empresas.push({
-          id: idNovo,
-          nome,
-          nome_pasta: nomePasta || nome,
-          logo,
-        });
-        cad.empresas = empresas;
-        return cad;
-      }, `Cadastro publico: nova empresa ${nome}`);
-      if (!ok) return;
-      log(`Empresa cadastrada no site: ${nome}`, "ok");
-      await atualizarLista();
-    };
-
-    const acaoEditarEmpresaSite = async () => {
-      const cad = await carregarCadastroPublicoAdmin(true);
-      const lista = listarEmpresasPrompt(cad);
-      if (!lista) return window.alert("Nenhuma empresa cadastrada.");
-      const idTxt = String(window.prompt(`Informe o ID da empresa para editar:\n\n${lista}`) || "").trim();
-      const id = Number(idTxt);
-      if (!Number.isFinite(id)) return;
-      const empresa = (cad.empresas || []).find((e) => Number(e.id) === id);
-      if (!empresa) return window.alert("Empresa nao encontrada.");
-      const novoNome = String(window.prompt("Razao social:", String(empresa.nome || "")) || "").trim();
-      if (!novoNome) return;
-      const novoNomePasta = String(window.prompt("Nome curto/pasta:", String(empresa.nome_pasta || empresa.nome || "")) || "").trim();
-      const novoLogo = String(window.prompt("Logo (opcional):", String(empresa.logo || "")) || "").trim();
-      const ok = await salvarCadastroPublicoComMutacao((base) => {
-        const empresas = Array.isArray(base.empresas) ? base.empresas : [];
-        const idx = empresas.findIndex((e) => Number(e?.id) === id);
-        if (idx < 0) throw new Error("Empresa nao encontrada no momento de salvar.");
-        empresas[idx] = {
-          ...empresas[idx],
-          nome: novoNome,
-          nome_pasta: novoNomePasta || novoNome,
-          logo: novoLogo,
-        };
-        base.empresas = empresas;
-        return base;
-      }, `Cadastro publico: edita empresa ${id}`);
-      if (!ok) return;
-      log(`Empresa atualizada no site: ${novoNome}`, "ok");
-      await atualizarLista();
-    };
-
-    const acaoNovoFuncionarioSite = async () => {
-      const cad = await carregarCadastroPublicoAdmin(true);
-      const listaEmp = listarEmpresasPrompt(cad);
-      if (!listaEmp) return window.alert("Cadastre uma empresa primeiro.");
-      const nome = String(window.prompt("Nome do funcionario:") || "").trim();
-      if (!nome) return;
-      const empTxt = String(window.prompt(`Informe o ID da empresa do funcionario:\n\n${listaEmp}`) || "").trim();
-      const empresaId = Number(empTxt);
-      if (!Number.isFinite(empresaId)) return;
-      const emp = (cad.empresas || []).find((e) => Number(e.id) === empresaId);
-      if (!emp) return window.alert("Empresa nao encontrada.");
-      const nomePasta = String(window.prompt("Nome pasta (opcional):", String(emp.nome_pasta || emp.nome || "")) || "").trim();
-      const ok = await salvarCadastroPublicoComMutacao((base) => {
-        const funcs = Array.isArray(base.funcionarios) ? base.funcionarios : [];
-        const idNovo = funcs.reduce((m, f) => Math.max(m, Number(f?.id) || 0), 0) + 1;
-        funcs.push({
-          id: idNovo,
-          nome,
-          nome_pasta: nomePasta || String(emp.nome_pasta || emp.nome || ""),
-          empresa_id: empresaId,
-        });
-        base.funcionarios = funcs;
-        return base;
-      }, `Cadastro publico: novo funcionario ${nome}`);
-      if (!ok) return;
-      log(`Funcionario cadastrado no site: ${nome}`, "ok");
-      await atualizarLista();
-    };
-
-    const acaoEditarFuncionarioSite = async () => {
-      const cad = await carregarCadastroPublicoAdmin(true);
-      const listaFunc = listarFuncionariosPrompt(cad);
-      if (!listaFunc) return window.alert("Nenhum funcionario cadastrado.");
-      const idTxt = String(window.prompt(`Informe o ID do funcionario para editar:\n\n${listaFunc}`) || "").trim();
-      const id = Number(idTxt);
-      if (!Number.isFinite(id)) return;
-      const func = (cad.funcionarios || []).find((f) => Number(f.id) === id);
-      if (!func) return window.alert("Funcionario nao encontrado.");
-      const listaEmp = listarEmpresasPrompt(cad);
-      const novoNome = String(window.prompt("Nome do funcionario:", String(func.nome || "")) || "").trim();
-      if (!novoNome) return;
-      const novaEmpTxt = String(window.prompt(`ID da empresa:\n\n${listaEmp}`, String(func.empresa_id || "")) || "").trim();
-      const novaEmpId = Number(novaEmpTxt);
-      if (!Number.isFinite(novaEmpId)) return;
-      const novaEmp = (cad.empresas || []).find((e) => Number(e.id) === novaEmpId);
-      if (!novaEmp) return window.alert("Empresa nao encontrada.");
-      const novoNomePasta = String(window.prompt("Nome pasta:", String(func.nome_pasta || novaEmp.nome_pasta || novaEmp.nome || "")) || "").trim();
-      const ok = await salvarCadastroPublicoComMutacao((base) => {
-        const funcs = Array.isArray(base.funcionarios) ? base.funcionarios : [];
-        const idx = funcs.findIndex((f) => Number(f?.id) === id);
-        if (idx < 0) throw new Error("Funcionario nao encontrado no momento de salvar.");
-        funcs[idx] = {
-          ...funcs[idx],
-          nome: novoNome,
-          nome_pasta: novoNomePasta || String(novaEmp.nome_pasta || novaEmp.nome || ""),
-          empresa_id: novaEmpId,
-        };
-        base.funcionarios = funcs;
-        return base;
-      }, `Cadastro publico: edita funcionario ${id}`);
-      if (!ok) return;
-      log(`Funcionario atualizado no site: ${novoNome}`, "ok");
-      await atualizarLista();
     };
 
     if (isAdminMode) {
@@ -2323,16 +1968,6 @@
       });
       el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
       el.btnAtualizar.addEventListener("click", atualizarLista);
-      if (el.btnRecarregarCadastroSite) {
-        el.btnRecarregarCadastroSite.addEventListener("click", async () => {
-          await carregarCadastroPublicoAdmin(true);
-          log("Cadastro publico recarregado.", "ok");
-        });
-      }
-      if (el.btnNovaEmpresaSite) el.btnNovaEmpresaSite.addEventListener("click", acaoNovaEmpresaSite);
-      if (el.btnEditarEmpresaSite) el.btnEditarEmpresaSite.addEventListener("click", acaoEditarEmpresaSite);
-      if (el.btnNovoFuncionarioSite) el.btnNovoFuncionarioSite.addEventListener("click", acaoNovoFuncionarioSite);
-      if (el.btnEditarFuncionarioSite) el.btnEditarFuncionarioSite.addEventListener("click", acaoEditarFuncionarioSite);
     }
 
     const redirecionarConsultaQr = () => {
@@ -2499,9 +2134,6 @@
     if (isAdminMode) {
       syncFileListSelected();
       renderHistorico();
-      carregarCadastroPublicoAdmin(true).catch(() => {
-        atualizarResumoCadastroPublico();
-      });
     }
     (async () => {
       redirecionarConsultaQr();
