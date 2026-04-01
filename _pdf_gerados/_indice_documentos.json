@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-01T14:58:24.375Z",
-  "total": 48,
+  "updated_at": "2026-04-01T14:58:44Z",
+  "total": 49,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -289,6 +289,16 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/01042026"
+    },
+    {
+      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 34 (08 José Antonio dos Santos Neto.pdf",
+      "nome": "NR 34 (08 José Antonio dos Santos Neto.pdf",
+      "funcionario": "José Antonio dos Santos Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr34/01042026",
+      "route_funcionario": "joseantoniodossantosneto",
+      "route_documento": "nr34",
+      "route_data": "01042026",
+      "route": "joseantoniodossantosneto/nr34/01042026"
     }
   ]
 }
