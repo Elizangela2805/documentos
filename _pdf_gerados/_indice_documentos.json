@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-01T14:58:58Z",
-  "total": 50,
+  "updated_at": "2026-04-01T17:26:38.773Z",
+  "total": 51,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -133,6 +133,24 @@
       "nome": "NR 18 (08 José Antonio dos Santos Neto.pdf",
       "funcionario": "José Antonio dos Santos Neto",
       "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr18/01042026"
+    },
+    {
+      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 18 (08-pta José Antonio dos Santos Neto.pdf",
+      "nome": "NR 18 (08-pta José Antonio dos Santos Neto.pdf",
+      "funcionario": "José Antonio dos Santos Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr18/01042026"
+    },
+    {
+      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 34 (08 José Antonio dos Santos Neto.pdf",
+      "nome": "NR 34 (08 José Antonio dos Santos Neto.pdf",
+      "funcionario": "José Antonio dos Santos Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr34/01042026"
+    },
+    {
+      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 35 (08 José Antonio dos Santos Neto.pdf",
+      "nome": "NR 35 (08 José Antonio dos Santos Neto.pdf",
+      "funcionario": "José Antonio dos Santos Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr35/01042026"
     },
     {
       "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 6 (06 José Antonio dos Santos Neto.pdf",
@@ -289,26 +307,6 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/01042026"
-    },
-    {
-      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 34 (08 José Antonio dos Santos Neto.pdf",
-      "nome": "NR 34 (08 José Antonio dos Santos Neto.pdf",
-      "funcionario": "José Antonio dos Santos Neto",
-      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr34/01042026",
-      "route_funcionario": "joseantoniodossantosneto",
-      "route_documento": "nr34",
-      "route_data": "01042026",
-      "route": "joseantoniodossantosneto/nr34/01042026"
-    },
-    {
-      "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 35 (08 José Antonio dos Santos Neto.pdf",
-      "nome": "NR 35 (08 José Antonio dos Santos Neto.pdf",
-      "funcionario": "José Antonio dos Santos Neto",
-      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr35/01042026",
-      "route_funcionario": "joseantoniodossantosneto",
-      "route_documento": "nr35",
-      "route_data": "01042026",
-      "route": "joseantoniodossantosneto/nr35/01042026"
     }
   ]
 }
