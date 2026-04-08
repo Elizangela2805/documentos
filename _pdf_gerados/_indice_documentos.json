@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-08T10:54:19Z",
-  "total": 65,
+  "updated_at": "2026-04-08T10:54:30Z",
+  "total": 66,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -393,6 +393,16 @@
     {
       "path": "_pdf_gerados/Carlos Augusto da Silva Júnior/NR 18 (08 Carlos Augusto da Silva Júnior.pdf",
       "nome": "NR 18 (08 Carlos Augusto da Silva Júnior.pdf",
+      "funcionario": "Carlos Augusto da Silva Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilvajunior/nr18/08042026",
+      "route_funcionario": "carlosaugustodasilvajunior",
+      "route_documento": "nr18",
+      "route_data": "08042026",
+      "route": "carlosaugustodasilvajunior/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva Júnior/NR 18 (08-pta Carlos Augusto da Silva Júnior.pdf",
+      "nome": "NR 18 (08-pta Carlos Augusto da Silva Júnior.pdf",
       "funcionario": "Carlos Augusto da Silva Júnior",
       "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilvajunior/nr18/08042026",
       "route_funcionario": "carlosaugustodasilvajunior",
