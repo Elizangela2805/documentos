@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-08T10:53:26.377Z",
-  "total": 63,
+  "updated_at": "2026-04-08T10:54:07Z",
+  "total": 64,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -379,6 +379,16 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva Júnior/NR 6 (06 Carlos Augusto da Silva Júnior.pdf",
+      "nome": "NR 6 (06 Carlos Augusto da Silva Júnior.pdf",
+      "funcionario": "Carlos Augusto da Silva Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilvajunior/nr6/08042026",
+      "route_funcionario": "carlosaugustodasilvajunior",
+      "route_documento": "nr6",
+      "route_data": "08042026",
+      "route": "carlosaugustodasilvajunior/nr6/08042026"
     }
   ]
 }
