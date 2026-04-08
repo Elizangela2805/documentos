@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:29:23Z",
+  "updated_at": "2026-04-08T11:29:27Z",
   "total": 68,
   "items": [
     {
@@ -222,7 +222,11 @@
       "path": "_pdf_gerados/Jorge Alves Silva/NR 18 (08) (WM Jorge Alves Silva.pdf",
       "nome": "NR 18 (08) (WM Jorge Alves Silva.pdf",
       "funcionario": "Jorge Alves Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/jorgealvessilva/nr18/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/jorgealvessilva/nr18/19032026",
+      "route_funcionario": "jorgealvessilva",
+      "route_documento": "nr18",
+      "route_data": "19032026",
+      "route": "jorgealvessilva/nr18/19032026"
     },
     {
       "path": "_pdf_gerados/Jorge Alves Silva/NR 35 (08) (WM Jorge Alves Silva.pdf",
