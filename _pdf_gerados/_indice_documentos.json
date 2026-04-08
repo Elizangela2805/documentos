@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T10:51:35Z",
+  "updated_at": "2026-04-08T10:51:53.200Z",
   "total": 60,
   "items": [
     {
@@ -55,6 +55,36 @@
       "nome": "NR 6 (06 Cleber de Souza Euzebio.pdf",
       "funcionario": "Cleber de Souza Euzebio",
       "consulta": "https://elizangela2805.github.io/documentos/cleberdesouzaeuzebio/nr6/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08 Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 18 (08 Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 34 (08 Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 34 (08 Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr34/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 35 (08 Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 35 (08 Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr35/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 6 (06 Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 6 (06 Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr6/08042026"
     },
     {
       "path": "_pdf_gerados/Douglas Aparecido Benjamin/NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
@@ -331,56 +361,6 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 6 (06 Diego Magalhães de Oliveira.pdf",
-      "nome": "NR 6 (06 Diego Magalhães de Oliveira.pdf",
-      "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr6/08042026",
-      "route_funcionario": "diegomagalhaesdeoliveira",
-      "route_documento": "nr6",
-      "route_data": "08042026",
-      "route": "diegomagalhaesdeoliveira/nr6/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08 Diego Magalhães de Oliveira.pdf",
-      "nome": "NR 18 (08 Diego Magalhães de Oliveira.pdf",
-      "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026",
-      "route_funcionario": "diegomagalhaesdeoliveira",
-      "route_documento": "nr18",
-      "route_data": "08042026",
-      "route": "diegomagalhaesdeoliveira/nr18/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
-      "nome": "NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
-      "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026",
-      "route_funcionario": "diegomagalhaesdeoliveira",
-      "route_documento": "nr18",
-      "route_data": "08042026",
-      "route": "diegomagalhaesdeoliveira/nr18/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 34 (08 Diego Magalhães de Oliveira.pdf",
-      "nome": "NR 34 (08 Diego Magalhães de Oliveira.pdf",
-      "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr34/08042026",
-      "route_funcionario": "diegomagalhaesdeoliveira",
-      "route_documento": "nr34",
-      "route_data": "08042026",
-      "route": "diegomagalhaesdeoliveira/nr34/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 35 (08 Diego Magalhães de Oliveira.pdf",
-      "nome": "NR 35 (08 Diego Magalhães de Oliveira.pdf",
-      "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr35/08042026",
-      "route_funcionario": "diegomagalhaesdeoliveira",
-      "route_documento": "nr35",
-      "route_data": "08042026",
-      "route": "diegomagalhaesdeoliveira/nr35/08042026"
     }
   ]
 }
