@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:15Z",
+  "updated_at": "2026-04-08T11:30:19Z",
   "total": 68,
   "items": [
     {
@@ -360,7 +360,11 @@
       "path": "_pdf_gerados/Judson Cleyton Dias/NR 34 (08) (VCMS Judson Cleyton Dias.pdf",
       "nome": "NR 34 (08) (VCMS Judson Cleyton Dias.pdf",
       "funcionario": "Judson Cleyton Dias",
-      "consulta": "https://elizangela2805.github.io/documentos/judsoncleytondias/nr34/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/judsoncleytondias/nr34/19032026",
+      "route_funcionario": "judsoncleytondias",
+      "route_documento": "nr34",
+      "route_data": "19032026",
+      "route": "judsoncleytondias/nr34/19032026"
     },
     {
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
