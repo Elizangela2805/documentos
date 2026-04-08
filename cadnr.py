@@ -21,7 +21,7 @@ except ModuleNotFoundError:
     raise SystemExit(1)
 import calendar
 import base64
-from datetime import date, datetime, timedelta
+from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from urllib import error, parse, request
 import gzip
@@ -847,6 +847,7 @@ class App(tk.Tk):
         self.main_funcionario_ids = []
         self.imprimir_empresa_ids = []
         self.imprimir_funcionario_ids = []
+        self.relatorio_empresa_ids = []
         self.outros_docs_empresa_ids = []
         self.outros_docs_check_vars = {}
         self.outros_docs_check_paths = {}
@@ -893,6 +894,7 @@ class App(tk.Tk):
         self._docs_monitor_interval_ms = 3000
         self._docs_monitor_assinatura = ""
         self._empresas_publicacao_assinatura = ""
+        self._relatorio_sync_site_em_andamento = False
 
         container = ttk.Frame(self, padding=16)
         container.pack(fill="both", expand=True)
@@ -904,17 +906,20 @@ class App(tk.Tk):
         aba_cadnr = ttk.Frame(notebook, padding=18)
         aba_outros_documentos = ttk.Frame(notebook, padding=18)
         aba_imprimir = ttk.Frame(notebook, padding=18)
+        aba_relatorio = ttk.Frame(notebook, padding=18)
         aba_cadastros = ttk.Frame(notebook, padding=18)
         aba_engrenagem = ttk.Frame(notebook, padding=18)
         self.aba_cadnr = aba_cadnr
         self.aba_outros_documentos = aba_outros_documentos
         self.aba_imprimir = aba_imprimir
+        self.aba_relatorio = aba_relatorio
         self.aba_cadastros = aba_cadastros
         self.aba_engrenagem = aba_engrenagem
 
         notebook.add(aba_cadnr, text="CADNR")
         notebook.add(aba_outros_documentos, text="OUTROS DOCUMENTOS")
         notebook.add(aba_imprimir, text="DOWNLOAD")
+        notebook.add(aba_relatorio, text="RELATORIO")
         notebook.add(aba_cadastros, text="CADASTROS")
         notebook.add(aba_engrenagem, text="⚙")
 
@@ -1100,6 +1105,7 @@ class App(tk.Tk):
         ).grid(row=2, column=0, sticky="w", pady=(10, 2))
 
         self._construir_aba_outros_documentos()
+        self._construir_aba_relatorio()
 
         imprimir_frame = ttk.Frame(aba_cadastros)
         imprimir_frame.pack(anchor="w", fill="x")
@@ -2109,6 +2115,8 @@ class App(tk.Tk):
         self._aplicar_filtro_nr_por_empresa(self.main_empresa_ids[idx], limpar_nr=limpar_nr)
         self._atualizar_imprimir_empresas(preservar_id=preservar_id)
         self._atualizar_outros_documentos_empresas(preservar_id=preservar_id)
+        self._atualizar_relatorio_empresas(preservar_id=preservar_id)
+        self._atualizar_relatorio_documentos(atualizar_anos=True)
 
     def _atualizar_select_funcionarios(self, empresa_id):
         if empresa_id is None:
@@ -2374,6 +2382,57 @@ class App(tk.Tk):
                     if re.fullmatch(r"\d{2}/\d{2}/\d{4}", texto):
                         return texto
         return ""
+
+    def _normalizar_data_documento_preenchida(self, texto_data):
+        texto = str(texto_data or "").strip()
+        if not texto:
+            return ""
+        dt = self._parse_data_br(texto)
+        if dt is not None:
+            return self._formatar_data_br(dt)
+        if re.fullmatch(r"\d{8}", texto):
+            try:
+                dt = datetime.strptime(texto, "%d%m%Y")
+                return dt.strftime("%d/%m/%Y")
+            except ValueError:
+                return ""
+        return ""
+
+    def _data_documento_preenchida_nr_item(self, item_nr):
+        if not isinstance(item_nr, dict):
+            return ""
+        for chave in ("coluna_2", "coluna_1"):
+            valor = self._normalizar_data_documento_preenchida(item_nr.get(chave, ""))
+            if valor:
+                return valor
+        return ""
+
+    def _data_documento_preenchida_outro(self, funcionario, caminho_documento_ref="", tipo_documento=""):
+        campos = self._montar_campos_documento(funcionario or {})
+        tipo_doc_norm = str(tipo_documento or "").strip().casefold()
+        if tipo_doc_norm == "carteirinha":
+            nr_vinculada = self._nr_vinculada_item_por_arquivo(caminho_documento_ref)
+            if nr_vinculada is not None:
+                campos.update(self._campos_data_da_nr_item(nr_vinculada))
+
+        data35_txt = str(campos.get("DATA35", "") or "").strip()
+        if tipo_doc_norm in {"anuencia", "anuência"} and not data35_txt:
+            data35_txt = str(
+                campos.get("DATANR", "")
+                or campos.get("DATA_NR", "")
+                or self._data_nr_selecionada_texto()
+                or ""
+            ).strip()
+        if tipo_doc_norm in {"anuencia", "anuência"}:
+            return self._normalizar_data_documento_preenchida(data35_txt)
+
+        data_nr_txt = str(
+            campos.get("DATANR", "")
+            or campos.get("DATA_NR", "")
+            or self._data_nr_selecionada_texto()
+            or ""
+        ).strip()
+        return self._normalizar_data_documento_preenchida(data_nr_txt)
 
     @staticmethod
     def _formatar_data_extenso_br_sem_ano(dt):
@@ -3586,7 +3645,7 @@ class App(tk.Tk):
                 itens.append(novo_item)
 
             payload_indice = {
-                "updated_at": datetime.utcnow().isoformat(timespec="seconds") + "Z",
+                "updated_at": datetime.now(timezone.utc).isoformat(timespec="seconds").replace("+00:00", "Z"),
                 "total": len(itens),
                 "items": itens,
             }
@@ -3625,6 +3684,24 @@ class App(tk.Tk):
     def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False):
         config = self._obter_config_qr_github()
         if not config:
+            repo_cfg = str(os.environ.get("CADNR_QR_GITHUB_REPO", "") or "").strip()
+            token_cfg = str(os.environ.get("CADNR_QR_GITHUB_TOKEN", "") or "").strip()
+            if not repo_cfg and not token_cfg:
+                self._qr_github_ultimo_erro = (
+                    "Configuracao do site ausente: defina repositorio e token em CONFIG SITE."
+                )
+            elif not token_cfg:
+                self._qr_github_ultimo_erro = (
+                    "Token GitHub ausente em CONFIG SITE (necessario para publicar no site)."
+                )
+            elif not repo_cfg:
+                self._qr_github_ultimo_erro = (
+                    "Repositorio GitHub ausente em CONFIG SITE."
+                )
+            else:
+                self._qr_github_ultimo_erro = (
+                    "Configuracao do site invalida para publicacao."
+                )
             return ""
         try:
             self._garantir_nojekyll_no_site(config)
@@ -4966,11 +5043,13 @@ class App(tk.Tk):
             return
         self._aviso_git_auto_exibido = True
         detalhe_txt = detalhe_txt or "erro nao identificado"
-        messagebox.showwarning(
-            "Git Auto",
-            "Nao foi possivel executar commit + push automatico.\n"
-            f"Detalhe: {detalhe_txt}",
-        )
+        try:
+            print(
+                "[Git Auto] Nao foi possivel executar commit + push automatico. "
+                f"Detalhe: {detalhe_txt}"
+            )
+        except Exception:
+            pass
 
     def _normalizar_caminho_git_relativo(self, caminho):
         base = _diretorio_base_app().resolve()
@@ -5164,6 +5243,7 @@ class App(tk.Tk):
         empresa_id=None,
         funcionario_id=None,
         tipo_documento="",
+        data_documento_preenchida="",
         inserir_qr_pdf=True,
     ):
         caminho_norm = self._normalizar_caminho_documento_db(caminho)
@@ -5192,7 +5272,14 @@ class App(tk.Tk):
             "empresa_id": empresa_id if isinstance(empresa_id, int) else None,
             "funcionario_id": funcionario_id if isinstance(funcionario_id, int) else None,
             "tipo_documento": str(tipo_documento or "").strip(),
+            "data_documento_preenchida": self._normalizar_data_documento_preenchida(
+                data_documento_preenchida
+            ),
             "data_ultima_gravacao": self._iso_datetime_now(),
+            "site_publicado": False,
+            "site_url": "",
+            "site_data_documento": "",
+            "site_data_documento_br": "",
         }
         qr_caminho = self._gerar_qrcode_documento_salvo(caminho_norm, item["tipo_documento"])
         if qr_caminho:
@@ -5274,19 +5361,44 @@ class App(tk.Tk):
             else:
                 item["assinatura_digital"] = "nao_configurada"
             self._sincronizar_pdf_na_area_de_trabalho(caminho_pdf, item.get("qrcode", ""))
+        sync_site = {}
         if caminho_pdf.suffix.lower() == ".pdf" or tipo_sync_norm == "carteirinha":
-            self._sincronizar_pdf_no_github(
+            sync_site = self._sincronizar_pdf_no_github(
                 caminho_pdf,
                 item.get("qrcode", ""),
                 tipo_documento=item.get("tipo_documento", ""),
             )
+        if isinstance(sync_site, dict) and bool(sync_site.get("publicado", False)):
+            item["site_publicado"] = bool(sync_site.get("publicado", False))
+            item["site_url"] = str(sync_site.get("url", "") or "").strip()
+            item["site_data_documento"] = str(sync_site.get("route_data", "") or "").strip()
+            item["site_data_documento_br"] = str(sync_site.get("route_data_br", "") or "").strip()
         for idx, existente in enumerate(self.documentos_salvos):
             if str(existente.get("caminho", "") or "").strip() == caminho_norm:
+                if not bool(item.get("site_publicado", False)):
+                    if bool(existente.get("site_publicado", False)):
+                        item["site_publicado"] = True
+                    if str(existente.get("site_url", "") or "").strip():
+                        item["site_url"] = str(existente.get("site_url", "") or "").strip()
+                    if str(existente.get("site_data_documento", "") or "").strip():
+                        item["site_data_documento"] = str(
+                            existente.get("site_data_documento", "") or ""
+                        ).strip()
+                    if str(existente.get("site_data_documento_br", "") or "").strip():
+                        item["site_data_documento_br"] = str(
+                            existente.get("site_data_documento_br", "") or ""
+                        ).strip()
+                if not str(item.get("data_documento_preenchida", "") or "").strip():
+                    item["data_documento_preenchida"] = self._normalizar_data_documento_preenchida(
+                        existente.get("data_documento_preenchida", "")
+                    )
                 self.documentos_salvos[idx] = item
                 self._enfileirar_git_auto_commit(caminhos_git)
+                self._atualizar_relatorio_documentos(atualizar_anos=True)
                 return
         self.documentos_salvos.append(item)
         self._enfileirar_git_auto_commit(caminhos_git)
+        self._atualizar_relatorio_documentos(atualizar_anos=True)
 
     def _avisar_falha_git_sync(self, detalhe):
         if self._aviso_git_sync_exibido:
@@ -5299,10 +5411,23 @@ class App(tk.Tk):
             f"Detalhe: {detalhe_txt}",
         )
 
-    def _sincronizar_documentos_salvos_pendentes(self):
-        if not self._deve_sincronizar_qr_pendentes():
-            return
+    def _sincronizar_documentos_salvos_pendentes(self, forcar=False, persistir=True, atualizar_ui=True):
+        if (not forcar) and (not self._deve_sincronizar_qr_pendentes()):
+            return {
+                "tentados": 0,
+                "publicados": 0,
+                "atualizados": 0,
+                "alterou": False,
+                "falhas": [],
+                "com_fallback": 0,
+            }
         vistos = set()
+        alterou = False
+        tentados = 0
+        publicados = 0
+        atualizados = 0
+        com_fallback = 0
+        falhas = []
         for item in list(self.documentos_salvos):
             if not isinstance(item, dict):
                 continue
@@ -5326,13 +5451,54 @@ class App(tk.Tk):
             if chave in vistos:
                 continue
             vistos.add(chave)
+            tentados += 1
             caminho_qr = str(item.get("qrcode", "") or "").strip()
-            self._sincronizar_pdf_no_github(
+            sync_site = self._sincronizar_pdf_no_github(
                 caminho_pdf,
                 caminho_qr,
                 avisar_falha=False,
                 tipo_documento=item.get("tipo_documento", ""),
             )
+            if isinstance(sync_site, dict):
+                publicado = bool(sync_site.get("publicado", False))
+                if publicado:
+                    publicados += 1
+                else:
+                    detalhe_falha = str(sync_site.get("erro", "") or "").strip()
+                    if not detalhe_falha:
+                        detalhe_falha = str(self._qr_github_ultimo_erro or "").strip()
+                    if detalhe_falha:
+                        if detalhe_falha not in falhas:
+                            falhas.append(detalhe_falha)
+                    if bool(sync_site.get("fallback_local", False)):
+                        com_fallback += 1
+                site_url = str(sync_site.get("url", "") or "").strip()
+                data_doc = str(sync_site.get("route_data", "") or "").strip()
+                data_doc_br = str(sync_site.get("route_data_br", "") or "").strip()
+                if publicado and (
+                    bool(item.get("site_publicado", False)) != publicado
+                    or str(item.get("site_url", "") or "").strip() != site_url
+                    or str(item.get("site_data_documento", "") or "").strip() != data_doc
+                    or str(item.get("site_data_documento_br", "") or "").strip() != data_doc_br
+                ):
+                    item["site_publicado"] = publicado
+                    item["site_url"] = site_url
+                    item["site_data_documento"] = data_doc
+                    item["site_data_documento_br"] = data_doc_br
+                    alterou = True
+                    atualizados += 1
+        if alterou and bool(persistir):
+            self._salvar_dados()
+        if alterou and bool(atualizar_ui):
+            self._atualizar_relatorio_documentos(atualizar_anos=True)
+        return {
+            "tentados": tentados,
+            "publicados": publicados,
+            "atualizados": atualizados,
+            "alterou": alterou,
+            "falhas": falhas[:6],
+            "com_fallback": com_fallback,
+        }
 
     def _avisar_falha_desktop_sync(self, detalhe):
         if self._aviso_desktop_sync_exibido:
@@ -5418,6 +5584,14 @@ class App(tk.Tk):
             self._avisar_falha_desktop_sync(exc)
 
     def _sincronizar_pdf_no_github(self, caminho_pdf, caminho_qr="", avisar_falha=True, tipo_documento=""):
+        resultado = {
+            "publicado": False,
+            "url": "",
+            "route_data": "",
+            "route_data_br": "",
+            "erro": "",
+            "fallback_local": False,
+        }
         try:
             caminho = Path(str(caminho_pdf or "")).expanduser()
             if not caminho.is_absolute():
@@ -5430,13 +5604,30 @@ class App(tk.Tk):
                     if candidato_pdf.exists() and candidato_pdf.is_file():
                         caminho = candidato_pdf
                 if caminho.suffix.lower() != ".pdf":
-                    return
+                    resultado["erro"] = "Arquivo nao elegivel para publicacao no site."
+                    return resultado
             if not caminho.exists() or not caminho.is_file():
-                return
+                resultado["erro"] = "Arquivo PDF nao encontrado para publicar no site."
+                return resultado
             # Publica o PDF no repositorio remoto do site via API.
             url_publicada = self._publicar_arquivo_no_site(caminho)
             if url_publicada:
                 self._atualizar_indice_documento_site(caminho)
+                try:
+                    repo_path = self._montar_caminho_repo_qr_github(
+                        caminho,
+                        os.environ.get("CADNR_QR_GITHUB_DIR", ""),
+                    )
+                    assinatura = self._assinatura_rota_documento(repo_path, caminho)
+                    route_data = str(assinatura.get("data_ref", "") or "").strip()
+                except Exception:
+                    route_data = ""
+                resultado = {
+                    "publicado": True,
+                    "url": str(url_publicada or "").strip(),
+                    "route_data": route_data,
+                    "route_data_br": self._formatar_data_rota_site(route_data),
+                }
                 qr_txt = str(caminho_qr or "").strip()
                 if qr_txt:
                     caminho_qr_arq = Path(qr_txt).expanduser()
@@ -5457,15 +5648,28 @@ class App(tk.Tk):
                         caminhos_fallback.append(rel_qr)
                 if caminhos_fallback:
                     self._enfileirar_git_auto_commit(caminhos_fallback)
-                    self._qr_github_ultimo_erro = ""
-                    return
+                    resultado["fallback_local"] = True
+                    detalhe_fallback = str(self._qr_github_ultimo_erro or "").strip()
+                    if detalhe_fallback:
+                        resultado["erro"] = (
+                            "Publicacao via API falhou; arquivo enfileirado para push Git automatico. "
+                            f"Detalhe: {detalhe_fallback}"
+                        )
+                    else:
+                        resultado["erro"] = (
+                            "Publicacao via API falhou; arquivo enfileirado para push Git automatico."
+                        )
+                    return resultado
                 detalhe = str(self._qr_github_ultimo_erro or "").strip() or "falha ao publicar no site"
+                resultado["erro"] = detalhe
                 if avisar_falha:
                     self._avisar_falha_git_sync(detalhe)
         except Exception as exc:
+            resultado["erro"] = str(exc or "").strip()
             if avisar_falha:
                 self._avisar_falha_git_sync(exc)
-            return
+            return resultado
+        return resultado
 
     def _montar_payload_qrcode_documento(self, caminho_documento, permitir_arquivo_inexistente=False):
         caminho_txt = str(caminho_documento or "").strip()
@@ -6918,7 +7122,9 @@ class App(tk.Tk):
             f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {largura} {altura}] "
             f"/Resources << /Font << /F1 4 0 R >> >> /Contents 5 0 R >>".encode("ascii")
         )
-        objetos.append(b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>")
+        objetos.append(
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica /Encoding /WinAnsiEncoding >>"
+        )
         objetos.append(f"<< /Length {len(stream)} >>\nstream\n".encode("ascii") + stream + b"\nendstream")
 
         saida = b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n"
@@ -7239,6 +7445,11 @@ class App(tk.Tk):
                     empresa_id=funcionario.get("empresa_id"),
                     funcionario_id=funcionario.get("id"),
                     tipo_documento=tipo_doc,
+                    data_documento_preenchida=self._data_documento_preenchida_outro(
+                        funcionario,
+                        caminho_documento_ref=caminho_ref,
+                        tipo_documento=tipo_doc,
+                    ),
                     inserir_qr_pdf=True,
                 )
                 gerados.append(destino_pdf)
@@ -7324,6 +7535,7 @@ class App(tk.Tk):
                         empresa_id=funcionario.get("empresa_id"),
                         funcionario_id=funcionario.get("id"),
                         tipo_documento=item_nr.get("nome", ""),
+                        data_documento_preenchida=self._data_documento_preenchida_nr_item(item_nr),
                     )
                     pdfs_gerados.append(pdf_destino)
 
@@ -7366,6 +7578,9 @@ class App(tk.Tk):
                 empresa_id=funcionario.get("empresa_id"),
                 funcionario_id=funcionario.get("id"),
                 tipo_documento="NR",
+                data_documento_preenchida=self._normalizar_data_documento_preenchida(
+                    self._data_nr_selecionada_texto()
+                ),
             )
         _, falhas_outros = _gerar_pdf_outros_documentos()
         self._salvar_dados()
@@ -8024,6 +8239,594 @@ class App(tk.Tk):
             text="ADICIONAR",
             command=self._adicionar_outros_documentos_imprimir,
         ).grid(row=0, column=0)
+
+    @staticmethod
+    def _meses_relatorio():
+        return [
+            "01 - Janeiro",
+            "02 - Fevereiro",
+            "03 - Marco",
+            "04 - Abril",
+            "05 - Maio",
+            "06 - Junho",
+            "07 - Julho",
+            "08 - Agosto",
+            "09 - Setembro",
+            "10 - Outubro",
+            "11 - Novembro",
+            "12 - Dezembro",
+        ]
+
+    @staticmethod
+    def _formatar_data_rota_site(data_txt):
+        valor = re.sub(r"\D", "", str(data_txt or "").strip())
+        if len(valor) != 8:
+            return ""
+        dia = valor[0:2]
+        mes = valor[2:4]
+        ano = valor[4:8]
+        return f"{dia}/{mes}/{ano}"
+
+    def _construir_aba_relatorio(self):
+        container = ttk.Frame(self.aba_relatorio)
+        container.pack(fill="both", expand=True)
+        container.columnconfigure(0, weight=1)
+        container.rowconfigure(2, weight=1)
+
+        filtros = ttk.Frame(container)
+        filtros.grid(row=0, column=0, sticky="ew")
+        filtros.columnconfigure(1, weight=1)
+
+        ttk.Label(filtros, text="Empresa:").grid(row=0, column=0, sticky="w", padx=(0, 8))
+        self.relatorio_select_empresa = ttk.Combobox(filtros, state="readonly")
+        self.relatorio_select_empresa.grid(row=0, column=1, sticky="ew", padx=(0, 12))
+        self.relatorio_select_empresa.bind("<<ComboboxSelected>>", self._on_relatorio_filtro_alterado)
+
+        ttk.Label(filtros, text="Ano:").grid(row=0, column=2, sticky="w", padx=(0, 8))
+        self.relatorio_select_ano = ttk.Combobox(filtros, state="readonly", width=10)
+        self.relatorio_select_ano.grid(row=0, column=3, sticky="w", padx=(0, 12))
+        self.relatorio_select_ano.bind("<<ComboboxSelected>>", self._on_relatorio_filtro_alterado)
+
+        ttk.Label(filtros, text="Mes:").grid(row=0, column=4, sticky="w", padx=(0, 8))
+        self.relatorio_select_mes = ttk.Combobox(filtros, state="readonly", width=16)
+        self.relatorio_select_mes.grid(row=0, column=5, sticky="w", padx=(0, 12))
+        self.relatorio_select_mes.bind("<<ComboboxSelected>>", self._on_relatorio_filtro_alterado)
+
+        self.btn_relatorio_sync_site = ttk.Button(
+            filtros,
+            text="ATUALIZAR",
+            command=self._atualizar_relatorio_do_site_agora,
+            width=18,
+        )
+        self.btn_relatorio_sync_site.grid(row=0, column=6, sticky="e")
+        ttk.Button(
+            filtros,
+            text="SALVAR PDF",
+            command=self._salvar_relatorio_pdf,
+            width=14,
+        ).grid(row=0, column=7, sticky="e", padx=(8, 0))
+
+        self.relatorio_resumo_var = tk.StringVar(value="")
+        ttk.Label(
+            container,
+            textvariable=self.relatorio_resumo_var,
+            anchor="w",
+        ).grid(row=1, column=0, sticky="ew", pady=(10, 8))
+
+        lista_frame = ttk.Frame(container)
+        lista_frame.grid(row=2, column=0, sticky="nsew")
+        lista_frame.columnconfigure(0, weight=1)
+        lista_frame.rowconfigure(0, weight=1)
+
+        colunas = ("data_geracao", "data_documento", "empresa", "tipo", "funcionario", "arquivo")
+        self.relatorio_tree = ttk.Treeview(
+            lista_frame,
+            columns=colunas,
+            show="headings",
+            height=14,
+        )
+        self.relatorio_tree.heading("data_geracao", text="Data/Hora Geracao")
+        self.relatorio_tree.heading("data_documento", text="Data Documento")
+        self.relatorio_tree.heading("empresa", text="Empresa")
+        self.relatorio_tree.heading("tipo", text="Documento")
+        self.relatorio_tree.heading("funcionario", text="Funcionario")
+        self.relatorio_tree.heading("arquivo", text="Arquivo")
+        self.relatorio_tree.column("data_geracao", width=140, anchor="w", stretch=False)
+        self.relatorio_tree.column("data_documento", width=120, anchor="w", stretch=False)
+        self.relatorio_tree.column("empresa", width=220, anchor="w")
+        self.relatorio_tree.column("tipo", width=180, anchor="w")
+        self.relatorio_tree.column("funcionario", width=180, anchor="w")
+        self.relatorio_tree.column("arquivo", width=260, anchor="w")
+        self.relatorio_tree.grid(row=0, column=0, sticky="nsew")
+        self.relatorio_tree.tag_configure("data_doc_355_dias", foreground="#C62828")
+
+        scroll = ttk.Scrollbar(lista_frame, orient="vertical", command=self.relatorio_tree.yview)
+        scroll.grid(row=0, column=1, sticky="ns")
+        self.relatorio_tree.configure(yscrollcommand=scroll.set)
+
+        self.relatorio_select_mes["values"] = ["Todos"] + self._meses_relatorio()
+        self.relatorio_select_mes.current(0)
+        self._atualizar_relatorio_empresas()
+        self._atualizar_relatorio_documentos(atualizar_anos=True)
+
+    def _empresa_id_selecionada_relatorio(self):
+        idx = self.relatorio_select_empresa.current()
+        if idx < 0 or idx >= len(self.relatorio_empresa_ids):
+            return None
+        return self.relatorio_empresa_ids[idx]
+
+    def _coletar_itens_relatorio_documentos(self):
+        mapa_empresas = {}
+        for empresa in self.empresas:
+            if not isinstance(empresa, dict):
+                continue
+            empresa_id = empresa.get("id")
+            if isinstance(empresa_id, int):
+                mapa_empresas[empresa_id] = self._empresa_label(empresa)
+        mapa_funcionarios = {}
+        for funcionario in self.funcionarios:
+            if not isinstance(funcionario, dict):
+                continue
+            funcionario_id = funcionario.get("id")
+            if isinstance(funcionario_id, int):
+                mapa_funcionarios[funcionario_id] = str(funcionario.get("nome", "") or "").strip()
+
+        itens = []
+        base_dir = Path(__file__).resolve().parent
+        for item in self.documentos_salvos:
+            if not isinstance(item, dict):
+                continue
+            if not bool(item.get("site_publicado", False)):
+                continue
+            caminho_txt = self._normalizar_caminho_documento_db(item.get("caminho", ""))
+            if not caminho_txt:
+                continue
+            caminho_ref = Path(str(caminho_txt)).expanduser()
+            if not caminho_ref.is_absolute():
+                caminho_ref = (base_dir / caminho_ref).resolve()
+
+            data_ref = None
+            data_txt = str(item.get("data_ultima_gravacao", "") or "").strip()
+            if data_txt:
+                try:
+                    data_ref = datetime.fromisoformat(data_txt.replace("Z", "+00:00"))
+                except ValueError:
+                    data_ref = None
+            if data_ref is None:
+                try:
+                    if caminho_ref.exists() and caminho_ref.is_file():
+                        data_ref = datetime.fromtimestamp(caminho_ref.stat().st_mtime)
+                except OSError:
+                    data_ref = None
+
+            data_documento_preenchida = self._normalizar_data_documento_preenchida(
+                item.get("data_documento_preenchida", "")
+            )
+            data_documento_txt = re.sub(r"\D", "", data_documento_preenchida)
+            if len(data_documento_txt) != 8:
+                data_documento_txt = re.sub(
+                    r"\D", "", str(item.get("site_data_documento", "") or "").strip()
+                )
+            data_documento_ref = None
+            if len(data_documento_txt) == 8:
+                try:
+                    data_documento_ref = datetime.strptime(data_documento_txt, "%d%m%Y")
+                except ValueError:
+                    data_documento_ref = None
+            data_geracao_txt = "-"
+            if isinstance(data_documento_ref, datetime):
+                if isinstance(data_ref, datetime):
+                    data_geracao_txt = (
+                        f"{data_documento_ref.strftime('%d/%m/%Y')} {data_ref.strftime('%H:%M')}"
+                    )
+                else:
+                    data_geracao_txt = data_documento_ref.strftime("%d/%m/%Y")
+            elif isinstance(data_ref, datetime):
+                data_geracao_txt = data_ref.strftime("%d/%m/%Y %H:%M")
+
+            empresa_id = item.get("empresa_id")
+            funcionario_id = item.get("funcionario_id")
+            tipo_documento = str(item.get("tipo_documento", "") or "").strip()
+            nome_arquivo = str(caminho_ref.name or caminho_txt).strip()
+
+            itens.append(
+                {
+                    "empresa_id": empresa_id if isinstance(empresa_id, int) else None,
+                    "empresa_nome": mapa_empresas.get(empresa_id, ""),
+                    "funcionario_nome": mapa_funcionarios.get(funcionario_id, ""),
+                    "tipo_documento": tipo_documento,
+                    "arquivo": nome_arquivo,
+                    "data_ref": data_ref,
+                    "data_documento_ref": data_documento_ref,
+                    "data_documento_txt": self._formatar_data_rota_site(data_documento_txt),
+                    "data_geracao_txt": data_geracao_txt,
+                }
+            )
+
+        itens.sort(
+            key=lambda x: (
+                x.get("data_documento_ref") or datetime.min,
+                x.get("data_ref") or datetime.min,
+            ),
+            reverse=True,
+        )
+        return itens
+
+    def _atualizar_relatorio_empresas(self, preservar_id=None):
+        if not hasattr(self, "relatorio_select_empresa"):
+            return
+        atual_id = self._empresa_id_selecionada_relatorio()
+        alvo_id = preservar_id if preservar_id is not None else atual_id
+        self.relatorio_empresa_ids = [None] + [empresa["id"] for empresa in self.empresas]
+        self.relatorio_select_empresa["values"] = ["Todas"] + [
+            self._empresa_label(empresa) for empresa in self.empresas
+        ]
+        if alvo_id in self.relatorio_empresa_ids:
+            idx = self.relatorio_empresa_ids.index(alvo_id)
+        else:
+            idx = 0
+        self.relatorio_select_empresa.current(idx)
+        self._atualizar_relatorio_anos_disponiveis()
+
+    def _atualizar_relatorio_anos_disponiveis(self):
+        if not hasattr(self, "relatorio_select_ano"):
+            return
+        atual = str(self.relatorio_select_ano.get() or "").strip()
+        anos = set()
+        for item in self._coletar_itens_relatorio_documentos():
+            data_doc_ref = item.get("data_documento_ref")
+            if isinstance(data_doc_ref, datetime):
+                anos.add(str(data_doc_ref.year))
+        valores = ["Todos"] + sorted(anos, reverse=True)
+        self.relatorio_select_ano["values"] = valores
+        if atual in valores:
+            self.relatorio_select_ano.set(atual)
+        else:
+            self.relatorio_select_ano.current(0)
+
+    def _on_relatorio_filtro_alterado(self, _event=None):
+        self._atualizar_relatorio_documentos()
+
+    def _itens_relatorio_filtrados(self):
+        empresa_id_sel = self._empresa_id_selecionada_relatorio()
+        ano_sel = str(self.relatorio_select_ano.get() or "").strip()
+        mes_sel = str(self.relatorio_select_mes.get() or "").strip()
+        ano_filtro = int(ano_sel) if ano_sel.isdigit() else None
+        mes_filtro = None
+        m_mes = re.match(r"^(\d{2})\b", mes_sel)
+        if m_mes:
+            try:
+                mes_filtro = int(m_mes.group(1))
+            except ValueError:
+                mes_filtro = None
+
+        itens_filtrados = []
+        for item in self._coletar_itens_relatorio_documentos():
+            empresa_id = item.get("empresa_id")
+            data_doc_ref = item.get("data_documento_ref")
+            if empresa_id_sel is not None and empresa_id != empresa_id_sel:
+                continue
+            if ano_filtro is not None:
+                if not isinstance(data_doc_ref, datetime) or data_doc_ref.year != ano_filtro:
+                    continue
+            if mes_filtro is not None:
+                if not isinstance(data_doc_ref, datetime) or data_doc_ref.month != mes_filtro:
+                    continue
+            itens_filtrados.append(item)
+        return itens_filtrados
+
+    def _salvar_relatorio_pdf(self):
+        itens = self._itens_relatorio_filtrados()
+        if not itens:
+            messagebox.showwarning("RELATORIO", "Nao ha itens no filtro atual para salvar em PDF.")
+            return
+
+        try:
+            pasta_inicial = str(self._obter_desktop_base())
+        except Exception:
+            pasta_inicial = str(Path(__file__).resolve().parent)
+        nome_padrao = f"relatorio_documentos_{datetime.now().strftime('%Y%m%d_%H%M%S')}.pdf"
+        caminho_saida = filedialog.asksaveasfilename(
+            title="Salvar relatorio em PDF",
+            defaultextension=".pdf",
+            filetypes=[("PDF", "*.pdf")],
+            initialdir=pasta_inicial,
+            initialfile=nome_padrao,
+        )
+        if not caminho_saida:
+            return
+
+        linhas = []
+        cabecalho = (
+            f"{'DATA/HORA GERACAO':<16} | {'DATA DOC':<10} | {'EMPRESA':<24} | "
+            f"{'DOCUMENTO':<20} | {'FUNCIONARIO':<20} | {'ARQUIVO':<34}"
+        )
+        linhas.append(cabecalho)
+        linhas.append("-" * len(cabecalho))
+        for item in itens:
+            data_ger = str(item.get("data_geracao_txt", "") or "-")
+            data_doc = str(item.get("data_documento_txt", "") or "-")
+            empresa = (str(item.get("empresa_nome", "") or "(Sem empresa)")[:24]).ljust(24)
+            tipo = (str(item.get("tipo_documento", "") or "-")[:20]).ljust(20)
+            funcionario = (str(item.get("funcionario_nome", "") or "-")[:20]).ljust(20)
+            arquivo = (str(item.get("arquivo", "") or "-")[:34]).ljust(34)
+            linha = (
+                f"{data_ger[:16]:<16} | {data_doc[:10]:<10} | {empresa} | "
+                f"{tipo} | {funcionario} | {arquivo}"
+            )
+            linhas.append(linha)
+
+        empresa_filtro = str(self.relatorio_select_empresa.get() or "Todas").strip() or "Todas"
+        ano_filtro = str(self.relatorio_select_ano.get() or "Todos").strip() or "Todos"
+        mes_filtro = str(self.relatorio_select_mes.get() or "Todos").strip() or "Todos"
+        subtitulo = (
+            f"Filtros: Empresa={empresa_filtro} | Ano={ano_filtro} | Mes={mes_filtro} | "
+            f"Total={len(itens)}"
+        )
+        try:
+            self._escrever_pdf_relatorio(Path(caminho_saida), "RELATORIO DE DOCUMENTOS PUBLICADOS", subtitulo, linhas)
+            messagebox.showinfo("RELATORIO", f"Relatorio salvo com sucesso:\n{caminho_saida}")
+        except Exception as exc:
+            messagebox.showerror("RELATORIO", f"Nao foi possivel salvar o relatorio em PDF:\n{exc}")
+
+    def _atualizar_relatorio_do_site_agora(self):
+        if bool(getattr(self, "_relatorio_sync_site_em_andamento", False)):
+            return
+        self._relatorio_sync_site_em_andamento = True
+        self._relatorio_sync_site_publicados_antes = sum(
+            1
+            for item in self.documentos_salvos
+            if isinstance(item, dict) and bool(item.get("site_publicado", False))
+        )
+        try:
+            if hasattr(self, "btn_relatorio_sync_site"):
+                self.btn_relatorio_sync_site.configure(state="disabled", text="SINCRONIZANDO...")
+        except Exception:
+            pass
+        worker = threading.Thread(
+            target=self._worker_atualizar_relatorio_do_site_agora,
+            daemon=True,
+        )
+        worker.start()
+
+    def _worker_atualizar_relatorio_do_site_agora(self):
+        resultado = None
+        erro = ""
+        try:
+            resultado = self._sincronizar_documentos_salvos_pendentes(
+                forcar=True,
+                persistir=False,
+                atualizar_ui=False,
+            )
+        except Exception as exc:
+            erro = str(exc or "").strip()
+        try:
+            self.after(
+                0,
+                lambda r=resultado, e=erro: self._finalizar_atualizacao_relatorio_do_site_agora(r, e),
+            )
+        except Exception:
+            pass
+
+    def _finalizar_atualizacao_relatorio_do_site_agora(self, resultado, erro=""):
+        self._relatorio_sync_site_em_andamento = False
+        try:
+            if hasattr(self, "btn_relatorio_sync_site"):
+                self.btn_relatorio_sync_site.configure(state="normal", text="ATUALIZAR")
+        except Exception:
+            pass
+
+        if str(erro or "").strip():
+            messagebox.showerror(
+                "RELATORIO",
+                f"Falha ao sincronizar com o site:\n{erro}",
+            )
+            return
+
+        if bool((resultado or {}).get("alterou", False)):
+            try:
+                self._salvar_dados()
+            except Exception:
+                pass
+
+        publicados_antes = int(getattr(self, "_relatorio_sync_site_publicados_antes", 0) or 0)
+        publicados_depois = sum(
+            1
+            for item in self.documentos_salvos
+            if isinstance(item, dict) and bool(item.get("site_publicado", False))
+        )
+        self._atualizar_relatorio_documentos(atualizar_anos=True)
+
+        tentados = int((resultado or {}).get("tentados", 0))
+        publicados_nesta_exec = int((resultado or {}).get("publicados", 0))
+        atualizados = int((resultado or {}).get("atualizados", 0))
+        com_fallback = int((resultado or {}).get("com_fallback", 0))
+        falhas = (resultado or {}).get("falhas", [])
+        if not isinstance(falhas, list):
+            falhas = []
+        if tentados <= 0:
+            messagebox.showwarning(
+                "RELATORIO",
+                "Nenhum documento elegivel foi encontrado para sincronizar com o site.",
+            )
+            return
+        if publicados_nesta_exec <= 0 and atualizados <= 0:
+            detalhe = ""
+            if falhas:
+                detalhe = "\n".join(str(x or "").strip() for x in falhas if str(x or "").strip())
+            elif str(self._qr_github_ultimo_erro or "").strip():
+                detalhe = str(self._qr_github_ultimo_erro or "").strip()
+            if not detalhe:
+                detalhe = (
+                    "Verifique em CONFIG SITE: repositorio, branch, token e permissoes "
+                    "de escrita em Contents (Read and write)."
+                )
+            sufixo_fallback = ""
+            if com_fallback > 0:
+                sufixo_fallback = (
+                    f"\n\nObservacao: {com_fallback} documento(s) foram enfileirados para "
+                    "push Git automatico local, mas ainda nao confirmados no site."
+                )
+            messagebox.showwarning(
+                "RELATORIO",
+                "Nao foi possivel confirmar publicacao no site nesta sincronizacao.\n\n"
+                f"Detalhe:\n{detalhe}{sufixo_fallback}",
+            )
+            return
+        messagebox.showinfo(
+            "RELATORIO",
+            "Sincronizacao com o site concluida.\n\n"
+            f"Documentos verificados: {tentados}\n"
+            f"Publicados nesta atualizacao: {publicados_nesta_exec}\n"
+            f"Registros atualizados: {atualizados}\n"
+            f"Publicados antes: {publicados_antes}\n"
+            f"Publicados agora: {publicados_depois}",
+        )
+
+    def _atualizar_relatorio_documentos(self, atualizar_anos=False):
+        if not hasattr(self, "relatorio_tree"):
+            return
+        if atualizar_anos:
+            self._atualizar_relatorio_anos_disponiveis()
+        for iid in self.relatorio_tree.get_children():
+            self.relatorio_tree.delete(iid)
+
+        total = 0
+        total_por_empresa = {}
+        for item in self._itens_relatorio_filtrados():
+            data_ref = item.get("data_ref")
+            data_doc_ref = item.get("data_documento_ref")
+
+            empresa_nome = str(item.get("empresa_nome", "") or "").strip() or "(Sem empresa)"
+            funcionario_nome = str(item.get("funcionario_nome", "") or "").strip() or "-"
+            tipo_documento = str(item.get("tipo_documento", "") or "").strip() or "-"
+            arquivo = str(item.get("arquivo", "") or "").strip() or "-"
+            data_txt = str(item.get("data_geracao_txt", "") or "").strip() or "-"
+            data_doc_txt = str(item.get("data_documento_txt", "") or "").strip() or "-"
+            tags_linha = ()
+            if isinstance(data_doc_ref, datetime):
+                idade_dias = (date.today() - data_doc_ref.date()).days
+                if idade_dias >= 355:
+                    tags_linha = ("data_doc_355_dias",)
+
+            self.relatorio_tree.insert(
+                "",
+                "end",
+                values=(data_txt, data_doc_txt, empresa_nome, tipo_documento, funcionario_nome, arquivo),
+                tags=tags_linha,
+            )
+            total += 1
+            total_por_empresa[empresa_nome] = total_por_empresa.get(empresa_nome, 0) + 1
+
+        if total == 0:
+            self.relatorio_resumo_var.set("Nenhum documento publicado no site encontrado para os filtros selecionados.")
+            return
+        empresas_qtd = len(total_por_empresa)
+        ranking_empresas = sorted(total_por_empresa.items(), key=lambda x: (-x[1], x[0]))
+        detalhes = ", ".join(f"{nome}: {qtd}" for nome, qtd in ranking_empresas[:6])
+        if empresas_qtd > 6:
+            detalhes += f", +{empresas_qtd - 6} empresa(s)"
+        self.relatorio_resumo_var.set(
+            f"Total publicado no site: {total} | Empresas no filtro: {empresas_qtd} | {detalhes}"
+        )
+
+    def _escrever_pdf_relatorio(self, destino, titulo, subtitulo, linhas):
+        largura = 842
+        altura = 595
+        margem_x = 28
+        topo = 565
+        passo = 12
+        limite_linhas = 38
+
+        linhas_norm = [str(l or "")[:170] for l in (linhas or [])]
+        if not linhas_norm:
+            linhas_norm = ["Nenhum registro para o filtro selecionado."]
+        paginas = [
+            linhas_norm[i : i + limite_linhas]
+            for i in range(0, len(linhas_norm), limite_linhas)
+        ]
+        if not paginas:
+            paginas = [[]]
+
+        def _stream_pagina(itens_pagina, pagina_idx, total_paginas):
+            comandos = []
+            y = topo
+            comandos.append(
+                "BT /F1 13 Tf 1 0 0 1 %d %d Tm (%s) Tj ET"
+                % (margem_x, y, self._pdf_escape_text(titulo))
+            )
+            y -= 18
+            comandos.append(
+                "BT /F1 9 Tf 1 0 0 1 %d %d Tm (%s) Tj ET"
+                % (margem_x, y, self._pdf_escape_text(subtitulo))
+            )
+            y -= 14
+            rodape_topo = (
+                f"Gerado em {datetime.now().strftime('%d/%m/%Y %H:%M:%S')} | "
+                f"Pagina {pagina_idx}/{total_paginas}"
+            )
+            comandos.append(
+                "BT /F1 8 Tf 1 0 0 1 %d %d Tm (%s) Tj ET"
+                % (margem_x, y, self._pdf_escape_text(rodape_topo))
+            )
+            y -= 16
+            for linha in itens_pagina:
+                if y < 24:
+                    break
+                comandos.append(
+                    "BT /F1 8 Tf 1 0 0 1 %d %d Tm (%s) Tj ET"
+                    % (margem_x, y, self._pdf_escape_text(linha))
+                )
+                y -= passo
+            return "\n".join(comandos).encode("latin-1", errors="replace")
+
+        total_paginas = len(paginas)
+        objetos = []
+        objetos.append(b"<< /Type /Catalog /Pages 2 0 R >>")
+
+        first_page_id = 4
+        kids = []
+        for i in range(total_paginas):
+            page_id = first_page_id + (i * 2)
+            kids.append(f"{page_id} 0 R")
+        objetos.append(
+            f"<< /Type /Pages /Kids [{' '.join(kids)}] /Count {total_paginas} >>".encode("ascii")
+        )
+        objetos.append(
+            b"<< /Type /Font /Subtype /Type1 /BaseFont /Courier /Encoding /WinAnsiEncoding >>"
+        )
+
+        for idx, itens_pagina in enumerate(paginas, start=1):
+            page_id = first_page_id + ((idx - 1) * 2)
+            content_id = page_id + 1
+            objetos.append(
+                (
+                    f"<< /Type /Page /Parent 2 0 R /MediaBox [0 0 {largura} {altura}] "
+                    f"/Resources << /Font << /F1 3 0 R >> >> /Contents {content_id} 0 R >>"
+                ).encode("ascii")
+            )
+            stream = _stream_pagina(itens_pagina, idx, total_paginas)
+            objetos.append(
+                f"<< /Length {len(stream)} >>\nstream\n".encode("ascii")
+                + stream
+                + b"\nendstream"
+            )
+
+        saida = b"%PDF-1.4\n%\xe2\xe3\xcf\xd3\n"
+        offsets = [0]
+        for i, obj in enumerate(objetos, start=1):
+            offsets.append(len(saida))
+            saida += f"{i} 0 obj\n".encode("ascii") + obj + b"\nendobj\n"
+        xref = len(saida)
+        saida += f"xref\n0 {len(objetos) + 1}\n".encode("ascii")
+        saida += b"0000000000 65535 f \n"
+        for off in offsets[1:]:
+            saida += f"{off:010d} 00000 n \n".encode("ascii")
+        saida += (
+            f"trailer << /Size {len(objetos) + 1} /Root 1 0 R >>\n"
+            f"startxref\n{xref}\n%%EOF\n"
+        ).encode("ascii")
+        destino.write_bytes(saida)
 
     def _marcar_outros_documentos_todos(self, marcar):
         for var in getattr(self, "outros_docs_check_vars", {}).values():
@@ -9404,8 +10207,21 @@ class App(tk.Tk):
                         "funcionario_id": item.get("funcionario_id")
                         if isinstance(item.get("funcionario_id"), int) else None,
                         "tipo_documento": str(item.get("tipo_documento", "") or "").strip(),
+                        "data_documento_preenchida": self._normalizar_data_documento_preenchida(
+                            item.get("data_documento_preenchida", "")
+                        ),
                         "data_ultima_gravacao": str(
                             item.get("data_ultima_gravacao", "") or ""
+                        ).strip(),
+                        "site_publicado": bool(item.get("site_publicado", False)),
+                        "site_url": str(item.get("site_url", "") or "").strip(),
+                        "site_data_documento": re.sub(
+                            r"\D",
+                            "",
+                            str(item.get("site_data_documento", "") or "").strip(),
+                        ),
+                        "site_data_documento_br": str(
+                            item.get("site_data_documento_br", "") or ""
                         ).strip(),
                     }
                 )
