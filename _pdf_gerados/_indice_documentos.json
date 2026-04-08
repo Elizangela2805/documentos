@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:45Z",
+  "updated_at": "2026-04-08T11:30:50Z",
   "total": 68,
   "items": [
     {
@@ -470,7 +470,11 @@
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/fittest (Uniferco) Ricardo Cesar Bortoleto.pdf",
       "nome": "fittest (Uniferco) Ricardo Cesar Bortoleto.pdf",
       "funcionario": "Ricardo Cesar Bortoleto",
-      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/fittestunifercoricardocesarbortoleto/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/fittestunifercoricardocesarbortoleto/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "fittestunifercoricardocesarbortoleto",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/fittestunifercoricardocesarbortoleto/25032026"
     },
     {
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 11 (16-garra Ricardo Cesar Bortoleto.pdf",
