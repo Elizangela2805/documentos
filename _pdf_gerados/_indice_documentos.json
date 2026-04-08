@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:29:31Z",
+  "updated_at": "2026-04-08T11:29:35Z",
   "total": 68,
   "items": [
     {
@@ -138,7 +138,11 @@
       "path": "_pdf_gerados/Douglas Aparecido Benjamin/NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
       "nome": "NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
       "funcionario": "Douglas Aparecido Benjamin",
-      "consulta": "https://elizangela2805.github.io/documentos/douglasaparecidobenjamin/nr10/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/douglasaparecidobenjamin/nr10/19032026",
+      "route_funcionario": "douglasaparecidobenjamin",
+      "route_documento": "nr10",
+      "route_data": "19032026",
+      "route": "douglasaparecidobenjamin/nr10/19032026"
     },
     {
       "path": "_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
