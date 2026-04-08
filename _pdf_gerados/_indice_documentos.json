@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:36:59Z",
+  "updated_at": "2026-04-08T11:37:04Z",
   "total": 68,
   "items": [
     {
@@ -324,7 +324,11 @@
       "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 18 (08 José Antonio dos Santos Neto.pdf",
       "nome": "NR 18 (08 José Antonio dos Santos Neto.pdf",
       "funcionario": "José Antonio dos Santos Neto",
-      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr18/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr18/01042026",
+      "route_funcionario": "joseantoniodossantosneto",
+      "route_documento": "nr18",
+      "route_data": "01042026",
+      "route": "joseantoniodossantosneto/nr18/01042026"
     },
     {
       "path": "_pdf_gerados/José Antonio dos Santos Neto/NR 18 (08-pta José Antonio dos Santos Neto.pdf",
