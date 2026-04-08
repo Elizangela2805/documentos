@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-02T17:40:04.807Z",
-  "total": 50,
+  "updated_at": "2026-04-08T10:43:14Z",
+  "total": 51,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -301,6 +301,16 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/02042026"
+    },
+    {
+      "path": "_pdf_gerados/Rochael de Almeida Linhares Junior/NR 6 (06 Rochael de Almeida Linhares Junior.pdf",
+      "nome": "NR 6 (06 Rochael de Almeida Linhares Junior.pdf",
+      "funcionario": "Rochael de Almeida Linhares Junior",
+      "consulta": "https://elizangela2805.github.io/documentos/rochaeldealmeidalinharesjunior/nr6/08042026",
+      "route_funcionario": "rochaeldealmeidalinharesjunior",
+      "route_documento": "nr6",
+      "route_data": "08042026",
+      "route": "rochaeldealmeidalinharesjunior/nr6/08042026"
     }
   ]
 }
