@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:28:29Z",
+  "updated_at": "2026-04-08T11:28:34Z",
   "total": 68,
   "items": [
     {
@@ -318,7 +318,11 @@
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/epi soldador Lucas Ferreira da Silva Santos.pdf",
       "nome": "epi soldador Lucas Ferreira da Silva Santos.pdf",
       "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "episoldadorlucasferreiradasilvasantos",
+      "route_data": "19032026",
+      "route": "lucasferreiradasilvasantos/episoldadorlucasferreiradasilvasantos/19032026"
     },
     {
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/fittest (Projetta) Lucas Ferreira da Silva Santos.pdf",
