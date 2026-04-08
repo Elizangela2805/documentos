@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:42:53Z",
+  "updated_at": "2026-04-08T11:42:57Z",
   "total": 68,
   "items": [
     {
@@ -56,7 +56,11 @@
       "path": "_pdf_gerados/Carlos Augusto da Silva Júnior/NR 18 (08 Carlos Augusto da Silva Júnior.pdf",
       "nome": "NR 18 (08 Carlos Augusto da Silva Júnior.pdf",
       "funcionario": "Carlos Augusto da Silva Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilvajunior/nr18/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilvajunior/nr18/08042026",
+      "route_funcionario": "carlosaugustodasilvajunior",
+      "route_documento": "nr18",
+      "route_data": "08042026",
+      "route": "carlosaugustodasilvajunior/nr18/08042026"
     },
     {
       "path": "_pdf_gerados/Carlos Augusto da Silva Júnior/NR 18 (08-pta Carlos Augusto da Silva Júnior.pdf",
