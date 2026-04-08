@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:31:30Z",
+  "updated_at": "2026-04-08T11:31:35Z",
   "total": 68,
   "items": [
     {
@@ -260,7 +260,11 @@
       "path": "_pdf_gerados/Ivaldo Vicente da Silva/NR 20 (08 Ivaldo Vicente da Silva.pdf",
       "nome": "NR 20 (08 Ivaldo Vicente da Silva.pdf",
       "funcionario": "Ivaldo Vicente da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr20/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr20/30032026",
+      "route_funcionario": "ivaldovicentedasilva",
+      "route_documento": "nr20",
+      "route_data": "30032026",
+      "route": "ivaldovicentedasilva/nr20/30032026"
     },
     {
       "path": "_pdf_gerados/Ivaldo Vicente da Silva/NR 35 (08 Ivaldo Vicente da Silva.pdf",
