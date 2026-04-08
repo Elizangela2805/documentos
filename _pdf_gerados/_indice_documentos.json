@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-08T10:47:46Z",
-  "total": 53,
+  "updated_at": "2026-04-08T10:47:57Z",
+  "total": 54,
   "items": [
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -331,6 +331,16 @@
       "route_documento": "nr18",
       "route_data": "08042026",
       "route": "andersondejesussouza/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Anderson de Jesus Souza/NR 34 (08 Anderson de Jesus Souza.pdf",
+      "nome": "NR 34 (08 Anderson de Jesus Souza.pdf",
+      "funcionario": "Anderson de Jesus Souza",
+      "consulta": "https://elizangela2805.github.io/documentos/andersondejesussouza/nr34/08042026",
+      "route_funcionario": "andersondejesussouza",
+      "route_documento": "nr34",
+      "route_data": "08042026",
+      "route": "andersondejesussouza/nr34/08042026"
     }
   ]
 }
