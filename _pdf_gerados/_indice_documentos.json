@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:23Z",
+  "updated_at": "2026-04-08T11:30:27Z",
   "total": 68,
   "items": [
     {
@@ -380,7 +380,11 @@
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/carteirinha nr 11 (16-pr) (Projetta) Lucas Ferreira da Silva Santos.pdf",
       "nome": "carteirinha nr 11 (16-pr) (Projetta) Lucas Ferreira da Silva Santos.pdf",
       "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/carteirinhanr1116prprojettalucasferreiradasilvasantos/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/carteirinha11pr/19032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "carteirinha11pr",
+      "route_data": "19032026",
+      "route": "lucasferreiradasilvasantos/carteirinha11pr/19032026"
     },
     {
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/epi soldador Lucas Ferreira da Silva Santos.pdf",
