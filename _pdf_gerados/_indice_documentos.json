@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:42:24Z",
+  "updated_at": "2026-04-08T11:42:28Z",
   "total": 68,
   "items": [
     {
@@ -154,7 +154,11 @@
       "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
       "nome": "NR 18 (08-pta Diego Magalhães de Oliveira.pdf",
       "funcionario": "Diego Magalhães de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026",
+      "route_funcionario": "diegomagalhaesdeoliveira",
+      "route_documento": "nr18",
+      "route_data": "08042026",
+      "route": "diegomagalhaesdeoliveira/nr18/08042026"
     },
     {
       "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 34 (08 Diego Magalhães de Oliveira.pdf",
