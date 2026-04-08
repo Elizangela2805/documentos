@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:37:30Z",
+  "updated_at": "2026-04-08T11:37:34Z",
   "total": 68,
   "items": [
     {
@@ -26,7 +26,11 @@
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 34 (08 Anderson de Jesus Souza.pdf",
       "nome": "NR 34 (08 Anderson de Jesus Souza.pdf",
       "funcionario": "Anderson de Jesus Souza",
-      "consulta": "https://elizangela2805.github.io/documentos/andersondejesussouza/nr34/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/andersondejesussouza/nr34/08042026",
+      "route_funcionario": "andersondejesussouza",
+      "route_documento": "nr34",
+      "route_data": "08042026",
+      "route": "andersondejesussouza/nr34/08042026"
     },
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 35 (08 Anderson de Jesus Souza.pdf",
