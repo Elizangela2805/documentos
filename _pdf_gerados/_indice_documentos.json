@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:55Z",
+  "updated_at": "2026-04-08T11:31:02Z",
   "total": 68,
   "items": [
     {
@@ -176,7 +176,11 @@
       "path": "_pdf_gerados/Gustavo Hilário Monsão da Silva/NR 1.5.7 (08 Gustavo Hilário Monsão da Silva.pdf",
       "nome": "NR 1.5.7 (08 Gustavo Hilário Monsão da Silva.pdf",
       "funcionario": "Gustavo Hilário Monsão da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/gustavohilariomonsaodasilva/nr1/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/gustavohilariomonsaodasilva/nr1/26032026",
+      "route_funcionario": "gustavohilariomonsaodasilva",
+      "route_documento": "nr1",
+      "route_data": "26032026",
+      "route": "gustavohilariomonsaodasilva/nr1/26032026"
     },
     {
       "path": "_pdf_gerados/Gustavo Hilário Monsão da Silva/NR 34 (08 Gustavo Hilário Monsão da Silva.pdf",
