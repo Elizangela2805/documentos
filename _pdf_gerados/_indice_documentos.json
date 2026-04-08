@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:29:35Z",
+  "updated_at": "2026-04-08T11:29:39Z",
   "total": 68,
   "items": [
     {
@@ -90,7 +90,11 @@
       "path": "_pdf_gerados/Claudinei Ribas/NR 6 (08) (WM Claudinei Ribas.pdf",
       "nome": "NR 6 (08) (WM Claudinei Ribas.pdf",
       "funcionario": "Claudinei Ribas",
-      "consulta": "https://elizangela2805.github.io/documentos/claudineiribas/nr6/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/claudineiribas/nr6/19032026",
+      "route_funcionario": "claudineiribas",
+      "route_documento": "nr6",
+      "route_data": "19032026",
+      "route": "claudineiribas/nr6/19032026"
     },
     {
       "path": "_pdf_gerados/Cleber de Souza Euzebio/NR 18 (08 Cleber de Souza Euzebio.pdf",
