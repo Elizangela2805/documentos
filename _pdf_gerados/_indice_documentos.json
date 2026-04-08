@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-08T10:50:50Z",
-  "total": 56,
+  "updated_at": "2026-04-08T10:51:01Z",
+  "total": 57,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -341,6 +341,16 @@
       "route_documento": "nr6",
       "route_data": "08042026",
       "route": "diegomagalhaesdeoliveira/nr6/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08 Diego Magalhães de Oliveira.pdf",
+      "nome": "NR 18 (08 Diego Magalhães de Oliveira.pdf",
+      "funcionario": "Diego Magalhães de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/diegomagalhaesdeoliveira/nr18/08042026",
+      "route_funcionario": "diegomagalhaesdeoliveira",
+      "route_documento": "nr18",
+      "route_data": "08042026",
+      "route": "diegomagalhaesdeoliveira/nr18/08042026"
     }
   ]
 }
