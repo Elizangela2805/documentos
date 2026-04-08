@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T10:53:11Z",
+  "updated_at": "2026-04-08T10:53:26.377Z",
   "total": 63,
   "items": [
     {
@@ -31,6 +31,24 @@
       "nome": "NR 6 (06 Anderson de Jesus Souza.pdf",
       "funcionario": "Anderson de Jesus Souza",
       "consulta": "https://elizangela2805.github.io/documentos/andersondejesussouza/nr6/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 18 (08 Carlos Augusto da Silva.pdf",
+      "nome": "NR 18 (08 Carlos Augusto da Silva.pdf",
+      "funcionario": "Carlos Augusto da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 35 (08 Carlos Augusto da Silva.pdf",
+      "nome": "NR 35 (08 Carlos Augusto da Silva.pdf",
+      "funcionario": "Carlos Augusto da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr35/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 6 (06 Carlos Augusto da Silva.pdf",
+      "nome": "NR 6 (06 Carlos Augusto da Silva.pdf",
+      "funcionario": "Carlos Augusto da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr6/08042026"
     },
     {
       "path": "_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
@@ -361,36 +379,6 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 6 (06 Carlos Augusto da Silva.pdf",
-      "nome": "NR 6 (06 Carlos Augusto da Silva.pdf",
-      "funcionario": "Carlos Augusto da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr6/08042026",
-      "route_funcionario": "carlosaugustodasilva",
-      "route_documento": "nr6",
-      "route_data": "08042026",
-      "route": "carlosaugustodasilva/nr6/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 18 (08 Carlos Augusto da Silva.pdf",
-      "nome": "NR 18 (08 Carlos Augusto da Silva.pdf",
-      "funcionario": "Carlos Augusto da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr18/08042026",
-      "route_funcionario": "carlosaugustodasilva",
-      "route_documento": "nr18",
-      "route_data": "08042026",
-      "route": "carlosaugustodasilva/nr18/08042026"
-    },
-    {
-      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 35 (08 Carlos Augusto da Silva.pdf",
-      "nome": "NR 35 (08 Carlos Augusto da Silva.pdf",
-      "funcionario": "Carlos Augusto da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr35/08042026",
-      "route_funcionario": "carlosaugustodasilva",
-      "route_documento": "nr35",
-      "route_data": "08042026",
-      "route": "carlosaugustodasilva/nr35/08042026"
     }
   ]
 }
