@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:50Z",
+  "updated_at": "2026-04-08T11:30:55Z",
   "total": 68,
   "items": [
     {
@@ -500,7 +500,11 @@
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 35 (08 Ricardo Cesar Bortoleto.pdf",
       "nome": "NR 35 (08 Ricardo Cesar Bortoleto.pdf",
       "funcionario": "Ricardo Cesar Bortoleto",
-      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr35/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr35/25032026",
+      "route_funcionario": "ricardocesarbortoleto",
+      "route_documento": "nr35",
+      "route_data": "25032026",
+      "route": "ricardocesarbortoleto/nr35/25032026"
     },
     {
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/NR 6 (06 Ricardo Cesar Bortoleto.pdf",
