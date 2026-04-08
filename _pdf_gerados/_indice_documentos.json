@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-08T10:53:00Z",
-  "total": 62,
+  "updated_at": "2026-04-08T10:53:11Z",
+  "total": 63,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -381,6 +381,16 @@
       "route_documento": "nr18",
       "route_data": "08042026",
       "route": "carlosaugustodasilva/nr18/08042026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Augusto da Silva/NR 35 (08 Carlos Augusto da Silva.pdf",
+      "nome": "NR 35 (08 Carlos Augusto da Silva.pdf",
+      "funcionario": "Carlos Augusto da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosaugustodasilva/nr35/08042026",
+      "route_funcionario": "carlosaugustodasilva",
+      "route_documento": "nr35",
+      "route_data": "08042026",
+      "route": "carlosaugustodasilva/nr35/08042026"
     }
   ]
 }
