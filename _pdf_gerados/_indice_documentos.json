@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:31:22Z",
+  "updated_at": "2026-04-08T11:31:26Z",
   "total": 68,
   "items": [
     {
@@ -240,7 +240,11 @@
       "path": "_pdf_gerados/Ivaldo Vicente da Silva/NR 11 (16-garra Ivaldo Vicente da Silva.pdf",
       "nome": "NR 11 (16-garra Ivaldo Vicente da Silva.pdf",
       "funcionario": "Ivaldo Vicente da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr11/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr11/30032026",
+      "route_funcionario": "ivaldovicentedasilva",
+      "route_documento": "nr11",
+      "route_data": "30032026",
+      "route": "ivaldovicentedasilva/nr11/30032026"
     },
     {
       "path": "_pdf_gerados/Ivaldo Vicente da Silva/NR 12 (08-Garra Ivaldo Vicente da Silva.pdf",
