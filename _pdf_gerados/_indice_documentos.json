@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:28:25Z",
+  "updated_at": "2026-04-08T11:28:29Z",
   "total": 68,
   "items": [
     {
@@ -346,7 +346,11 @@
       "path": "_pdf_gerados/Lucas Ferreira da Silva Santos/OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
       "nome": "OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
       "funcionario": "Lucas Ferreira da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/19032026",
+      "route_funcionario": "lucasferreiradasilvasantos",
+      "route_documento": "ossoldadorprojettalucasferreiradasilvasantos",
+      "route_data": "19032026",
+      "route": "lucasferreiradasilvasantos/ossoldadorprojettalucasferreiradasilvasantos/19032026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
