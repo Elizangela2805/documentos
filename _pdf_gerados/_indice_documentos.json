@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:29:50Z",
+  "updated_at": "2026-04-08T11:29:55Z",
   "total": 68,
   "items": [
     {
@@ -180,7 +180,11 @@
       "path": "_pdf_gerados/Isac Marcelino/NR 12 (08) (WM Isac Marcelino.pdf",
       "nome": "NR 12 (08) (WM Isac Marcelino.pdf",
       "funcionario": "Isac Marcelino",
-      "consulta": "https://elizangela2805.github.io/documentos/isacmarcelino/nr12/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/isacmarcelino/nr12/19032026",
+      "route_funcionario": "isacmarcelino",
+      "route_documento": "nr12",
+      "route_data": "19032026",
+      "route": "isacmarcelino/nr12/19032026"
     },
     {
       "path": "_pdf_gerados/Isac Marcelino/NR 6 (08) (WM Isac Marcelino.pdf",
