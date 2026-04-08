@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:30:03Z",
+  "updated_at": "2026-04-08T11:30:09Z",
   "total": 68,
   "items": [
     {
@@ -156,7 +156,11 @@
       "path": "_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
       "nome": "NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
       "funcionario": "Francisco das Chagas Ferreira",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscodaschagasferreira/nr34/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscodaschagasferreira/nr34/19032026",
+      "route_funcionario": "franciscodaschagasferreira",
+      "route_documento": "nr34",
+      "route_data": "19032026",
+      "route": "franciscodaschagasferreira/nr34/19032026"
     },
     {
       "path": "_pdf_gerados/Francisco Djalma de Lima/NR 34 (08) (VCMS Francisco Djalma de Lima.pdf",
