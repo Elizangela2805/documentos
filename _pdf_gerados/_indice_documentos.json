@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:28:56Z",
+  "updated_at": "2026-04-08T11:29:01Z",
   "total": 68,
   "items": [
     {
@@ -294,7 +294,11 @@
       "path": "_pdf_gerados/Joseilson Rodrigues de Andrade/NR 6 (08) (WM Joseilson Rodrigues de Andrade.pdf",
       "nome": "NR 6 (08) (WM Joseilson Rodrigues de Andrade.pdf",
       "funcionario": "Joseilson Rodrigues de Andrade",
-      "consulta": "https://elizangela2805.github.io/documentos/joseilsonrodriguesdeandrade/nr6/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/joseilsonrodriguesdeandrade/nr6/19032026",
+      "route_funcionario": "joseilsonrodriguesdeandrade",
+      "route_documento": "nr6",
+      "route_data": "19032026",
+      "route": "joseilsonrodriguesdeandrade/nr6/19032026"
     },
     {
       "path": "_pdf_gerados/Judson Cleyton Dias/NR 34 (08) (VCMS Judson Cleyton Dias.pdf",
