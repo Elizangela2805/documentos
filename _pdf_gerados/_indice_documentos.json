@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-08T11:31:05Z",
+  "updated_at": "2026-04-08T11:31:09Z",
   "total": 68,
   "items": [
     {
@@ -110,7 +110,11 @@
       "path": "_pdf_gerados/Cleber de Souza Euzebio/NR 6 (06 Cleber de Souza Euzebio.pdf",
       "nome": "NR 6 (06 Cleber de Souza Euzebio.pdf",
       "funcionario": "Cleber de Souza Euzebio",
-      "consulta": "https://elizangela2805.github.io/documentos/cleberdesouzaeuzebio/nr6/08042026"
+      "consulta": "https://elizangela2805.github.io/documentos/cleberdesouzaeuzebio/nr6/30032026",
+      "route_funcionario": "cleberdesouzaeuzebio",
+      "route_documento": "nr6",
+      "route_data": "30032026",
+      "route": "cleberdesouzaeuzebio/nr6/30032026"
     },
     {
       "path": "_pdf_gerados/Diego Magalhães de Oliveira/NR 18 (08 Diego Magalhães de Oliveira.pdf",
