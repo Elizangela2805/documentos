@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-13T13:09:00Z",
+  "updated_at": "2026-04-13T13:09:05Z",
   "total": 84,
   "items": [
     {
@@ -144,7 +144,12 @@
       "path": "_pdf_gerados/Elizangela Aparecida de Oliveira/anuencia (Projetta) Elizangela Aparecida de Oliveira.pdf",
       "nome": "anuencia (Projetta) Elizangela Aparecida de Oliveira.pdf",
       "funcionario": "Elizangela Aparecida de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/anuenciaprojettaelizangelaaparecidadeoliveira/13042026"
+      "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/anuenciaprojettaelizangelaaparecidadeoliveira/13042026",
+      "updated_at": "2026-04-13T12:35:53Z",
+      "route_funcionario": "elizangelaaparecidadeoliveira",
+      "route_documento": "anuenciaprojettaelizangelaaparecidadeoliveira",
+      "route_data": "13042026",
+      "route": "elizangelaaparecidadeoliveira/anuenciaprojettaelizangelaaparecidadeoliveira/13042026"
     },
     {
       "path": "_pdf_gerados/Elizangela Aparecida de Oliveira/carteirinha nr 11 (16-emp) (Projetta) Elizangela Aparecida de Oliveira.pdf",
