@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-13T12:59:45.243Z",
+  "updated_at": "2026-04-13T13:02:20Z",
   "total": 84,
   "items": [
     {
@@ -408,7 +408,12 @@
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 6 (06 Luiz Henrique da Silva.pdf",
       "nome": "NR 6 (06 Luiz Henrique da Silva.pdf",
       "funcionario": "Luiz Henrique da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr6/13042026"
+      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr6/13042026",
+      "updated_at": "2026-04-13T12:13:45Z",
+      "route_funcionario": "luizhenriquedasilva",
+      "route_documento": "nr6",
+      "route_data": "13042026",
+      "route": "luizhenriquedasilva/nr6/13042026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
