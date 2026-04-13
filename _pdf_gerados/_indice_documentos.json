@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-13T13:08:50Z",
+  "updated_at": "2026-04-13T13:08:55Z",
   "total": 84,
   "items": [
     {
@@ -207,7 +207,12 @@
       "path": "_pdf_gerados/Elizangela Aparecida de Oliveira/OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
       "nome": "OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
       "funcionario": "Elizangela Aparecida de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/13042026"
+      "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/13042026",
+      "updated_at": "2026-04-13T12:35:53Z",
+      "route_funcionario": "elizangelaaparecidadeoliveira",
+      "route_documento": "ossocioproprietarioaprojettaelizangelaaparecidadeoliveira",
+      "route_data": "13042026",
+      "route": "elizangelaaparecidadeoliveira/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/13042026"
     },
     {
       "path": "_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
