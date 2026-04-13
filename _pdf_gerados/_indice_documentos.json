@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-13T12:13:59.260Z",
-  "total": 72,
+  "updated_at": "2026-04-13T12:14:02Z",
+  "total": 73,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -433,6 +433,17 @@
       "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
       "funcionario": "Sidnei Vilela da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/sidneivileladasilva/nr6/13042026"
+    },
+    {
+      "path": "_pdf_gerados/Luiz Henrique da Silva/NR 18 (08 Luiz Henrique da Silva.pdf",
+      "nome": "NR 18 (08 Luiz Henrique da Silva.pdf",
+      "funcionario": "Luiz Henrique da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr18/13042026",
+      "updated_at": "2026-04-13T12:13:59Z",
+      "route_funcionario": "luizhenriquedasilva",
+      "route_documento": "nr18",
+      "route_data": "13042026",
+      "route": "luizhenriquedasilva/nr18/13042026"
     }
   ]
 }
