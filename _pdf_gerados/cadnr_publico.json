@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-13T09:54:33",
+  "updated_at": "2026-04-13T10:13:14",
   "empresas": [
     {
       "id": 1,
@@ -265,96 +265,6 @@
     },
     {
       "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 3,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 3,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 3,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
       "empresa_id": 3,
       "funcionario_id": null,
       "tipo_documento": ""
@@ -381,36 +291,6 @@
       "caminho": "",
       "empresa_id": 8,
       "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 18 (08 Luiz Henrique da Silva.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 32,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 6 (06 Luiz Henrique da Silva.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 32,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 18 (08 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 35 (08 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 6 (06 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
       "tipo_documento": ""
     }
   ]
