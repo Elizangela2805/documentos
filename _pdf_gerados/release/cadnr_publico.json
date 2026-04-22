@@ -1,0 +1,417 @@
+{
+  "updated_at": "2026-04-13T09:54:33",
+  "empresas": [
+    {
+      "id": 1,
+      "nome": "Projetta Engenharia Consultoria e Treinamentos LTDA",
+      "nome_pasta": "Projetta",
+      "logo": "_logos_empresas/1_Projetta.png"
+    },
+    {
+      "id": 2,
+      "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
+      "nome_pasta": "RJM",
+      "logo": "_logos_empresas/2_RJM.png"
+    },
+    {
+      "id": 3,
+      "nome": "AD2 Castro Consultoria e Serviços LTDA",
+      "nome_pasta": "AD2",
+      "logo": "_logos_empresas/3_AD2.png"
+    },
+    {
+      "id": 4,
+      "nome": "UNF Comércio de Ferro e Aço LTDA",
+      "nome_pasta": "Uniferco",
+      "logo": "_logos_empresas/4_Uniferco.png"
+    },
+    {
+      "id": 5,
+      "nome": "WM Projetos Consultoria e Montagens LTDA",
+      "nome_pasta": "WM Montagens Industriais",
+      "logo": "_logos_empresas/5_WM Montagens Industriais.png"
+    },
+    {
+      "id": 6,
+      "nome": "VCMS Montagens Industriais LTDA",
+      "nome_pasta": "VCMS Montagens",
+      "logo": ""
+    },
+    {
+      "id": 7,
+      "nome": "MG Monte Montagens Industriais LTDA",
+      "nome_pasta": "MG Monte",
+      "logo": "_logos_empresas/7_MG Monte.png"
+    },
+    {
+      "id": 8,
+      "nome": "3 mmm Guindastes e Serviços LTDA",
+      "nome_pasta": "3 MMM",
+      "logo": "_logos_empresas/8_3 MMM.jpeg"
+    }
+  ],
+  "funcionarios": [
+    {
+      "id": 1,
+      "nome": "Elizangela Aparecida de Oliveira",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 2,
+      "nome": "Rochael de Almeida Linhares Junior",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 3,
+      "nome": "Emerson Pereira de Oliveira",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 4,
+      "nome": "Paulo Henrique de Souza Matos",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 5,
+      "nome": "Alexandre Mimi",
+      "nome_pasta": "AD2",
+      "empresa_id": 3
+    },
+    {
+      "id": 6,
+      "nome": "Aguinaldo Pereira de Azevedo",
+      "nome_pasta": "AD2",
+      "empresa_id": 3
+    },
+    {
+      "id": 7,
+      "nome": "Kayck Darick Francisco de Jesus Silva",
+      "nome_pasta": "AD2",
+      "empresa_id": 3
+    },
+    {
+      "id": 8,
+      "nome": "Lucas Ferreira da Silva Santos",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 9,
+      "nome": "Adilson Aparecido das Neves Junior",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 10,
+      "nome": "Jair Pinto Gomes",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 11,
+      "nome": "Sidnei Vilela da Silva",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 12,
+      "nome": "Joseilson Rodrigues de Andrade",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 13,
+      "nome": "Jorge Alves Silva",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 14,
+      "nome": "Douglas Aparecido Benjamin",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 15,
+      "nome": "Claudinei Ribas",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 16,
+      "nome": "Isac Marcelino",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 17,
+      "nome": "Paulo Roberto Mantovanini Junior",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 18,
+      "nome": "Francisco das Chagas Ferreira",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 19,
+      "nome": "Francisco Djalma de Lima",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 20,
+      "nome": "Judson Cleyton Dias",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 21,
+      "nome": "Lucio Dirceu Zanatta",
+      "nome_pasta": "3 MMM",
+      "empresa_id": 8
+    },
+    {
+      "id": 22,
+      "nome": "Ricardo Cesar Bortoleto",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 23,
+      "nome": "Gustavo Hilário Monsão da Silva",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 24,
+      "nome": "Cleber de Souza Euzebio",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 25,
+      "nome": "Ivaldo Vicente da Silva",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 26,
+      "nome": "José Antonio dos Santos Neto",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 27,
+      "nome": "Anderson de Jesus Souza",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 28,
+      "nome": "Diego Magalhães de Oliveira",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 29,
+      "nome": "Carlos Augusto da Silva",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 30,
+      "nome": "Carlos Augusto da Silva Júnior",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 31,
+      "nome": "Pedro Eduardo Del Villar Pereira",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 32,
+      "nome": "Luiz Henrique da Silva",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 33,
+      "nome": "Valdinho Souza Santos",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 1,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 2,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 3,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 3,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 3,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 3,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 4,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 5,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 6,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 8,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 18 (08 Luiz Henrique da Silva.pdf",
+      "empresa_id": 2,
+      "funcionario_id": 32,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 6 (06 Luiz Henrique da Silva.pdf",
+      "empresa_id": 2,
+      "funcionario_id": 32,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 18 (08 Valdinho Souza Santos.pdf",
+      "empresa_id": 2,
+      "funcionario_id": 33,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 35 (08 Valdinho Souza Santos.pdf",
+      "empresa_id": 2,
+      "funcionario_id": 33,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 6 (06 Valdinho Souza Santos.pdf",
+      "empresa_id": 2,
+      "funcionario_id": 33,
+      "tipo_documento": ""
+    }
+  ]
+}
