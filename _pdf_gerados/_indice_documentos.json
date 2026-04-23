@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-23T17:33:47.327Z",
+  "updated_at": "2026-04-23T17:35:19Z",
   "total": 93,
   "items": [
     {
@@ -390,7 +390,12 @@
       "path": "_pdf_gerados/Josenildo Pereira Miranda/NR 18 (08-pta Josenildo Pereira Miranda.pdf",
       "nome": "NR 18 (08-pta Josenildo Pereira Miranda.pdf",
       "funcionario": "Josenildo Pereira Miranda",
-      "consulta": "https://elizangela2805.github.io/documentos/josenildopereiramiranda/nr18/23042026"
+      "consulta": "https://elizangela2805.github.io/documentos/josenildopereiramiranda/nr18/23042026",
+      "updated_at": "2026-04-23T17:35:16Z",
+      "route_funcionario": "josenildopereiramiranda",
+      "route_documento": "nr18",
+      "route_data": "23042026",
+      "route": "josenildopereiramiranda/nr18/23042026"
     },
     {
       "path": "_pdf_gerados/Josenildo Pereira Miranda/NR 34 (08 Josenildo Pereira Miranda.pdf",
