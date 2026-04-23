@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-23T19:35:22.160Z",
-  "total": 100,
+  "updated_at": "2026-04-23T19:37:18Z",
+  "total": 101,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -601,6 +601,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/23042026"
+    },
+    {
+      "path": "_pdf_gerados/Romero de Almeida Linhares/NR 18 (08-pta Romero de Almeida Linhares.pdf",
+      "nome": "NR 18 (08-pta Romero de Almeida Linhares.pdf",
+      "funcionario": "Romero de Almeida Linhares",
+      "consulta": "https://elizangela2805.github.io/documentos/romerodealmeidalinhares/nr18/23042026",
+      "updated_at": "2026-04-23T19:37:15Z",
+      "route_funcionario": "romerodealmeidalinhares",
+      "route_documento": "nr18",
+      "route_data": "23042026",
+      "route": "romerodealmeidalinhares/nr18/23042026"
     }
   ]
 }
