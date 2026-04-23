@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-23T19:37:18Z",
-  "total": 101,
+  "updated_at": "2026-04-23T19:37:34Z",
+  "total": 102,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -612,6 +612,17 @@
       "route_documento": "nr18",
       "route_data": "23042026",
       "route": "romerodealmeidalinhares/nr18/23042026"
+    },
+    {
+      "path": "_pdf_gerados/Romero de Almeida Linhares/NR 34 (08 Romero de Almeida Linhares.pdf",
+      "nome": "NR 34 (08 Romero de Almeida Linhares.pdf",
+      "funcionario": "Romero de Almeida Linhares",
+      "consulta": "https://elizangela2805.github.io/documentos/romerodealmeidalinhares/nr34/23042026",
+      "updated_at": "2026-04-23T19:37:29Z",
+      "route_funcionario": "romerodealmeidalinhares",
+      "route_documento": "nr34",
+      "route_data": "23042026",
+      "route": "romerodealmeidalinhares/nr34/23042026"
     }
   ]
 }
