@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-24T18:08:24Z",
-  "total": 108,
+  "updated_at": "2026-04-24T18:08:29Z",
+  "total": 109,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -669,6 +669,17 @@
       "route_documento": "fittestprojettaelizangelaaparecidadeoliveira",
       "route_data": "13042026",
       "route": "release/fittestprojettaelizangelaaparecidadeoliveira/13042026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "Elizangela Aparecida de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/release/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/13042026",
+      "updated_at": "2026-04-13T12:35:53Z",
+      "route_funcionario": "release",
+      "route_documento": "ossocioproprietarioaprojettaelizangelaaparecidadeoliveira",
+      "route_data": "13042026",
+      "route": "release/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/13042026"
     }
   ]
 }
