@@ -1,0 +1,61 @@
+{
+  "updated_at": "2026-04-24T15:37:55",
+  "empresa": {
+    "id": 5,
+    "nome": "WM Projetos Consultoria e Montagens LTDA",
+    "nome_pasta": "WM Montagens Industriais",
+    "logo": "_logos_empresas/5_WM Montagens Industriais.png"
+  },
+  "funcionarios": [
+    {
+      "id": 11,
+      "nome": "Sidnei Vilela da Silva",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 12,
+      "nome": "Joseilson Rodrigues de Andrade",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 13,
+      "nome": "Jorge Alves Silva",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 14,
+      "nome": "Douglas Aparecido Benjamin",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 15,
+      "nome": "Claudinei Ribas",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 16,
+      "nome": "Isac Marcelino",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    },
+    {
+      "id": 17,
+      "nome": "Paulo Roberto Mantovanini Junior",
+      "nome_pasta": "WM Montagens Industriais",
+      "empresa_id": 5
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 5,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
