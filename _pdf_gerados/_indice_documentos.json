@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-24T18:09:27.152Z",
-  "total": 119,
+  "updated_at": "2026-04-24T18:09:31Z",
+  "total": 120,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -715,6 +715,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/24042026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
+      "nome": "NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "Lucas Ferreira da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/30032026",
+      "updated_at": "2026-03-30T19:48:16Z",
+      "route_funcionario": "release",
+      "route_documento": "nr35",
+      "route_data": "30032026",
+      "route": "release/nr35/30032026"
     }
   ]
 }
