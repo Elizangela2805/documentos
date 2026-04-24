@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-23T19:42:14.834Z",
-  "total": 104,
+  "updated_at": "2026-04-24T18:07:58Z",
+  "total": 105,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -625,6 +625,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/23042026"
+    },
+    {
+      "path": "_pdf_gerados/Thiago de Oliveira/NR 12 (08-Pipa Thiago de Oliveira.pdf",
+      "nome": "NR 12 (08-Pipa Thiago de Oliveira.pdf",
+      "funcionario": "Thiago de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/thiagodeoliveira/nr12/24042026",
+      "updated_at": "2026-04-24T18:07:55Z",
+      "route_funcionario": "thiagodeoliveira",
+      "route_documento": "nr12",
+      "route_data": "24042026",
+      "route": "thiagodeoliveira/nr12/24042026"
     }
   ]
 }
