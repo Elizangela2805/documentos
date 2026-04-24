@@ -1,0 +1,25 @@
+{
+  "updated_at": "2026-04-24T15:37:55",
+  "empresa": {
+    "id": 8,
+    "nome": "3 mmm Guindastes e Serviços LTDA",
+    "nome_pasta": "3 MMM",
+    "logo": "_logos_empresas/8_3 MMM.jpeg"
+  },
+  "funcionarios": [
+    {
+      "id": 21,
+      "nome": "Lucio Dirceu Zanatta",
+      "nome_pasta": "3 MMM",
+      "empresa_id": 8
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 8,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
