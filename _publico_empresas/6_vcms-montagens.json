@@ -1,0 +1,37 @@
+{
+  "updated_at": "2026-04-24T15:37:55",
+  "empresa": {
+    "id": 6,
+    "nome": "VCMS Montagens Industriais LTDA",
+    "nome_pasta": "VCMS Montagens",
+    "logo": ""
+  },
+  "funcionarios": [
+    {
+      "id": 18,
+      "nome": "Francisco das Chagas Ferreira",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 19,
+      "nome": "Francisco Djalma de Lima",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 20,
+      "nome": "Judson Cleyton Dias",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 6,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
