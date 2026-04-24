@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-24T18:11:19Z",
-  "total": 140,
+  "updated_at": "2026-04-24T18:11:24Z",
+  "total": 141,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -940,6 +940,17 @@
       "path": "_pdf_gerados/release/_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
       "nome": "NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
       "funcionario": "Francisco das Chagas Ferreira",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr34/30032026",
+      "updated_at": "2026-03-30T19:48:16Z",
+      "route_funcionario": "release",
+      "route_documento": "nr34",
+      "route_data": "30032026",
+      "route": "release/nr34/30032026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Francisco Djalma de Lima/NR 34 (08) (VCMS Francisco Djalma de Lima.pdf",
+      "nome": "NR 34 (08) (VCMS Francisco Djalma de Lima.pdf",
+      "funcionario": "Francisco Djalma de Lima",
       "consulta": "https://elizangela2805.github.io/documentos/release/nr34/30032026",
       "updated_at": "2026-03-30T19:48:16Z",
       "route_funcionario": "release",
