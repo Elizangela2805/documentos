@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-13T09:54:34",
+  "updated_at": "2026-04-24T15:37:55",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -7,6 +7,18 @@
     "logo": "_logos_empresas/2_RJM.png"
   },
   "funcionarios": [
+    {
+      "id": 2,
+      "nome": "Rochael de Almeida Linhares Junior",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 4,
+      "nome": "Paulo Henrique de Souza Matos",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
     {
       "id": 24,
       "nome": "Cleber de Souza Euzebio",
@@ -20,14 +32,32 @@
       "empresa_id": 2
     },
     {
-      "id": 4,
-      "nome": "Paulo Henrique de Souza Matos",
+      "id": 27,
+      "nome": "Anderson de Jesus Souza",
       "nome_pasta": "RJM",
       "empresa_id": 2
     },
     {
-      "id": 2,
-      "nome": "Rochael de Almeida Linhares Junior",
+      "id": 28,
+      "nome": "Diego Magalhães de Oliveira",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 29,
+      "nome": "Carlos Augusto da Silva",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 30,
+      "nome": "Carlos Augusto da Silva Júnior",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 31,
+      "nome": "Pedro Eduardo Del Villar Pereira",
       "nome_pasta": "RJM",
       "empresa_id": 2
     },
@@ -42,6 +72,24 @@
       "nome": "Valdinho Souza Santos",
       "nome_pasta": "RJM",
       "empresa_id": 2
+    },
+    {
+      "id": 34,
+      "nome": "Josenildo Pereira Miranda",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 35,
+      "nome": "Oriel Monteiro Linhares",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 36,
+      "nome": "Romero de Almeida Linhares",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
     }
   ],
   "documentos": [
@@ -49,108 +97,6 @@
       "caminho": "",
       "empresa_id": 2,
       "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "",
-      "empresa_id": 2,
-      "funcionario_id": null,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 18 (08 Luiz Henrique da Silva.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 32,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Luiz Henrique da Silva/NR 6 (06 Luiz Henrique da Silva.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 32,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 18 (08 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 35 (08 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
-      "tipo_documento": ""
-    },
-    {
-      "caminho": "_pdf_gerados/Valdinho Souza Santos/NR 6 (06 Valdinho Souza Santos.pdf",
-      "empresa_id": 2,
-      "funcionario_id": 33,
       "tipo_documento": ""
     }
   ]
