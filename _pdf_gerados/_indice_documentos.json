@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-24T18:10:41Z",
-  "total": 133,
+  "updated_at": "2026-04-24T18:10:47Z",
+  "total": 134,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -869,6 +869,17 @@
       "route_documento": "nr10",
       "route_data": "30032026",
       "route": "release/nr10/30032026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Claudinei Ribas/NR 6 (08) (WM Claudinei Ribas.pdf",
+      "nome": "NR 6 (08) (WM Claudinei Ribas.pdf",
+      "funcionario": "Claudinei Ribas",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/30032026",
+      "updated_at": "2026-03-30T19:48:16Z",
+      "route_funcionario": "release",
+      "route_documento": "nr6",
+      "route_data": "30032026",
+      "route": "release/nr6/30032026"
     }
   ]
 }
