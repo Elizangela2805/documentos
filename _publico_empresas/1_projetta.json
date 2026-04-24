@@ -1,0 +1,43 @@
+{
+  "updated_at": "2026-04-24T15:37:55",
+  "empresa": {
+    "id": 1,
+    "nome": "Projetta Engenharia Consultoria e Treinamentos LTDA",
+    "nome_pasta": "Projetta",
+    "logo": "_logos_empresas/1_Projetta.png"
+  },
+  "funcionarios": [
+    {
+      "id": 1,
+      "nome": "Elizangela Aparecida de Oliveira",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 3,
+      "nome": "Emerson Pereira de Oliveira",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 8,
+      "nome": "Lucas Ferreira da Silva Santos",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    },
+    {
+      "id": 10,
+      "nome": "Jair Pinto Gomes",
+      "nome_pasta": "Projetta",
+      "empresa_id": 1
+    }
+  ],
+  "documentos": [
+    {
+      "caminho": "",
+      "empresa_id": 1,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    }
+  ]
+}
