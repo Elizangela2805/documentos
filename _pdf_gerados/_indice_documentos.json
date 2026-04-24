@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-24T18:08:48Z",
-  "total": 112,
+  "updated_at": "2026-04-24T18:08:53Z",
+  "total": 113,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -713,6 +713,17 @@
       "route_documento": "nr10",
       "route_data": "13042026",
       "route": "release/nr10/13042026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 18 (16-andaime Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 18 (16-andaime Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "Elizangela Aparecida de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/13042026",
+      "updated_at": "2026-04-13T12:35:53Z",
+      "route_funcionario": "release",
+      "route_documento": "nr18",
+      "route_data": "13042026",
+      "route": "release/nr18/13042026"
     }
   ]
 }
