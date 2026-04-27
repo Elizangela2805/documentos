@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-27T16:47:46.846Z",
-  "total": 149,
+  "updated_at": "2026-04-27T17:07:07Z",
+  "total": 150,
   "items": [
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -895,6 +895,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/27042026"
+    },
+    {
+      "path": "_pdf_gerados/Francisco das Chagas Viana Costa/NR 6 (06 Francisco das Chagas Viana Costa.pdf",
+      "nome": "NR 6 (06 Francisco das Chagas Viana Costa.pdf",
+      "funcionario": "Francisco das Chagas Viana Costa",
+      "consulta": "https://elizangela2805.github.io/documentos/franciscodaschagasvianacosta/nr6/27042026",
+      "updated_at": "2026-04-27T17:07:04Z",
+      "route_funcionario": "franciscodaschagasvianacosta",
+      "route_documento": "nr6",
+      "route_data": "27042026",
+      "route": "franciscodaschagasvianacosta/nr6/27042026"
     }
   ]
 }
