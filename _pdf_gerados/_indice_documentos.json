@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-27T18:42:26.584Z",
-  "total": 162,
+  "updated_at": "2026-04-27T18:42:34Z",
+  "total": 163,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -973,6 +973,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/27042026"
+    },
+    {
+      "path": "_pdf_gerados/João Plácido Neto/carteirinha nr 18 (08-pta) (RJM) João Plácido Neto.pdf",
+      "nome": "carteirinha nr 18 (08-pta) (RJM) João Plácido Neto.pdf",
+      "funcionario": "João Plácido Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joaoplacidoneto/carteirinha18pta08/27042026",
+      "updated_at": "2026-04-27T18:42:31Z",
+      "route_funcionario": "joaoplacidoneto",
+      "route_documento": "carteirinha18pta08",
+      "route_data": "27042026",
+      "route": "joaoplacidoneto/carteirinha18pta08/27042026"
     }
   ]
 }
