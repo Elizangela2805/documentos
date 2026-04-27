@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-27T18:42:08Z",
-  "total": 163,
+  "updated_at": "2026-04-27T18:42:21Z",
+  "total": 164,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -984,6 +984,17 @@
       "route_documento": "nr6",
       "route_data": "27042026",
       "route": "joaoplacidoneto/nr6/27042026"
+    },
+    {
+      "path": "_pdf_gerados/João Plácido Neto/NR 18 (08 João Plácido Neto.pdf",
+      "nome": "NR 18 (08 João Plácido Neto.pdf",
+      "funcionario": "João Plácido Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joaoplacidoneto/nr18/27042026",
+      "updated_at": "2026-04-27T18:42:17Z",
+      "route_funcionario": "joaoplacidoneto",
+      "route_documento": "nr18",
+      "route_data": "27042026",
+      "route": "joaoplacidoneto/nr18/27042026"
     }
   ]
 }
