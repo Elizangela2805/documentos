@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-04-27T18:33:39Z",
+  "updated_at": "2026-04-27T18:34:57.146Z",
   "total": 158,
   "items": [
     {
@@ -879,6 +879,12 @@
       "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr6/27042026"
     },
     {
+      "path": "_pdf_gerados/Rodolpho D’Lamare da Silva Santos/NR Rodolpho D’Lamare da Silva Santos.pdf",
+      "nome": "NR Rodolpho D’Lamare da Silva Santos.pdf",
+      "funcionario": "Rodolpho D’Lamare da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/rodolphodlamaredasilvasantos/nrrodolphodlamaredasilvasantos/27042026"
+    },
+    {
       "path": "_pdf_gerados/Romero de Almeida Linhares/carteirinha nr 18 (08-pta) (RJM) Romero de Almeida Linhares.pdf",
       "nome": "carteirinha nr 18 (08-pta) (RJM) Romero de Almeida Linhares.pdf",
       "funcionario": "Romero de Almeida Linhares",
@@ -943,17 +949,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/27042026"
-    },
-    {
-      "path": "_pdf_gerados/Rodolpho D’Lamare da Silva Santos/NR Rodolpho D’Lamare da Silva Santos.pdf",
-      "nome": "NR Rodolpho D’Lamare da Silva Santos.pdf",
-      "funcionario": "Rodolpho D’Lamare da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rodolphodlamaredasilvasantos/nrrodolphodlamaredasilvasantos/27042026",
-      "updated_at": "2026-04-27T18:33:37Z",
-      "route_funcionario": "rodolphodlamaredasilvasantos",
-      "route_documento": "nrrodolphodlamaredasilvasantos",
-      "route_data": "27042026",
-      "route": "rodolphodlamaredasilvasantos/nrrodolphodlamaredasilvasantos/27042026"
     }
   ]
 }
