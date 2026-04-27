@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-27T18:38:23Z",
-  "total": 159,
+  "updated_at": "2026-04-27T18:38:35Z",
+  "total": 160,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -965,6 +965,17 @@
       "route_documento": "nr18",
       "route_data": "27042026",
       "route": "rodolphodlamaredasilvasantos/nr18/27042026"
+    },
+    {
+      "path": "_pdf_gerados/Rodolpho D’Lamare da Silva Santos/NR 34 (08 Rodolpho D’Lamare da Silva Santos.pdf",
+      "nome": "NR 34 (08 Rodolpho D’Lamare da Silva Santos.pdf",
+      "funcionario": "Rodolpho D’Lamare da Silva Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/rodolphodlamaredasilvasantos/nr34/27042026",
+      "updated_at": "2026-04-27T18:38:32Z",
+      "route_funcionario": "rodolphodlamaredasilvasantos",
+      "route_documento": "nr34",
+      "route_data": "27042026",
+      "route": "rodolphodlamaredasilvasantos/nr34/27042026"
     }
   ]
 }
