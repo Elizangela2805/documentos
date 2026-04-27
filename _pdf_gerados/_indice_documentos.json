@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-04-27T18:42:21Z",
-  "total": 164,
+  "updated_at": "2026-04-27T18:42:26.584Z",
+  "total": 162,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -355,6 +355,12 @@
       "nome": "NR 6 (06 Ivaldo Vicente da Silva.pdf",
       "funcionario": "Ivaldo Vicente da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/ivaldovicentedasilva/nr6/27042026"
+    },
+    {
+      "path": "_pdf_gerados/João Plácido Neto/NR 6 (06 João Plácido Neto.pdf",
+      "nome": "NR 6 (06 João Plácido Neto.pdf",
+      "funcionario": "João Plácido Neto",
+      "consulta": "https://elizangela2805.github.io/documentos/joaoplacidoneto/nr6/27042026"
     },
     {
       "path": "_pdf_gerados/Jorge Alves Silva/NR 18 (08) (WM Jorge Alves Silva.pdf",
@@ -879,12 +885,6 @@
       "consulta": "https://elizangela2805.github.io/documentos/ricardocesarbortoleto/nr6/27042026"
     },
     {
-      "path": "_pdf_gerados/Rodolpho D’Lamare da Silva Santos/carteirinha nr 18 (08-pta) (RJM) Rodolpho D’Lamare da Silva Santos.pdf",
-      "nome": "carteirinha nr 18 (08-pta) (RJM) Rodolpho D’Lamare da Silva Santos.pdf",
-      "funcionario": "Rodolpho D’Lamare da Silva Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rodolphodlamaredasilvasantos/carteirinhanr1808ptarjmrodolphodlamaredasilvasantos/27042026"
-    },
-    {
       "path": "_pdf_gerados/Rodolpho D’Lamare da Silva Santos/NR 18 (08 Rodolpho D’Lamare da Silva Santos.pdf",
       "nome": "NR 18 (08 Rodolpho D’Lamare da Silva Santos.pdf",
       "funcionario": "Rodolpho D’Lamare da Silva Santos",
@@ -973,28 +973,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/27042026"
-    },
-    {
-      "path": "_pdf_gerados/João Plácido Neto/NR 6 (06 João Plácido Neto.pdf",
-      "nome": "NR 6 (06 João Plácido Neto.pdf",
-      "funcionario": "João Plácido Neto",
-      "consulta": "https://elizangela2805.github.io/documentos/joaoplacidoneto/nr6/27042026",
-      "updated_at": "2026-04-27T18:42:04Z",
-      "route_funcionario": "joaoplacidoneto",
-      "route_documento": "nr6",
-      "route_data": "27042026",
-      "route": "joaoplacidoneto/nr6/27042026"
-    },
-    {
-      "path": "_pdf_gerados/João Plácido Neto/NR 18 (08 João Plácido Neto.pdf",
-      "nome": "NR 18 (08 João Plácido Neto.pdf",
-      "funcionario": "João Plácido Neto",
-      "consulta": "https://elizangela2805.github.io/documentos/joaoplacidoneto/nr18/27042026",
-      "updated_at": "2026-04-27T18:42:17Z",
-      "route_funcionario": "joaoplacidoneto",
-      "route_documento": "nr18",
-      "route_data": "27042026",
-      "route": "joaoplacidoneto/nr18/27042026"
     }
   ]
 }
