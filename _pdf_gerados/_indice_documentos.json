@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-04T10:21:40Z",
+  "updated_at": "2026-05-04T10:22:25.703Z",
   "total": 167,
   "items": [
     {
@@ -537,6 +537,12 @@
       "consulta": "https://elizangela2805.github.io/documentos/luizeduardodesouzasilva/nr35/04052026"
     },
     {
+      "path": "_pdf_gerados/Luiz Eduardo de Souza Silva/NR 6 (06 Luiz Eduardo de Souza Silva.pdf",
+      "nome": "NR 6 (06 Luiz Eduardo de Souza Silva.pdf",
+      "funcionario": "Luiz Eduardo de Souza Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/luizeduardodesouzasilva/nr6/04052026"
+    },
+    {
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 18 (08 Luiz Henrique da Silva.pdf",
       "nome": "NR 18 (08 Luiz Henrique da Silva.pdf",
       "funcionario": "Luiz Henrique da Silva",
@@ -997,17 +1003,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/04052026"
-    },
-    {
-      "path": "_pdf_gerados/Luiz Eduardo de Souza Silva/NR 6 (06 Luiz Eduardo de Souza Silva.pdf",
-      "nome": "NR 6 (06 Luiz Eduardo de Souza Silva.pdf",
-      "funcionario": "Luiz Eduardo de Souza Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/luizeduardodesouzasilva/nr6/04052026",
-      "updated_at": "2026-05-04T10:21:28Z",
-      "route_funcionario": "luizeduardodesouzasilva",
-      "route_documento": "nr6",
-      "route_data": "04052026",
-      "route": "luizeduardodesouzasilva/nr6/04052026"
     }
   ]
 }
