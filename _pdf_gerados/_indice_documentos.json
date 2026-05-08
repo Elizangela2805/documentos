@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-08T13:02:37Z",
-  "total": 169,
+  "updated_at": "2026-05-08T13:02:52Z",
+  "total": 170,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -1025,6 +1025,17 @@
       "route_documento": "nr6",
       "route_data": "08052026",
       "route": "fabioluizotaviano/nr6/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 18 (08 Fábio Luiz Otaviano.pdf",
+      "nome": "NR 18 (08 Fábio Luiz Otaviano.pdf",
+      "funcionario": "Fábio Luiz Otaviano",
+      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr18/08052026",
+      "updated_at": "2026-05-08T13:02:49Z",
+      "route_funcionario": "fabioluizotaviano",
+      "route_documento": "nr18",
+      "route_data": "08052026",
+      "route": "fabioluizotaviano/nr18/08052026"
     }
   ]
 }
