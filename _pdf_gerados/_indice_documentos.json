@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-04T10:23:22.206Z",
-  "total": 167,
+  "updated_at": "2026-05-08T12:59:35Z",
+  "total": 168,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -1003,6 +1003,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/04052026"
+    },
+    {
+      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 6 (06 Nilton Thiago dos Santos de Andrade.pdf",
+      "nome": "NR 6 (06 Nilton Thiago dos Santos de Andrade.pdf",
+      "funcionario": "Nilton Thiago dos Santos de Andrade",
+      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr6/08052026",
+      "updated_at": "2026-05-08T12:59:32Z",
+      "route_funcionario": "niltonthiagodossantosdeandrade",
+      "route_documento": "nr6",
+      "route_data": "08052026",
+      "route": "niltonthiagodossantosdeandrade/nr6/08052026"
     }
   ]
 }
