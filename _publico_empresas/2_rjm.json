@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-08T09:56:14",
+  "updated_at": "2026-05-08T09:57:20",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -124,6 +124,12 @@
     {
       "id": 43,
       "nome": "Nilton Thiago dos Santos de Andrade",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 44,
+      "nome": "Fábio Luiz Otaviano",
       "nome_pasta": "RJM",
       "empresa_id": 2
     }
