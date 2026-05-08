@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-08T13:03:17Z",
-  "total": 172,
+  "updated_at": "2026-05-08T13:04:39.220Z",
+  "total": 175,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -247,6 +247,30 @@
       "nome": "OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
       "funcionario": "Elizangela Aparecida de Oliveira",
       "consulta": "https://elizangela2805.github.io/documentos/elizangelaaparecidadeoliveira/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 18 (08 Fábio Luiz Otaviano.pdf",
+      "nome": "NR 18 (08 Fábio Luiz Otaviano.pdf",
+      "funcionario": "Fábio Luiz Otaviano",
+      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr18/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 34 (08 Fábio Luiz Otaviano.pdf",
+      "nome": "NR 34 (08 Fábio Luiz Otaviano.pdf",
+      "funcionario": "Fábio Luiz Otaviano",
+      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr34/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 35 (08 Fábio Luiz Otaviano.pdf",
+      "nome": "NR 35 (08 Fábio Luiz Otaviano.pdf",
+      "funcionario": "Fábio Luiz Otaviano",
+      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr35/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 6 (06 Fábio Luiz Otaviano.pdf",
+      "nome": "NR 6 (06 Fábio Luiz Otaviano.pdf",
+      "funcionario": "Fábio Luiz Otaviano",
+      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr6/08052026"
     },
     {
       "path": "_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
@@ -553,6 +577,30 @@
       "nome": "NR 6 (06 Luiz Henrique da Silva.pdf",
       "funcionario": "Luiz Henrique da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr6/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 18 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "nome": "NR 18 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "funcionario": "Nilton Thiago dos Santos de Andrade",
+      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr18/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 34 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "nome": "NR 34 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "funcionario": "Nilton Thiago dos Santos de Andrade",
+      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr34/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 35 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "nome": "NR 35 (08 Nilton Thiago dos Santos de Andrade.pdf",
+      "funcionario": "Nilton Thiago dos Santos de Andrade",
+      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr35/08052026"
+    },
+    {
+      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 6 (06 Nilton Thiago dos Santos de Andrade.pdf",
+      "nome": "NR 6 (06 Nilton Thiago dos Santos de Andrade.pdf",
+      "funcionario": "Nilton Thiago dos Santos de Andrade",
+      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr6/08052026"
     },
     {
       "path": "_pdf_gerados/Oriel Monteiro Linhares/carteirinha cert. munck (40) (RJM) Oriel Monteiro Linhares.pdf",
@@ -1003,61 +1051,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/08052026"
-    },
-    {
-      "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 35 (08 Nilton Thiago dos Santos de Andrade.pdf",
-      "nome": "NR 35 (08 Nilton Thiago dos Santos de Andrade.pdf",
-      "funcionario": "Nilton Thiago dos Santos de Andrade",
-      "consulta": "https://elizangela2805.github.io/documentos/niltonthiagodossantosdeandrade/nr35/08052026",
-      "updated_at": "2026-05-08T13:00:15Z",
-      "route_funcionario": "niltonthiagodossantosdeandrade",
-      "route_documento": "nr35",
-      "route_data": "08052026",
-      "route": "niltonthiagodossantosdeandrade/nr35/08052026"
-    },
-    {
-      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 6 (06 Fábio Luiz Otaviano.pdf",
-      "nome": "NR 6 (06 Fábio Luiz Otaviano.pdf",
-      "funcionario": "Fábio Luiz Otaviano",
-      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr6/08052026",
-      "updated_at": "2026-05-08T13:02:32Z",
-      "route_funcionario": "fabioluizotaviano",
-      "route_documento": "nr6",
-      "route_data": "08052026",
-      "route": "fabioluizotaviano/nr6/08052026"
-    },
-    {
-      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 18 (08 Fábio Luiz Otaviano.pdf",
-      "nome": "NR 18 (08 Fábio Luiz Otaviano.pdf",
-      "funcionario": "Fábio Luiz Otaviano",
-      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr18/08052026",
-      "updated_at": "2026-05-08T13:02:49Z",
-      "route_funcionario": "fabioluizotaviano",
-      "route_documento": "nr18",
-      "route_data": "08052026",
-      "route": "fabioluizotaviano/nr18/08052026"
-    },
-    {
-      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 34 (08 Fábio Luiz Otaviano.pdf",
-      "nome": "NR 34 (08 Fábio Luiz Otaviano.pdf",
-      "funcionario": "Fábio Luiz Otaviano",
-      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr34/08052026",
-      "updated_at": "2026-05-08T13:03:01Z",
-      "route_funcionario": "fabioluizotaviano",
-      "route_documento": "nr34",
-      "route_data": "08052026",
-      "route": "fabioluizotaviano/nr34/08052026"
-    },
-    {
-      "path": "_pdf_gerados/Fábio Luiz Otaviano/NR 35 (08 Fábio Luiz Otaviano.pdf",
-      "nome": "NR 35 (08 Fábio Luiz Otaviano.pdf",
-      "funcionario": "Fábio Luiz Otaviano",
-      "consulta": "https://elizangela2805.github.io/documentos/fabioluizotaviano/nr35/08052026",
-      "updated_at": "2026-05-08T13:03:14Z",
-      "route_funcionario": "fabioluizotaviano",
-      "route_documento": "nr35",
-      "route_data": "08052026",
-      "route": "fabioluizotaviano/nr35/08052026"
     }
   ]
 }
