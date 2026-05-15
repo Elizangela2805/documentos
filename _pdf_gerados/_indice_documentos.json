@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-15T11:43:19Z",
-  "total": 194,
+  "updated_at": "2026-05-15T11:44:18.285Z",
+  "total": 195,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/NR 18 (08 Adenilson Neves da Silva.pdf",
@@ -681,6 +681,18 @@
       "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr18/15052026"
     },
     {
+      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 34 (08 Mauricio Macêdo de Brito.pdf",
+      "nome": "NR 34 (08 Mauricio Macêdo de Brito.pdf",
+      "funcionario": "Mauricio Macêdo de Brito",
+      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr34/15052026"
+    },
+    {
+      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 35 (08 Mauricio Macêdo de Brito.pdf",
+      "nome": "NR 35 (08 Mauricio Macêdo de Brito.pdf",
+      "funcionario": "Mauricio Macêdo de Brito",
+      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr35/15052026"
+    },
+    {
       "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 6 (06 Mauricio Macêdo de Brito.pdf",
       "nome": "NR 6 (06 Mauricio Macêdo de Brito.pdf",
       "funcionario": "Mauricio Macêdo de Brito",
@@ -1159,17 +1171,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/15052026"
-    },
-    {
-      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 35 (08 Mauricio Macêdo de Brito.pdf",
-      "nome": "NR 35 (08 Mauricio Macêdo de Brito.pdf",
-      "funcionario": "Mauricio Macêdo de Brito",
-      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr35/15052026",
-      "updated_at": "2026-05-15T11:43:17Z",
-      "route_funcionario": "mauriciomacedodebrito",
-      "route_documento": "nr35",
-      "route_data": "15052026",
-      "route": "mauriciomacedodebrito/nr35/15052026"
     }
   ]
 }
