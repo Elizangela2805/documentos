@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-15T11:42:47Z",
+  "updated_at": "2026-05-15T11:43:03.236Z",
   "total": 193,
   "items": [
     {
@@ -675,6 +675,18 @@
       "consulta": "https://elizangela2805.github.io/documentos/marcelodossantos/nr6/15052026"
     },
     {
+      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 18 (08 Mauricio Macêdo de Brito.pdf",
+      "nome": "NR 18 (08 Mauricio Macêdo de Brito.pdf",
+      "funcionario": "Mauricio Macêdo de Brito",
+      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr18/15052026"
+    },
+    {
+      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 6 (06 Mauricio Macêdo de Brito.pdf",
+      "nome": "NR 6 (06 Mauricio Macêdo de Brito.pdf",
+      "funcionario": "Mauricio Macêdo de Brito",
+      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr6/15052026"
+    },
+    {
       "path": "_pdf_gerados/Nilton Thiago dos Santos de Andrade/NR 18 (08 Nilton Thiago dos Santos de Andrade.pdf",
       "nome": "NR 18 (08 Nilton Thiago dos Santos de Andrade.pdf",
       "funcionario": "Nilton Thiago dos Santos de Andrade",
@@ -1147,28 +1159,6 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/15052026"
-    },
-    {
-      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 6 (06 Mauricio Macêdo de Brito.pdf",
-      "nome": "NR 6 (06 Mauricio Macêdo de Brito.pdf",
-      "funcionario": "Mauricio Macêdo de Brito",
-      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr6/15052026",
-      "updated_at": "2026-05-15T11:42:28Z",
-      "route_funcionario": "mauriciomacedodebrito",
-      "route_documento": "nr6",
-      "route_data": "15052026",
-      "route": "mauriciomacedodebrito/nr6/15052026"
-    },
-    {
-      "path": "_pdf_gerados/Mauricio Macêdo de Brito/NR 18 (08 Mauricio Macêdo de Brito.pdf",
-      "nome": "NR 18 (08 Mauricio Macêdo de Brito.pdf",
-      "funcionario": "Mauricio Macêdo de Brito",
-      "consulta": "https://elizangela2805.github.io/documentos/mauriciomacedodebrito/nr18/15052026",
-      "updated_at": "2026-05-15T11:42:45Z",
-      "route_funcionario": "mauriciomacedodebrito",
-      "route_documento": "nr18",
-      "route_data": "15052026",
-      "route": "mauriciomacedodebrito/nr18/15052026"
     }
   ]
 }
