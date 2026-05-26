@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-26T13:58:21",
+  "updated_at": "2026-05-26T14:00:20",
   "empresas": [
     {
       "id": 1,
@@ -344,6 +344,12 @@
       "nome": "Mauricio Macêdo de Brito",
       "nome_pasta": "RJM",
       "empresa_id": 2
+    },
+    {
+      "id": 50,
+      "nome": "Francisco das Chagas Ferreira",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
     }
   ],
   "documentos": [
