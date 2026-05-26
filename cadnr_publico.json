@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-26T14:05:56",
+  "updated_at": "2026-05-26T14:06:44",
   "empresas": [
     {
       "id": 1,
@@ -348,12 +348,6 @@
     {
       "id": 50,
       "nome": "Francisco das Chagas Ferreira",
-      "nome_pasta": "VCMS Montagens",
-      "empresa_id": 6
-    },
-    {
-      "id": 51,
-      "nome": "Francisco Djalma de Lima",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
