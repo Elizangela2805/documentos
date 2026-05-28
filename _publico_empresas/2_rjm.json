@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T08:50:58",
+  "updated_at": "2026-05-28T08:52:07",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -220,6 +220,12 @@
     {
       "id": 63,
       "nome": "Luis André Pereira dos Santos",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 64,
+      "nome": "Júlio César Almeida Monteiro",
       "nome_pasta": "RJM",
       "empresa_id": 2
     }
