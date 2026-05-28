@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T08:44:35",
+  "updated_at": "2026-05-28T08:45:28",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -184,6 +184,12 @@
     {
       "id": 57,
       "nome": "Gilmar de Jesus Batalha dos Reis",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 58,
+      "nome": "Hudson Henrique Almeida",
       "nome_pasta": "RJM",
       "empresa_id": 2
     }
