@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-28T11:36:56.902Z",
-  "total": 223,
+  "updated_at": "2026-05-28T12:00:38Z",
+  "total": 224,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1339,6 +1339,17 @@
       "nome": "NR 6 (06 Valdinho Souza Santos.pdf",
       "funcionario": "Valdinho Souza Santos",
       "consulta": "https://elizangela2805.github.io/documentos/valdinhosouzasantos/nr6/28052026"
+    },
+    {
+      "path": "_pdf_gerados/Luiz Fernando de Jesus Ferreira/NR 6 (06 Luiz Fernando de Jesus Ferreira.pdf",
+      "nome": "NR 6 (06 Luiz Fernando de Jesus Ferreira.pdf",
+      "funcionario": "Luiz Fernando de Jesus Ferreira",
+      "consulta": "https://elizangela2805.github.io/documentos/luizfernandodejesusferreira/nr6/28052026",
+      "updated_at": "2026-05-28T12:00:33Z",
+      "route_funcionario": "luizfernandodejesusferreira",
+      "route_documento": "nr6",
+      "route_data": "28052026",
+      "route": "luizfernandodejesusferreira/nr6/28052026"
     }
   ]
 }
