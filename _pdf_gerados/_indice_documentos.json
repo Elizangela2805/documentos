@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-28T12:24:01Z",
-  "total": 247,
+  "updated_at": "2026-05-28T12:24:15Z",
+  "total": 248,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1498,6 +1498,17 @@
       "route_documento": "nr18",
       "route_data": "28052026",
       "route": "wermesonaureliofalcaofreitas/nr18/28052026"
+    },
+    {
+      "path": "_pdf_gerados/Wermeson Aurélio Falcão Freitas/NR 34 (08 Wermeson Aurélio Falcão Freitas.pdf",
+      "nome": "NR 34 (08 Wermeson Aurélio Falcão Freitas.pdf",
+      "funcionario": "Wermeson Aurélio Falcão Freitas",
+      "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr34/28052026",
+      "updated_at": "2026-05-28T12:24:11Z",
+      "route_funcionario": "wermesonaureliofalcaofreitas",
+      "route_documento": "nr34",
+      "route_data": "28052026",
+      "route": "wermesonaureliofalcaofreitas/nr34/28052026"
     }
   ]
 }
