@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-28T12:21:21Z",
-  "total": 245,
+  "updated_at": "2026-05-28T12:21:38Z",
+  "total": 246,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1501,6 +1501,17 @@
       "route_documento": "nr18",
       "route_data": "28052026",
       "route": "antonioluisdonascimento/nr18/28052026"
+    },
+    {
+      "path": "_pdf_gerados/Antônio Luís do Nascimento/NR 34 (08 Antônio Luís do Nascimento.pdf",
+      "nome": "NR 34 (08 Antônio Luís do Nascimento.pdf",
+      "funcionario": "Antônio Luís do Nascimento",
+      "consulta": "https://elizangela2805.github.io/documentos/antonioluisdonascimento/nr34/28052026",
+      "updated_at": "2026-05-28T12:21:34Z",
+      "route_funcionario": "antonioluisdonascimento",
+      "route_documento": "nr34",
+      "route_data": "28052026",
+      "route": "antonioluisdonascimento/nr34/28052026"
     }
   ]
 }
