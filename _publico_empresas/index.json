@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T08:42:39",
+  "updated_at": "2026-05-28T08:43:36",
   "empresas": [
     {
       "empresa_id": 1,
@@ -14,7 +14,7 @@
       "empresa_nome": "RJM Instalações Elétricas e Mecânicas LTDA",
       "empresa_slug": "rjm",
       "arquivo": "_publico_empresas/2_rjm.json",
-      "total_funcionarios": 28,
+      "total_funcionarios": 29,
       "total_documentos": 1
     },
     {
