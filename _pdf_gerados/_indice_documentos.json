@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-05-28T16:33:10Z",
-  "total": 261,
+  "updated_at": "2026-05-28T16:33:24Z",
+  "total": 262,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1617,6 +1617,17 @@
       "route_documento": "nr18",
       "route_data": "28052026",
       "route": "luisandrepereiradossantos/nr18/28052026"
+    },
+    {
+      "path": "_pdf_gerados/Luis André Pereira dos Santos/NR 34 (08 Luis André Pereira dos Santos.pdf",
+      "nome": "NR 34 (08 Luis André Pereira dos Santos.pdf",
+      "funcionario": "Luis André Pereira dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/luisandrepereiradossantos/nr34/28052026",
+      "updated_at": "2026-05-28T16:33:21Z",
+      "route_funcionario": "luisandrepereiradossantos",
+      "route_documento": "nr34",
+      "route_data": "28052026",
+      "route": "luisandrepereiradossantos/nr34/28052026"
     }
   ]
 }
