@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T08:46:23",
+  "updated_at": "2026-05-28T08:47:33",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -196,6 +196,12 @@
     {
       "id": 59,
       "nome": "Antônio Luís do Nascimento",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 60,
+      "nome": "Wermeson Aurélio Falcão Freitas",
       "nome_pasta": "RJM",
       "empresa_id": 2
     }
