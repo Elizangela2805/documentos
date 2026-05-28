@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T08:41:36",
+  "updated_at": "2026-05-28T08:42:39",
   "empresa": {
     "id": 2,
     "nome": "RJM Instalações Elétricas e Mecânicas LTDA",
@@ -166,6 +166,12 @@
     {
       "id": 54,
       "nome": "Luiz Fernando de Jesus Ferreira",
+      "nome_pasta": "RJM",
+      "empresa_id": 2
+    },
+    {
+      "id": 55,
+      "nome": "Francisco de Jesus do Nascimento Gabriel",
       "nome_pasta": "RJM",
       "empresa_id": 2
     }
