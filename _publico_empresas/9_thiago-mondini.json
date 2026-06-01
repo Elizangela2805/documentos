@@ -1,11 +1,18 @@
 {
-  "updated_at": "2026-06-01T07:11:10",
+  "updated_at": "2026-06-01T07:19:26",
   "empresa": {
     "id": 9,
     "nome": "Thiago Mondini Montagem e Desmontagem Industrial LTDA",
     "nome_pasta": "Thiago Mondini",
     "logo": "_logos_empresas/9_Thiago Mondini.jpeg"
   },
-  "funcionarios": [],
+  "funcionarios": [
+    {
+      "id": 66,
+      "nome": "Thiago de Oliveira",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    }
+  ],
   "documentos": []
 }
