@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-01T12:36:03.296Z",
-  "total": 282,
+  "updated_at": "2026-06-01T12:39:23Z",
+  "total": 283,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1693,6 +1693,16 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01062026"
+    },
+    {
+      "path": "_pdf_gerados/Thiago de Oliveira/NR 33 (16) (TMondini Thiago de Oliveira.pdf",
+      "nome": "NR 33 (16) (TMondini Thiago de Oliveira.pdf",
+      "funcionario": "Thiago de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/thiagodeoliveira/nr33/01062026",
+      "route_funcionario": "thiagodeoliveira",
+      "route_documento": "nr33",
+      "route_data": "01062026",
+      "route": "thiagodeoliveira/nr33/01062026"
     }
   ]
 }
