@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-05-28T13:39:44",
+  "updated_at": "2026-06-01T07:11:08",
   "empresas": [
     {
       "id": 1,
@@ -48,6 +48,12 @@
       "nome": "3 mmm Guindastes e Serviços LTDA",
       "nome_pasta": "3 MMM",
       "logo": "_logos_empresas/8_3 MMM.jpeg"
+    },
+    {
+      "id": 9,
+      "nome": "Thiago Mondini Montagem e Desmontagem Industrial LTDA",
+      "nome_pasta": "Thiago Mondini",
+      "logo": "_logos_empresas/9_Thiago Mondini.jpeg"
     }
   ],
   "funcionarios": [
