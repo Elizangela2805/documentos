@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T07:19:23",
+  "updated_at": "2026-06-01T07:21:48",
   "empresas": [
     {
       "id": 1,
@@ -482,6 +482,12 @@
     {
       "caminho": "",
       "empresa_id": 8,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 9,
       "funcionario_id": null,
       "tipo_documento": ""
     }
