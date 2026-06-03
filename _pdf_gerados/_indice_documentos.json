@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-03T14:32:41Z",
-  "total": 287,
+  "updated_at": "2026-06-03T14:32:47.704Z",
+  "total": 285,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -954,11 +954,7 @@
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 18 pta (08 Luiz Henrique da Silva.pdf",
       "nome": "NR 18 pta (08 Luiz Henrique da Silva.pdf",
       "funcionario": "Luiz Henrique da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr18pta/03062026",
-      "route_funcionario": "luizhenriquedasilva",
-      "route_documento": "nr18pta",
-      "route_data": "03062026",
-      "route": "luizhenriquedasilva/nr18pta/03062026"
+      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr18pta/03062026"
     },
     {
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 35 (08 Luiz Henrique da Silva.pdf",
@@ -1715,26 +1711,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/03062026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Augusto da Silva/NR 6 (08) (VCMS Diego Augusto da Silva.pdf",
-      "nome": "NR 6 (08) (VCMS Diego Augusto da Silva.pdf",
-      "funcionario": "Diego Augusto da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/diegoaugustodasilva/nr6/03062026",
-      "route_funcionario": "diegoaugustodasilva",
-      "route_documento": "nr6",
-      "route_data": "03062026",
-      "route": "diegoaugustodasilva/nr6/03062026"
-    },
-    {
-      "path": "_pdf_gerados/Diego Augusto da Silva/NR 35 (08) (VCMS Diego Augusto da Silva.pdf",
-      "nome": "NR 35 (08) (VCMS Diego Augusto da Silva.pdf",
-      "funcionario": "Diego Augusto da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/diegoaugustodasilva/nr35/03062026",
-      "route_funcionario": "diegoaugustodasilva",
-      "route_documento": "nr35",
-      "route_data": "03062026",
-      "route": "diegoaugustodasilva/nr35/03062026"
     }
   ]
 }
