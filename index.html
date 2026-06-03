@@ -643,7 +643,23 @@
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
       if (stemNorm.includes("carteirinha")) {
-        return slugUrl(stemNorm) || "carteirinha";
+        const mNrCart = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\b/);
+        const nrCart = mNrCart ? String(mNrCart[1] || "") : "";
+        let subCart = "";
+        const mSubCart = stemNorm.match(/\b(emp|pr|garra|munck|pta|pemt|guin|guindaste|andaime|and)\b/);
+        if (mSubCart) subCart = String(mSubCart[1] || "");
+        if (subCart === "guindaste") subCart = "guin";
+        if (subCart === "and") subCart = "andaime";
+        if (!subCart) {
+          const mVarCart = stemNorm.match(/\(\s*\d{1,3}\s*[-_]\s*(emp|pr|garra|munck|pta|pemt|guin|guindaste|andaime|and)\s*\)/)
+            || stemNorm.match(/\b\d{1,3}\s*[-_]\s*(emp|pr|garra|munck|pta|pemt|guin|guindaste|andaime|and)\b/);
+          if (mVarCart) subCart = String(mVarCart[1] || "");
+          if (subCart === "guindaste") subCart = "guin";
+          if (subCart === "and") subCart = "andaime";
+        }
+        if (nrCart && subCart) return `carteirinha${nrCart}${subCart}`;
+        if (nrCart) return `carteirinha${nrCart}`;
+        return "carteirinha";
       }
       const mNr = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\s*([a-z]{2,6})?\b/);
       if (mNr) {
@@ -730,12 +746,17 @@
     };
     const linkPublicoPdf = (_owner, _repo, _branch, path) => consultaUrl(path);
     const linkConsultaItem = (item) => {
-      const path = String(item?.path || "").trim();
-      if (path) return linkPublicoPdf("", "", "", path);
       const route = String(item?.route || "").trim();
       if (route) return `${PAGES_BASE_FIXED}/${route.replace(/^\/+/, "")}`;
+      const rf = String(item?.route_funcionario || "").trim();
+      const rd = String(item?.route_documento || "").trim();
+      const rt = String(item?.route_data || "").trim();
+      if (rf && rd && rt) return `${PAGES_BASE_FIXED}/${encodeURIComponent(rf)}/${encodeURIComponent(rd)}/${encodeURIComponent(rt)}`;
       const consulta = String(item?.consulta || "").trim();
-      return consulta || `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
+      if (consulta) return consulta;
+      const path = String(item?.path || "").trim();
+      if (path) return linkPublicoPdf("", "", "", path);
+      return `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
     const REPO_INDEX_PATH = "_pdf_gerados/_indice_documentos.json";
     const PUBLIC_EMPRESAS_INDEX_PATH = "_publico_empresas/index.json";
@@ -2013,12 +2034,22 @@
     });
 
     const assinaturaRotaFromItem = (it) => {
+      const rf = String(it?.route_funcionario || "").trim().toLowerCase();
+      const rd = String(it?.route_documento || "").trim().toLowerCase();
+      const rt = String(it?.route_data || "").trim().toLowerCase();
+      if (rf && rd && rt) return { funcionario: rf, documento: rd, dataRef: rt };
+      const route = String(it?.route || "").trim().toLowerCase();
+      const partesRoute = route.split("/").filter(Boolean);
+      if (partesRoute.length >= 3) {
+        return { funcionario: partesRoute[0], documento: partesRoute[1], dataRef: partesRoute[2] };
+      }
       const path = normFolder(String(it?.path || ""));
       if (path) return assinaturaRotaFromPath(path);
-      const rf = String(it?.route_funcionario || "").trim().toLowerCase() || "funcionario";
-      const rd = String(it?.route_documento || "").trim().toLowerCase() || "documento";
-      const rt = String(it?.route_data || "").trim().toLowerCase() || dataHojeDdMmAaaa();
-      return { funcionario: rf, documento: rd, dataRef: rt };
+      return {
+        funcionario: rf || "funcionario",
+        documento: rd || "documento",
+        dataRef: rt || dataHojeDdMmAaaa(),
+      };
     };
 
     const isMobileDevice = () => /Android|iPhone|iPad|iPod|IEMobile|Opera Mini/i.test(navigator.userAgent || "");

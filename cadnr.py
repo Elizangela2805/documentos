@@ -1288,7 +1288,7 @@ class App(tk.Tk):
     def _pasta_referencia_empresa(self, empresa):
         if not isinstance(empresa, dict):
             return ""
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         candidatos = self._pastas_candidatas_empresa(empresa)
         for candidato in candidatos:
             if not candidato:
@@ -1318,11 +1318,16 @@ class App(tk.Tk):
             nome = re.sub(rf"\s*\(+\s*{padrao_pasta}\s*\)+\s*$", "", nome, flags=re.IGNORECASE)
         # Remove sufixo automatico de arquivo duplicado (ex.: "_1", "_2").
         nome = re.sub(r"_[0-9]+\s*$", "", nome)
-        nome = re.sub(r"\s*[\(\)]+\s*$", "", nome).strip()
+        nome = re.sub(r"\s*\(\s*\)\s*$", "", nome).strip()
         nome = re.sub(r"\s+", " ", nome)
+        if re.match(r"(?i)^carteirinha\s+nr\b", nome):
+            nome = re.sub(r"(?i)^carteirinha\s+", "", nome).strip()
         if re.match(r"(?i)^nr\s*", nome):
             resto = re.sub(r"(?i)^nr\s*", "", nome).strip()
             nome = f"NR {resto}" if resto else "NR"
+            m_nr = re.match(r"(?i)^NR\s*(\d+)\b", nome)
+            if m_nr and int(m_nr.group(1)) not in {11, 20}:
+                nome = re.sub(r"\s*\(\s*\d{1,3}\s*\)\s*$", "", nome).strip()
         return nome
 
     def _chave_nr_por_nome_empresa(self, nome_arquivo, empresa):
@@ -1466,7 +1471,7 @@ class App(tk.Tk):
         candidatos = self._pastas_candidatas_empresa(empresa)
         if not candidatos:
             return {}
-        pasta_base = Path(__file__).resolve().parent
+        pasta_base = _diretorio_base_app()
         pasta = None
         nome_referencia = ""
         for candidato in candidatos:
@@ -3264,7 +3269,7 @@ class App(tk.Tk):
         branch_padrao = "main"
         repo_git = ""
         branch_git = ""
-        repo_dir = Path(__file__).resolve().parent
+        repo_dir = _diretorio_base_app()
 
         try:
             proc_remote = subprocess.run(
@@ -3342,7 +3347,7 @@ class App(tk.Tk):
     @staticmethod
     def _montar_caminho_repo_qr_github(caminho_pdf, pasta_repo=""):
         try:
-            base = Path(__file__).resolve().parent.resolve()
+            base = _diretorio_base_app().resolve()
             rel = Path(caminho_pdf).resolve().relative_to(base)
             rel_txt = str(rel).replace("\\", "/")
         except Exception:
@@ -3372,7 +3377,7 @@ class App(tk.Tk):
         try:
             caminho = Path(str(caminho_arquivo or "")).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
             if not repo_path:
                 return ""
@@ -3394,7 +3399,7 @@ class App(tk.Tk):
         try:
             caminho = Path(str(caminho_arquivo or "")).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
             if not repo_path:
                 return ""
@@ -3412,7 +3417,7 @@ class App(tk.Tk):
         try:
             caminho = Path(str(caminho_arquivo or "")).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
             if not repo_path:
                 return ""
@@ -3459,13 +3464,16 @@ class App(tk.Tk):
         return datetime.now().strftime("%d%m%Y")
 
     @staticmethod
-    def _extrair_documento_slug_documento(repo_path, caminho_arquivo):
+    def _extrair_documento_slug_documento(repo_path, caminho_arquivo, tipo_documento=""):
         stem = str(Path(str(repo_path or "")).stem or "").strip()
         if not stem:
             stem = str(Path(str(caminho_arquivo or "")).stem or "").strip()
         stem_ascii = unicodedata.normalize("NFKD", stem)
         stem_ascii = "".join(ch for ch in stem_ascii if not unicodedata.combining(ch))
         stem_ascii = stem_ascii.lower()
+        tipo_norm = str(tipo_documento or "").strip().casefold()
+        if tipo_norm == "carteirinha" and "carteirinha" not in stem_ascii:
+            stem_ascii = f"carteirinha {stem_ascii}"
         if "carteirinha" in stem_ascii:
             # Mantem slug curto para reduzir densidade do QR na carteirinha.
             m_nr_cart = re.search(r"\bnr\s*0*([0-9]{1,3})\b", stem_ascii)
@@ -3529,7 +3537,7 @@ class App(tk.Tk):
         return slug or "funcionario"
 
     @staticmethod
-    def _url_site_consulta_para_arquivo(caminho_arquivo):
+    def _url_site_consulta_para_arquivo(caminho_arquivo, tipo_documento=""):
         pasta = str(os.environ.get("CADNR_QR_GITHUB_DIR", "") or "").strip().strip("/")
         pages_base = App._normalizar_pages_base(os.environ.get("CADNR_QR_GITHUB_PAGES_BASE", ""))
         if not pages_base:
@@ -3539,21 +3547,24 @@ class App(tk.Tk):
         try:
             caminho = Path(str(caminho_arquivo or "")).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             repo_path = App._montar_caminho_repo_qr_github(caminho, pasta)
             if not repo_path:
                 return ""
             funcionario = parse.quote(App._extrair_funcionario_slug_documento(repo_path, caminho), safe="")
-            documento = parse.quote(App._extrair_documento_slug_documento(repo_path, caminho), safe="")
+            documento = parse.quote(
+                App._extrair_documento_slug_documento(repo_path, caminho, tipo_documento),
+                safe="",
+            )
             data_ref = parse.quote(App._extrair_data_slug_documento(repo_path, caminho), safe="")
             return f"{pages_base}/{funcionario}/{documento}/{data_ref}"
         except Exception:
             return ""
 
     @staticmethod
-    def _assinatura_rota_documento(repo_path, caminho_arquivo):
+    def _assinatura_rota_documento(repo_path, caminho_arquivo, tipo_documento=""):
         funcionario = App._extrair_funcionario_slug_documento(repo_path, caminho_arquivo)
-        documento = App._extrair_documento_slug_documento(repo_path, caminho_arquivo)
+        documento = App._extrair_documento_slug_documento(repo_path, caminho_arquivo, tipo_documento)
         data_ref = App._extrair_data_slug_documento(repo_path, caminho_arquivo)
         return {
             "funcionario": str(funcionario or "").strip().lower(),
@@ -3561,22 +3572,22 @@ class App(tk.Tk):
             "data_ref": str(data_ref or "").strip().lower(),
         }
 
-    def _atualizar_indice_documento_site(self, caminho_pdf):
+    def _atualizar_indice_documento_site(self, caminho_pdf, tipo_documento=""):
         config = self._obter_config_qr_github()
         if not config:
             return False
         try:
             caminho = Path(str(caminho_pdf or "")).expanduser()
             if not caminho.is_absolute():
-                caminho = (Path(__file__).resolve().parent / caminho).resolve()
+                caminho = (_diretorio_base_app() / caminho).resolve()
             if caminho.suffix.lower() != ".pdf" or not caminho.exists() or not caminho.is_file():
                 return False
 
             repo_path = self._montar_caminho_repo_qr_github(caminho, config.get("pasta", ""))
             if not repo_path:
                 return False
-            assinatura = self._assinatura_rota_documento(repo_path, caminho)
-            consulta = self._url_site_consulta_para_arquivo(caminho)
+            assinatura = self._assinatura_rota_documento(repo_path, caminho, tipo_documento)
+            consulta = self._url_site_consulta_para_arquivo(caminho, tipo_documento)
 
             indice_rel = "_pdf_gerados/_indice_documentos.json"
             api_indice = (
@@ -3681,7 +3692,7 @@ class App(tk.Tk):
             self._qr_github_ultimo_erro = f"Indice PUT falhou: {exc}"
             return False
 
-    def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False):
+    def _publicar_arquivo_no_site(self, caminho_arquivo, permitir_inexistente=False, tipo_documento=""):
         config = self._obter_config_qr_github()
         if not config:
             repo_cfg = str(os.environ.get("CADNR_QR_GITHUB_REPO", "") or "").strip()
@@ -3710,7 +3721,7 @@ class App(tk.Tk):
 
         caminho = Path(str(caminho_arquivo or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         if (not permitir_inexistente) and (not caminho.exists() or not caminho.is_file()):
             return ""
         repo_path = self._montar_caminho_repo_qr_github(caminho, config.get("pasta", ""))
@@ -3777,7 +3788,7 @@ class App(tk.Tk):
                 dados = json.loads(resp.read().decode("utf-8"))
             content = dados.get("content", {}) if isinstance(dados, dict) else {}
             # Prioriza rota amigavel no site (documento/data) para abrir em nova guia.
-            url = self._url_site_consulta_para_arquivo(caminho)
+            url = self._url_site_consulta_para_arquivo(caminho, tipo_documento)
             if not url:
                 url = self._url_github_raw_para_arquivo(caminho)
             if not url:
@@ -3882,10 +3893,10 @@ class App(tk.Tk):
         try:
             origem = Path(str(caminho_arquivo or "")).expanduser()
             if not origem.is_absolute():
-                origem = (Path(__file__).resolve().parent / origem).resolve()
+                origem = (_diretorio_base_app() / origem).resolve()
             if not origem.exists() or not origem.is_file():
                 return ""
-            base = Path(__file__).resolve().parent.resolve()
+            base = _diretorio_base_app().resolve()
             repo_path = self._montar_caminho_repo_qr_github(origem, os.environ.get("CADNR_QR_GITHUB_DIR", ""))
             if not repo_path:
                 return ""
@@ -3899,7 +3910,7 @@ class App(tk.Tk):
     def _url_github_qr_para_arquivo(self, caminho_arquivo, permitir_inexistente=False):
         caminho = Path(str(caminho_arquivo or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         if caminho.suffix.lower() != ".pdf":
             return ""
         return self._publicar_arquivo_no_site(caminho, permitir_inexistente=permitir_inexistente)
@@ -4027,7 +4038,7 @@ class App(tk.Tk):
     def _assinar_pdf_digital(self, caminho_pdf):
         caminho = Path(str(caminho_pdf or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         if not caminho.exists() or not caminho.is_file() or caminho.suffix.lower() != ".pdf":
             return False, "arquivo PDF invalido para assinatura"
 
@@ -4046,10 +4057,10 @@ class App(tk.Tk):
     def _assinar_pdf_digital_com_cert(self, caminho_pdf, pfx_path, senha="", field_name="Signature1", reason=""):
         caminho = Path(str(caminho_pdf or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         pfx = Path(str(pfx_path or "")).expanduser()
         if not pfx.is_absolute():
-            pfx = (Path(__file__).resolve().parent / pfx).resolve()
+            pfx = (_diretorio_base_app() / pfx).resolve()
         try:
             from pyhanko.sign import signers
             from pyhanko.pdf_utils.incremental_writer import IncrementalPdfFileWriter
@@ -4672,7 +4683,7 @@ class App(tk.Tk):
                 caminho = (Path(__file__).resolve().parent / caminho).resolve()
             if caminho.suffix.lower() != ".pdf":
                 continue
-            url = self._url_site_consulta_para_arquivo(caminho)
+            url = self._url_site_consulta_para_arquivo(caminho, item.get("tipo_documento", ""))
             if not url:
                 url = self._url_github_pages_para_arquivo(caminho)
             if not url:
@@ -4808,7 +4819,7 @@ class App(tk.Tk):
         if ext not in extensoes_validas:
             raise OSError("Formato de imagem nao suportado para logo.")
 
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         pasta_logos = self._pasta_logos_empresas()
         pasta_logos.mkdir(parents=True, exist_ok=True)
 
@@ -4835,7 +4846,7 @@ class App(tk.Tk):
 
     @staticmethod
     def _pasta_fotos_funcionarios():
-        return Path(__file__).resolve().parent / "_fotos_funcionarios"
+        return _diretorio_base_app() / "_fotos_funcionarios"
 
     @staticmethod
     def _resolver_foto_funcionario(foto_ref):
@@ -4844,7 +4855,7 @@ class App(tk.Tk):
             return None
         caminho_foto = Path(foto_txt)
         if not caminho_foto.is_absolute():
-            caminho_foto = Path(__file__).resolve().parent / caminho_foto
+            caminho_foto = _diretorio_base_app() / caminho_foto
         return caminho_foto
 
     def _salvar_foto_funcionario(self, arquivo_origem, funcionario_id, nome_referencia=""):
@@ -4857,13 +4868,17 @@ class App(tk.Tk):
         if ext not in extensoes_validas:
             raise OSError("Formato de imagem nao suportado para foto.")
 
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         pasta_fotos = self._pasta_fotos_funcionarios()
         pasta_fotos.mkdir(parents=True, exist_ok=True)
 
         nome_seguro = self._obter_nome_arquivo_seguro(nome_referencia, "") or f"funcionario_{funcionario_id}"
         destino = pasta_fotos / f"{funcionario_id}_{nome_seguro}{ext}"
-        shutil.copy2(origem, destino)
+        try:
+            if origem.resolve() != destino.resolve():
+                shutil.copy2(origem, destino)
+        except OSError:
+            shutil.copy2(origem, destino)
         return str(destino.relative_to(base_dir)).replace("\\", "/")
 
     def _remover_foto_funcionario(self, foto_ref):
@@ -4893,7 +4908,7 @@ class App(tk.Tk):
         origem = Path(str(arquivo_origem or "")).expanduser()
         if not origem.exists() or not origem.is_file():
             raise OSError("Arquivo de documento invalido.")
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         nome_empresa = self._obter_nome_arquivo_seguro(empresa_nome, "") or "projetta"
         pasta_docs = base_dir / nome_empresa
         pasta_docs.mkdir(parents=True, exist_ok=True)
@@ -4972,7 +4987,7 @@ class App(tk.Tk):
             caminho_txt = f"projetta/{caminho_antigo.split('/', 1)[1]}"
         elif caminho_antigo.lower().startswith("outros/"):
             caminho_txt = f"projetta/{caminho_antigo.split('/', 1)[1]}"
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         p = Path(caminho_txt).expanduser()
         try:
             if p.is_absolute():
@@ -5610,15 +5625,15 @@ class App(tk.Tk):
                 resultado["erro"] = "Arquivo PDF nao encontrado para publicar no site."
                 return resultado
             # Publica o PDF no repositorio remoto do site via API.
-            url_publicada = self._publicar_arquivo_no_site(caminho)
+            url_publicada = self._publicar_arquivo_no_site(caminho, tipo_documento=tipo_documento)
             if url_publicada:
-                self._atualizar_indice_documento_site(caminho)
+                self._atualizar_indice_documento_site(caminho, tipo_documento=tipo_documento)
                 try:
                     repo_path = self._montar_caminho_repo_qr_github(
                         caminho,
                         os.environ.get("CADNR_QR_GITHUB_DIR", ""),
                     )
-                    assinatura = self._assinatura_rota_documento(repo_path, caminho)
+                    assinatura = self._assinatura_rota_documento(repo_path, caminho, tipo_documento)
                     route_data = str(assinatura.get("data_ref", "") or "").strip()
                 except Exception:
                     route_data = ""
@@ -5671,7 +5686,12 @@ class App(tk.Tk):
             return resultado
         return resultado
 
-    def _montar_payload_qrcode_documento(self, caminho_documento, permitir_arquivo_inexistente=False):
+    def _montar_payload_qrcode_documento(
+        self,
+        caminho_documento,
+        permitir_arquivo_inexistente=False,
+        tipo_documento="",
+    ):
         caminho_txt = str(caminho_documento or "").strip()
         if not caminho_txt:
             return ""
@@ -5680,7 +5700,7 @@ class App(tk.Tk):
             caminho = (_diretorio_base_app() / caminho).resolve()
         # Padrao oficial de destino do QR: rota amigavel no site
         # /nomedofuncionario/documento/data
-        url_consulta = self._url_site_consulta_para_arquivo(caminho)
+        url_consulta = self._url_site_consulta_para_arquivo(caminho, tipo_documento)
         url_github = self._url_github_qr_para_arquivo(
             caminho,
             permitir_inexistente=bool(permitir_arquivo_inexistente),
@@ -5737,8 +5757,8 @@ class App(tk.Tk):
             pasta_qr = caminho.parent / "_qrcodes"
             pasta_qr.mkdir(parents=True, exist_ok=True)
             destino_qr = pasta_qr / f"{caminho.stem}_qrcode.png"
-            payload = self._montar_payload_qrcode_documento(caminho)
             tipo_norm = str(tipo_documento or "").strip().casefold()
+            payload = self._montar_payload_qrcode_documento(caminho, tipo_documento=tipo_documento)
 
             import qrcode
 
@@ -6074,7 +6094,7 @@ class App(tk.Tk):
         label_widget.image = img
 
     def _origem_word_por_nr_selecionada(self, funcionario):
-        base_dir = Path(__file__).resolve().parent
+        base_dir = _diretorio_base_app()
         empresa = self._empresa_do_funcionario(funcionario) or {}
         empresa_id = empresa.get("id")
         pasta_empresa = None
@@ -7206,7 +7226,7 @@ class App(tk.Tk):
 
         caminho = Path(str(caminho_pdf or "")).expanduser()
         if not caminho.is_absolute():
-            caminho = (Path(__file__).resolve().parent / caminho).resolve()
+            caminho = (_diretorio_base_app() / caminho).resolve()
         if not caminho.exists() or not caminho.is_file():
             return False, "arquivo PDF nao encontrado"
 
@@ -7369,9 +7389,13 @@ class App(tk.Tk):
                 if not origem.exists() or not origem.is_file():
                     falhas.append(f"{tipo_doc}: arquivo nao encontrado")
                     continue
+                tipo_carteirinha = tipo_norm == "carteirinha"
+                nome_doc_base = str(origem.stem or tipo_doc or "").strip()
+                if tipo_carteirinha and "carteirinha" not in self._normalizar_texto_filtro(nome_doc_base):
+                    nome_doc_base = f"Carteirinha {nome_doc_base}".strip()
                 nome_base = self._obter_nome_arquivo_seguro(
-                    f"{origem.stem} {nome_func_arquivo}",
-                    origem.stem or tipo_doc,
+                    f"{nome_doc_base} {nome_func_arquivo}",
+                    nome_doc_base or origem.stem or tipo_doc,
                 )
                 destino_pdf = self._obter_arquivo_pdf_livre(
                     pasta_destino,
@@ -7379,7 +7403,6 @@ class App(tk.Tk):
                     reutilizar_existente=True,
                 )
                 ext = origem.suffix.lower()
-                tipo_carteirinha = tipo_norm == "carteirinha"
                 if ext == ".pdf":
                     try:
                         shutil.copy2(origem, destino_pdf)
@@ -8029,11 +8052,15 @@ class App(tk.Tk):
             if not caminho_qr_ref:
                 caminho_qr_ref = str(destino_docx.with_suffix(".pdf"))
             # Forca rota HTML amigavel para leitura do QR no site.
-            payload_qr = self._url_site_consulta_para_arquivo(caminho_qr_ref)
+            payload_qr = self._url_site_consulta_para_arquivo(
+                caminho_qr_ref,
+                tipo_documento=tipo_documento,
+            )
             if not payload_qr:
                 payload_qr = self._montar_payload_qrcode_documento(
                     caminho_qr_ref,
                     permitir_arquivo_inexistente=True,
+                    tipo_documento=tipo_documento,
                 )
             if payload_qr:
                 caminho_qr_temp = None
