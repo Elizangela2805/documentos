@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-03T13:08:46Z",
+  "updated_at": "2026-06-03T13:22:29.041Z",
   "total": 285,
   "items": [
     {
@@ -954,11 +954,7 @@
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 18 pta (08 Luiz Henrique da Silva.pdf",
       "nome": "NR 18 pta (08 Luiz Henrique da Silva.pdf",
       "funcionario": "Luiz Henrique da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr18pta/03062026",
-      "route_funcionario": "luizhenriquedasilva",
-      "route_documento": "nr18pta",
-      "route_data": "03062026",
-      "route": "luizhenriquedasilva/nr18pta/03062026"
+      "consulta": "https://elizangela2805.github.io/documentos/luizhenriquedasilva/nr18pta/03062026"
     },
     {
       "path": "_pdf_gerados/Luiz Henrique da Silva/NR 35 (08 Luiz Henrique da Silva.pdf",
