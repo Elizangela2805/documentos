@@ -1149,9 +1149,9 @@
       if (!nomeArquivo) return "";
       const aposParenteses = nomeArquivo.split(")").pop()?.trim() || "";
       const candidato1 = aposParenteses || nomeArquivo;
-      const m1 = candidato1.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
+      const m1 = candidato1.match(/([A-ZÃ€-Ã][A-Za-zÃ€-Ã¿]+(?:\s+[A-ZÃ€-Ã][A-Za-zÃ€-Ã¿]+)+)$/);
       if (m1 && m1[1]) return String(m1[1]).trim();
-      const m2 = nomeArquivo.match(/([A-ZÀ-Ý][A-Za-zÀ-ÿ]+(?:\s+[A-ZÀ-Ý][A-Za-zÀ-ÿ]+)+)$/);
+      const m2 = nomeArquivo.match(/([A-ZÃ€-Ã][A-Za-zÃ€-Ã¿]+(?:\s+[A-ZÃ€-Ã][A-Za-zÃ€-Ã¿]+)+)$/);
       if (m2 && m2[1]) return String(m2[1]).trim();
       return "";
     };
@@ -2064,6 +2064,23 @@
 
     const selecionarDocumentoPorRota = (rota, itens) => {
       const lista = Array.isArray(itens) ? itens : [];
+      const docCarteirinha = String(rota.documento || "").replace(/^nr(\d+)(.*)$/i, "carteirinha$1$2");
+      if (docCarteirinha && docCarteirinha !== rota.documento) {
+        const cartExata = lista.find((it) => {
+          const r = assinaturaRotaFromItem(it);
+          return r.funcionario === rota.funcionario
+            && r.documento === docCarteirinha
+            && r.dataRef === rota.dataRef;
+        });
+        if (cartExata) return cartExata;
+
+        const cartMesmoFuncionario = lista.find((it) => {
+          const r = assinaturaRotaFromItem(it);
+          return r.funcionario === rota.funcionario && r.documento === docCarteirinha;
+        });
+        if (cartMesmoFuncionario) return cartMesmoFuncionario;
+      }
+
       const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
       const exato = lista.find((it) => {
         const routeItem = String(it?.route || "").trim().toLowerCase();
