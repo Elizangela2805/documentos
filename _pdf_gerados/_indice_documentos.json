@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-05T12:09:55Z",
+  "updated_at": "2026-06-05T12:10:13.703Z",
   "total": 298,
   "items": [
     {
@@ -456,11 +456,7 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 1.5.7 Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 1.5.7 Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr1/05062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "nr1",
-      "route_data": "05062026",
-      "route": "franciscoizaildosilvadeabreu/nr1/05062026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr1/05062026"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 12 lix Francisco Izaildo Silva de Abreu.pdf",
@@ -472,11 +468,7 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18/05062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "nr18",
-      "route_data": "05062026",
-      "route": "franciscoizaildosilvadeabreu/nr18/05062026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18/05062026"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 Francisco Izaildo Silva de Abreu.pdf",
@@ -488,11 +480,7 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 pta Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 18 pta Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18pta/05062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "nr18pta",
-      "route_data": "05062026",
-      "route": "franciscoizaildosilvadeabreu/nr18pta/05062026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18pta/05062026"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 20 (08) Francisco Izaildo Silva de Abreu.pdf",
