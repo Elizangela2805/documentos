@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-05T13:04:07.590Z",
+  "updated_at": "2026-06-05T13:05:27Z",
   "total": 298,
   "items": [
     {
@@ -456,7 +456,11 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 1.5.7 Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 1.5.7 Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr1/05062026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr1/05062026",
+      "route_funcionario": "franciscoizaildosilvadeabreu",
+      "route_documento": "nr1",
+      "route_data": "05062026",
+      "route": "franciscoizaildosilvadeabreu/nr1/05062026"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 12 lix Francisco Izaildo Silva de Abreu.pdf",
