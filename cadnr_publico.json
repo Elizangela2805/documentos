@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T08:39:51",
+  "updated_at": "2026-06-05T09:25:02",
   "empresas": [
     {
       "id": 1,
@@ -293,7 +293,7 @@
     },
     {
       "id": 40,
-      "nome": "Rodolpho D’Lamare da Silva Santos",
+      "nome": "Rodolpho Dâ€™Lamare da Silva Santos",
       "nome_pasta": "RJM",
       "empresa_id": 2
     },
@@ -440,6 +440,18 @@
       "nome": "Thiago de Oliveira",
       "nome_pasta": "Thiago Mondini",
       "empresa_id": 9
+    },
+    {
+      "id": 67,
+      "nome": "Francisco Izaildo Silva de Abreu",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 68,
+      "nome": "Rondinei Soares dos Santos",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
     }
   ],
   "documentos": [
