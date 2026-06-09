@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T16:40:41Z",
+  "updated_at": "2026-06-09T16:41:45.929Z",
   "total": 316,
   "items": [
     {
@@ -1683,14 +1683,22 @@
       "consulta": "https://elizangela2805.github.io/documentos/romerodealmeidalinhares/nr35/09062026"
     },
     {
+      "path": "_pdf_gerados/Rondinei Soares dos Santos/carteirinha nr 18 (08-pta) (Uniferco) Rondinei Soares dos Santos.pdf",
+      "nome": "carteirinha nr 18 (08-pta) (Uniferco) Rondinei Soares dos Santos.pdf",
+      "funcionario": "Rondinei Soares dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/carteirinha18pta/09062026"
+    },
+    {
+      "path": "_pdf_gerados/Rondinei Soares dos Santos/carteirinha nr 18 (16-andaime) (Uniferco) Rondinei Soares dos Santos.pdf",
+      "nome": "carteirinha nr 18 (16-andaime) (Uniferco) Rondinei Soares dos Santos.pdf",
+      "funcionario": "Rondinei Soares dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/carteirinha18andaime/09062026"
+    },
+    {
       "path": "_pdf_gerados/Rondinei Soares dos Santos/fittest (Uniferco) Rondinei Soares dos Santos.pdf",
       "nome": "fittest (Uniferco) Rondinei Soares dos Santos.pdf",
       "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/fittestunifercorondineisoaresdossantos/09062026",
-      "route_funcionario": "rondineisoaresdossantos",
-      "route_documento": "fittestunifercorondineisoaresdossantos",
-      "route_data": "09062026",
-      "route": "rondineisoaresdossantos/fittestunifercorondineisoaresdossantos/09062026"
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/fittestunifercorondineisoaresdossantos/09062026"
     },
     {
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 1.5.7 Rondinei Soares dos Santos.pdf",
@@ -1708,21 +1716,13 @@
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 18 and Rondinei Soares dos Santos.pdf",
       "nome": "NR 18 and Rondinei Soares dos Santos.pdf",
       "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18/09062026",
-      "route_funcionario": "rondineisoaresdossantos",
-      "route_documento": "nr18",
-      "route_data": "09062026",
-      "route": "rondineisoaresdossantos/nr18/09062026"
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18/09062026"
     },
     {
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 18 pta Rondinei Soares dos Santos.pdf",
       "nome": "NR 18 pta Rondinei Soares dos Santos.pdf",
       "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18pta/09062026",
-      "route_funcionario": "rondineisoaresdossantos",
-      "route_documento": "nr18pta",
-      "route_data": "09062026",
-      "route": "rondineisoaresdossantos/nr18pta/09062026"
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18pta/09062026"
     },
     {
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 18 Rondinei Soares dos Santos.pdf",
@@ -1897,26 +1897,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Rondinei Soares dos Santos/carteirinha nr 18 (08-pta) (Uniferco) Rondinei Soares dos Santos.pdf",
-      "nome": "carteirinha nr 18 (08-pta) (Uniferco) Rondinei Soares dos Santos.pdf",
-      "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/carteirinha18pta/09062026",
-      "route_funcionario": "rondineisoaresdossantos",
-      "route_documento": "carteirinha18pta",
-      "route_data": "09062026",
-      "route": "rondineisoaresdossantos/carteirinha18pta/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Rondinei Soares dos Santos/carteirinha nr 18 (16-andaime) (Uniferco) Rondinei Soares dos Santos.pdf",
-      "nome": "carteirinha nr 18 (16-andaime) (Uniferco) Rondinei Soares dos Santos.pdf",
-      "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/carteirinha18andaime/09062026",
-      "route_funcionario": "rondineisoaresdossantos",
-      "route_documento": "carteirinha18andaime",
-      "route_data": "09062026",
-      "route": "rondineisoaresdossantos/carteirinha18andaime/09062026"
     }
   ]
 }
