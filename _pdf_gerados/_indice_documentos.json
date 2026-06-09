@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-09T16:18:20Z",
-  "total": 311,
+  "updated_at": "2026-06-09T16:18:35Z",
+  "total": 312,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1871,6 +1871,16 @@
       "route_documento": "nr35",
       "route_data": "09062026",
       "route": "joserobertorodriguesdossantos/nr35/09062026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Roberto Rodrigues dos Santos/anuencia (Uniferco) Jose Roberto Rodrigues dos Santos.pdf",
+      "nome": "anuencia (Uniferco) Jose Roberto Rodrigues dos Santos.pdf",
+      "funcionario": "Jose Roberto Rodrigues dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joserobertorodriguesdossantos/anuenciaunifercojoserobertorodriguesdossantos/09062026",
+      "route_funcionario": "joserobertorodriguesdossantos",
+      "route_documento": "anuenciaunifercojoserobertorodriguesdossantos",
+      "route_data": "09062026",
+      "route": "joserobertorodriguesdossantos/anuenciaunifercojoserobertorodriguesdossantos/09062026"
     }
   ]
 }
