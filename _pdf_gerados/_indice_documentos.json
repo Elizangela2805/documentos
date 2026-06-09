@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-09T16:18:05Z",
-  "total": 317,
+  "updated_at": "2026-06-09T16:18:13.289Z",
+  "total": 310,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -31,36 +31,6 @@
       "nome": "NR 6 (06 Adenilson Neves da Silva.pdf",
       "funcionario": "Adenilson Neves da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/adenilsonnevesdasilva/nr6/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/anuencia (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "nome": "anuencia (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/anuenciaunifercoadilsonaparecidodasnevesjunior/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/fittest (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "nome": "fittest (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/fittestunifercoadilsonaparecidodasnevesjunior/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/NR 1.5.7 Adilson Aparecido das Neves Junior.pdf",
-      "nome": "NR 1.5.7 Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/nr1/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/NR 35 Adilson Aparecido das Neves Junior.pdf",
-      "nome": "NR 35 Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/nr35/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/NR 6 Adilson Aparecido das Neves Junior.pdf",
-      "nome": "NR 6 Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/nr6/09062026"
     },
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -1891,26 +1861,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Jose Roberto Rodrigues dos Santos/NR 1.5.7 Jose Roberto Rodrigues dos Santos.pdf",
-      "nome": "NR 1.5.7 Jose Roberto Rodrigues dos Santos.pdf",
-      "funcionario": "Jose Roberto Rodrigues dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/joserobertorodriguesdossantos/nr1/09062026",
-      "route_funcionario": "joserobertorodriguesdossantos",
-      "route_documento": "nr1",
-      "route_data": "09062026",
-      "route": "joserobertorodriguesdossantos/nr1/09062026"
-    },
-    {
-      "path": "_pdf_gerados/Jose Roberto Rodrigues dos Santos/NR 6 Jose Roberto Rodrigues dos Santos.pdf",
-      "nome": "NR 6 Jose Roberto Rodrigues dos Santos.pdf",
-      "funcionario": "Jose Roberto Rodrigues dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/joserobertorodriguesdossantos/nr6/09062026",
-      "route_funcionario": "joserobertorodriguesdossantos",
-      "route_documento": "nr6",
-      "route_data": "09062026",
-      "route": "joserobertorodriguesdossantos/nr6/09062026"
     }
   ]
 }
