@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T16:39:33Z",
+  "updated_at": "2026-06-09T16:39:50Z",
   "total": 314,
   "items": [
     {
@@ -1714,7 +1714,11 @@
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 18 pta Rondinei Soares dos Santos.pdf",
       "nome": "NR 18 pta Rondinei Soares dos Santos.pdf",
       "funcionario": "Rondinei Soares dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18pta/09062026"
+      "consulta": "https://elizangela2805.github.io/documentos/rondineisoaresdossantos/nr18pta/09062026",
+      "route_funcionario": "rondineisoaresdossantos",
+      "route_documento": "nr18pta",
+      "route_data": "09062026",
+      "route": "rondineisoaresdossantos/nr18pta/09062026"
     },
     {
       "path": "_pdf_gerados/Rondinei Soares dos Santos/NR 18 Rondinei Soares dos Santos.pdf",
