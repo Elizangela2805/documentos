@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-09T16:14:34Z",
-  "total": 313,
+  "updated_at": "2026-06-09T16:14:51Z",
+  "total": 314,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1891,6 +1891,16 @@
       "route_documento": "nr35",
       "route_data": "09062026",
       "route": "adilsonaparecidodasnevesjunior/nr35/09062026"
+    },
+    {
+      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/anuencia (Uniferco) Adilson Aparecido das Neves Junior.pdf",
+      "nome": "anuencia (Uniferco) Adilson Aparecido das Neves Junior.pdf",
+      "funcionario": "Adilson Aparecido das Neves Junior",
+      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/anuenciaunifercoadilsonaparecidodasnevesjunior/09062026",
+      "route_funcionario": "adilsonaparecidodasnevesjunior",
+      "route_documento": "anuenciaunifercoadilsonaparecidodasnevesjunior",
+      "route_data": "09062026",
+      "route": "adilsonaparecidodasnevesjunior/anuenciaunifercoadilsonaparecidodasnevesjunior/09062026"
     }
   ]
 }
