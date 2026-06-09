@@ -5086,6 +5086,7 @@ class App(tk.Tk):
         mudou_empresas = any(
             i in {"cadnr_dados.json", "cadnr_publico.json"}
             or i.startswith("_logos_empresas/")
+            or i.startswith("_publico_empresas/")
             for i in itens
         )
         mudou_docs = any(
@@ -8197,7 +8198,7 @@ class App(tk.Tk):
 
     def _caminhos_publicacao_empresas(self):
         # Nao inclui cadnr_dados.json no git auto: arquivo local/privado (gitignored).
-        caminhos = [self.dados_publico_path]
+        caminhos = [self.dados_publico_path, *self._caminhos_publico_empresas()]
         for empresa in self.empresas:
             if not isinstance(empresa, dict):
                 continue
@@ -10427,6 +10428,78 @@ class App(tk.Tk):
             "documentos": documentos_publicos,
         }
 
+    @staticmethod
+    def _slug_publico_empresa(nome):
+        texto = App._corrigir_texto_mojibake(nome)
+        texto = unicodedata.normalize("NFD", str(texto or ""))
+        texto = "".join(ch for ch in texto if unicodedata.category(ch) != "Mn")
+        texto = re.sub(r"[^a-z0-9]+", "-", texto.lower()).strip("-")
+        return texto or "empresa"
+
+    def _pasta_publico_empresas(self):
+        return _diretorio_base_app() / "_publico_empresas"
+
+    def _caminhos_publico_empresas(self):
+        pasta = self._pasta_publico_empresas()
+        caminhos = [pasta / "index.json"]
+        for emp in self.empresas:
+            if not isinstance(emp, dict):
+                continue
+            emp_id = emp.get("id")
+            if not isinstance(emp_id, int):
+                continue
+            nome_ref = str(emp.get("nome_pasta", "") or emp.get("nome", "") or "").strip()
+            slug = self._slug_publico_empresa(nome_ref)
+            caminhos.append(pasta / f"{emp_id}_{slug}.json")
+        return caminhos
+
+    def _gerar_arquivos_publicos_por_empresa(self, dados_publicos):
+        if not isinstance(dados_publicos, dict):
+            return
+        pasta = self._pasta_publico_empresas()
+        pasta.mkdir(parents=True, exist_ok=True)
+
+        updated_at = str(dados_publicos.get("updated_at", "") or self._iso_datetime_now())
+        empresas = [e for e in dados_publicos.get("empresas", []) if isinstance(e, dict)]
+        funcionarios = [f for f in dados_publicos.get("funcionarios", []) if isinstance(f, dict)]
+        documentos = [d for d in dados_publicos.get("documentos", []) if isinstance(d, dict)]
+        indice = []
+
+        for emp in empresas:
+            emp_id = emp.get("id")
+            if not isinstance(emp_id, int):
+                continue
+            nome_ref = str(emp.get("nome_pasta", "") or emp.get("nome", "") or "").strip()
+            slug = self._slug_publico_empresa(nome_ref)
+            arquivo_rel = f"_publico_empresas/{emp_id}_{slug}.json"
+            funcionarios_emp = [f for f in funcionarios if f.get("empresa_id") == emp_id]
+            documentos_emp = [d for d in documentos if d.get("empresa_id") == emp_id]
+            payload = {
+                "updated_at": updated_at,
+                "empresa": emp,
+                "funcionarios": funcionarios_emp,
+                "documentos": documentos_emp,
+            }
+            (pasta / f"{emp_id}_{slug}.json").write_text(
+                json.dumps(payload, ensure_ascii=False, indent=2),
+                encoding="utf-8",
+            )
+            indice.append(
+                {
+                    "empresa_id": emp_id,
+                    "empresa_nome": str(emp.get("nome", "") or "").strip(),
+                    "empresa_slug": slug,
+                    "arquivo": arquivo_rel,
+                    "total_funcionarios": len(funcionarios_emp),
+                    "total_documentos": len(documentos_emp),
+                }
+            )
+
+        (pasta / "index.json").write_text(
+            json.dumps({"updated_at": updated_at, "empresas": indice}, ensure_ascii=False, indent=2),
+            encoding="utf-8",
+        )
+
     def _salvar_dados(self):
         self._sincronizar_vinculo_funcionarios_empresas()
         self._garantir_pastas_empresas()
@@ -10528,10 +10601,12 @@ class App(tk.Tk):
                 json.dumps(dados, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
+            dados_publicos = self._gerar_dados_publicos_site()
             self.dados_publico_path.write_text(
-                json.dumps(self._gerar_dados_publicos_site(), ensure_ascii=False, indent=2),
+                json.dumps(dados_publicos, ensure_ascii=False, indent=2),
                 encoding="utf-8",
             )
+            self._gerar_arquivos_publicos_por_empresa(dados_publicos)
             assinatura_empresas_atual = self._assinatura_publicacao_empresas()
             self._empresas_publicacao_assinatura = assinatura_empresas_atual
             # Usa o mesmo comportamento dos documentos: sempre enfileira publicacao
