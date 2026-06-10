@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-10T16:00:57.290Z",
-  "total": 320,
+  "updated_at": "2026-06-10T16:01:18Z",
+  "total": 321,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1921,6 +1921,16 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/10062026"
+    },
+    {
+      "path": "_pdf_gerados/Idaconan Castro Silva/NR 34 (08) (VCMS) Idaconan Castro Silva.pdf",
+      "nome": "NR 34 (08) (VCMS) Idaconan Castro Silva.pdf",
+      "funcionario": "Idaconan Castro Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/idaconancastrosilva/nr34/10062026",
+      "route_funcionario": "idaconancastrosilva",
+      "route_documento": "nr34",
+      "route_data": "10062026",
+      "route": "idaconancastrosilva/nr34/10062026"
     }
   ]
 }
