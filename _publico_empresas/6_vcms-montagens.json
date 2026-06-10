@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-01T08:39:52",
+  "updated_at": "2026-06-10T13:04:11",
   "empresa": {
     "id": 6,
     "nome": "VCMS Montagens Industriais LTDA",
@@ -34,6 +34,24 @@
     {
       "id": 53,
       "nome": "Francineudo Alves de Sousa",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 70,
+      "nome": "Elias Mendes da Costa",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 71,
+      "nome": "Idaconan Castro Silva",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 72,
+      "nome": "Erivan Santos Pereira Neto",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     }

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T13:18:54",
+  "updated_at": "2026-06-10T13:04:11",
   "empresas": [
     {
       "empresa_id": 1,
@@ -46,7 +46,7 @@
       "empresa_nome": "VCMS Montagens Industriais LTDA",
       "empresa_slug": "vcms-montagens",
       "arquivo": "_publico_empresas/6_vcms-montagens.json",
-      "total_funcionarios": 5,
+      "total_funcionarios": 8,
       "total_documentos": 1
     },
     {
