@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-10T15:58:56.902Z",
-  "total": 317,
+  "updated_at": "2026-06-10T16:00:57.290Z",
+  "total": 320,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -235,6 +235,24 @@
       "nome": "NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
       "funcionario": "Douglas Aparecido Benjamin",
       "consulta": "https://elizangela2805.github.io/documentos/douglasaparecidobenjamin/nr10/10062026"
+    },
+    {
+      "path": "_pdf_gerados/Elias Mendes da Costa/NR 18 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "nome": "NR 18 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "funcionario": "Elias Mendes da Costa",
+      "consulta": "https://elizangela2805.github.io/documentos/eliasmendesdacosta/nr18/10062026"
+    },
+    {
+      "path": "_pdf_gerados/Elias Mendes da Costa/NR 34 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "nome": "NR 34 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "funcionario": "Elias Mendes da Costa",
+      "consulta": "https://elizangela2805.github.io/documentos/eliasmendesdacosta/nr34/10062026"
+    },
+    {
+      "path": "_pdf_gerados/Elias Mendes da Costa/NR 35 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "nome": "NR 35 (08) (VCMS) Elias Mendes da Costa.pdf",
+      "funcionario": "Elias Mendes da Costa",
+      "consulta": "https://elizangela2805.github.io/documentos/eliasmendesdacosta/nr35/10062026"
     },
     {
       "path": "_pdf_gerados/Elias Mendes da Costa/NR 6 (08) (VCMS) Elias Mendes da Costa.pdf",
