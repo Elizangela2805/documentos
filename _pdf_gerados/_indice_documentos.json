@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T10:55:47Z",
+  "updated_at": "2026-06-18T10:56:04Z",
   "total": 334,
   "items": [
     {
@@ -84,7 +84,11 @@
       "path": "_pdf_gerados/Anderson Vicentin/carteirinha nr 11 (16-emp) (Uniferco) Anderson Vicentin.pdf",
       "nome": "carteirinha nr 11 (16-emp) (Uniferco) Anderson Vicentin.pdf",
       "funcionario": "Anderson Vicentin",
-      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/carteirinha11emp/18062026"
+      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/carteirinha11emp/18062026",
+      "route_funcionario": "andersonvicentin",
+      "route_documento": "carteirinha11emp",
+      "route_data": "18062026",
+      "route": "andersonvicentin/carteirinha11emp/18062026"
     },
     {
       "path": "_pdf_gerados/Anderson Vicentin/fittest (Uniferco) Anderson Vicentin.pdf",
