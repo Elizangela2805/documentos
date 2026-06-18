@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T12:47:45Z",
+  "updated_at": "2026-06-18T12:49:20.365Z",
   "total": 349,
   "items": [
     {
@@ -955,6 +955,12 @@
       "nome": "carteirinha nr 11 (16-garra) (Uniferco) Jose Roberio Araujo Martins.pdf",
       "funcionario": "Jose Roberio Araujo Martins",
       "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/carteirinha11garra/18062026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Roberio Araujo Martins/fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
+      "nome": "fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
+      "funcionario": "Jose Roberio Araujo Martins",
+      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/fittestunifercojoseroberioaraujomartins/18062026"
     },
     {
       "path": "_pdf_gerados/Jose Roberio Araujo Martins/NR 11 garra (16) Jose Roberio Araujo Martins.pdf",
@@ -2090,16 +2096,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/18062026"
-    },
-    {
-      "path": "_pdf_gerados/Jose Roberio Araujo Martins/fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
-      "nome": "fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
-      "funcionario": "Jose Roberio Araujo Martins",
-      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/fittestunifercojoseroberioaraujomartins/18062026",
-      "route_funcionario": "joseroberioaraujomartins",
-      "route_documento": "fittestunifercojoseroberioaraujomartins",
-      "route_data": "18062026",
-      "route": "joseroberioaraujomartins/fittestunifercojoseroberioaraujomartins/18062026"
     }
   ]
 }
