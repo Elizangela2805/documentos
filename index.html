@@ -2086,6 +2086,15 @@
 
     const selecionarDocumentoPorRota = (rota, itens) => {
       const lista = Array.isArray(itens) ? itens : [];
+      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
+      const exato = lista.find((it) => {
+        const routeItem = String(it?.route || "").trim().toLowerCase();
+        if (routeItem) return routeItem === rotaKey;
+        const r = assinaturaRotaFromItem(it);
+        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
+      });
+      if (exato) return exato;
+
       const docCarteirinha = String(rota.documento || "").replace(/^nr(\d+)(.*)$/i, "carteirinha$1$2");
       if (docCarteirinha && docCarteirinha !== rota.documento) {
         const cartExata = lista.find((it) => {
@@ -2103,14 +2112,6 @@
         if (cartMesmoFuncionario) return cartMesmoFuncionario;
       }
 
-      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
-      const exato = lista.find((it) => {
-        const routeItem = String(it?.route || "").trim().toLowerCase();
-        if (routeItem) return routeItem === rotaKey;
-        const r = assinaturaRotaFromItem(it);
-        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
-      });
-      if (exato) return exato;
 
       let melhor = null;
       let melhorScore = -1;

@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T18:47:29.918Z",
+  "updated_at": "2026-06-18T18:50:23.581579Z",
   "total": 362,
   "items": [
     {
@@ -1111,14 +1111,24 @@
       "nome": "NR 11 escav (16) (TMondini) Lucas de Oliveira.pdf",
       "funcionario": "Lucas de Oliveira",
       "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr11/18062026",
-      "empresa": "Thiago Mondini"
+      "empresa": "Thiago Mondini",
+      "tipo_documento": "NR",
+      "route": "lucasdeoliveira/nr11/18062026",
+      "route_funcionario": "lucasdeoliveira",
+      "route_documento": "nr11",
+      "route_data": "18062026"
     },
     {
       "path": "_pdf_gerados/Lucas de Oliveira/NR 11 munck (16) (TMondini) Lucas de Oliveira.pdf",
       "nome": "NR 11 munck (16) (TMondini) Lucas de Oliveira.pdf",
       "funcionario": "Lucas de Oliveira",
-      "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr11/18062026",
-      "empresa": "Thiago Mondini"
+      "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr11munck/18062026",
+      "empresa": "Thiago Mondini",
+      "tipo_documento": "NR",
+      "route": "lucasdeoliveira/nr11munck/18062026",
+      "route_funcionario": "lucasdeoliveira",
+      "route_documento": "nr11munck",
+      "route_data": "18062026"
     },
     {
       "path": "_pdf_gerados/Lucas de Oliveira/NR 12 guin (08) (TMondini) Lucas de Oliveira.pdf",
@@ -1131,14 +1141,24 @@
       "nome": "NR 18 guin (120) (TMondini) Lucas de Oliveira.pdf",
       "funcionario": "Lucas de Oliveira",
       "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr18/18062026",
-      "empresa": "Thiago Mondini"
+      "empresa": "Thiago Mondini",
+      "tipo_documento": "NR",
+      "route": "lucasdeoliveira/nr18/18062026",
+      "route_funcionario": "lucasdeoliveira",
+      "route_documento": "nr18",
+      "route_data": "18062026"
     },
     {
       "path": "_pdf_gerados/Lucas de Oliveira/NR 18 pta (08) (TMondini) Lucas de Oliveira.pdf",
       "nome": "NR 18 pta (08) (TMondini) Lucas de Oliveira.pdf",
       "funcionario": "Lucas de Oliveira",
       "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr18pta/18062026",
-      "empresa": "Thiago Mondini"
+      "empresa": "Thiago Mondini",
+      "tipo_documento": "NR",
+      "route": "lucasdeoliveira/nr18pta/18062026",
+      "route_funcionario": "lucasdeoliveira",
+      "route_documento": "nr18pta",
+      "route_data": "18062026"
     },
     {
       "path": "_pdf_gerados/Lucas de Oliveira/NR 33 (16) (TMondini) Lucas de Oliveira.pdf",
