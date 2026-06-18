@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T08:25:34",
+  "updated_at": "2026-06-18T14:20:39",
   "empresas": [
     {
       "empresa_id": 1,
@@ -70,7 +70,7 @@
       "empresa_nome": "Thiago Mondini Montagem e Desmontagem Industrial LTDA",
       "empresa_slug": "thiago-mondini",
       "arquivo": "_publico_empresas/9_thiago-mondini.json",
-      "total_funcionarios": 1,
+      "total_funcionarios": 2,
       "total_documentos": 1
     }
   ]

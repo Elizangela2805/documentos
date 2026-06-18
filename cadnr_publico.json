@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T08:25:34",
+  "updated_at": "2026-06-18T14:20:39",
   "empresas": [
     {
       "id": 1,
@@ -506,6 +506,12 @@
       "nome": "Francisco de Souza Santos",
       "nome_pasta": "Uniferco",
       "empresa_id": 4
+    },
+    {
+      "id": 78,
+      "nome": "Lucas de Oliveira",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
     }
   ],
   "documentos": [
