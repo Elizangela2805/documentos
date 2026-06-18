@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T11:05:13Z",
-  "total": 335,
+  "updated_at": "2026-06-18T11:05:26Z",
+  "total": 336,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2015,6 +2015,16 @@
       "route_documento": "nr11",
       "route_data": "18062026",
       "route": "joseroberioaraujomartins/nr11/18062026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Roberio Araujo Martins/NR 12 garra Jose Roberio Araujo Martins.pdf",
+      "nome": "NR 12 garra Jose Roberio Araujo Martins.pdf",
+      "funcionario": "Jose Roberio Araujo Martins",
+      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/nr12/18062026",
+      "route_funcionario": "joseroberioaraujomartins",
+      "route_documento": "nr12",
+      "route_data": "18062026",
+      "route": "joseroberioaraujomartins/nr12/18062026"
     }
   ]
 }
