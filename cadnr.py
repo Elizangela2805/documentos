@@ -3631,6 +3631,39 @@ class App(tk.Tk):
             nome_arquivo = str(Path(repo_path_norm).name or "").strip()
             funcionario_exib = str(Path(repo_path_norm).parent.name or "").strip() or assinatura["funcionario"]
             rota = f"{assinatura['funcionario']}/{assinatura['documento']}/{assinatura['data_ref']}"
+            empresa_exib = ""
+            for doc_salvo in self.documentos_salvos:
+                if not isinstance(doc_salvo, dict):
+                    continue
+                caminho_doc = self._normalizar_caminho_documento_db(doc_salvo.get("caminho", ""))
+                if not caminho_doc:
+                    continue
+                try:
+                    caminho_doc_path = Path(caminho_doc).expanduser()
+                    if not caminho_doc_path.is_absolute():
+                        caminho_doc_path = (_diretorio_base_app() / caminho_doc_path).resolve()
+                    mesmo_caminho = caminho_doc_path.resolve() == caminho.resolve()
+                except Exception:
+                    mesmo_caminho = False
+                if not mesmo_caminho:
+                    try:
+                        rel_doc = Path(caminho_doc).as_posix().strip("/")
+                    except Exception:
+                        rel_doc = str(caminho_doc or "").replace("\\", "/").strip("/")
+                    mesmo_caminho = rel_doc == repo_path_norm
+                if not mesmo_caminho:
+                    continue
+                empresa_id_doc = doc_salvo.get("empresa_id")
+                empresa_doc = next(
+                    (
+                        emp for emp in self.empresas
+                        if isinstance(emp, dict) and emp.get("id") == empresa_id_doc
+                    ),
+                    None,
+                )
+                if empresa_doc:
+                    empresa_exib = self._empresa_label(empresa_doc)
+                break
 
             novo_item = {
                 "path": repo_path_norm,
@@ -3642,6 +3675,8 @@ class App(tk.Tk):
                 "route_data": assinatura["data_ref"],
                 "route": rota,
             }
+            if empresa_exib:
+                novo_item["empresa"] = empresa_exib
 
             atualizou = False
             for idx, item in enumerate(itens):

@@ -925,16 +925,34 @@
       const token = el.token.value.trim();
       if (!owner || !repo || !token) return;
       const now = new Date().toISOString();
+      let empresasPorPath = new Map();
+      try {
+        const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
+        const itensAtuais = Array.isArray(atual?.data?.items) ? atual.data.items : [];
+        empresasPorPath = new Map(
+          itensAtuais
+            .map((it) => [normFolder(String(it?.path || "")), String(it?.empresa || "").trim()])
+            .filter(([path, empresa]) => path && empresa)
+        );
+      } catch {
+        empresasPorPath = new Map();
+      }
       const payload = {
         updated_at: now,
         total: 0,
         items: items
-          .map((it) => ({
-            path: it.path,
-            nome: (it.path || "").split("/").pop(),
-            funcionario: extrairFuncionarioDoPath(it.path, it),
-            consulta: consultaUrl(it.path),
-          }))
+          .map((it) => {
+            const path = normFolder(it.path);
+            const empresa = String(it?.empresa || empresasPorPath.get(path) || "").trim();
+            const item = {
+              path,
+              nome: (path || "").split("/").pop(),
+              funcionario: extrairFuncionarioDoPath(path, it),
+              consulta: consultaUrl(path),
+            };
+            if (empresa) item.empresa = empresa;
+            return item;
+          })
           .filter((it) => !isGrupoFuncionarioInvalido(it.funcionario)),
       };
       payload.total = payload.items.length;
