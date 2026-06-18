@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T12:47:34.168Z",
-  "total": 348,
+  "updated_at": "2026-06-18T12:47:45Z",
+  "total": 349,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2090,6 +2090,16 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/18062026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Roberio Araujo Martins/fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
+      "nome": "fittest (Uniferco) Jose Roberio Araujo Martins.pdf",
+      "funcionario": "Jose Roberio Araujo Martins",
+      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/fittestunifercojoseroberioaraujomartins/18062026",
+      "route_funcionario": "joseroberioaraujomartins",
+      "route_documento": "fittestunifercojoseroberioaraujomartins",
+      "route_data": "18062026",
+      "route": "joseroberioaraujomartins/fittestunifercojoseroberioaraujomartins/18062026"
     }
   ]
 }
