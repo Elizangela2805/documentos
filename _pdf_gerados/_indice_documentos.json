@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T10:56:20Z",
-  "total": 334,
+  "updated_at": "2026-06-18T10:56:45.905Z",
+  "total": 331,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -31,24 +31,6 @@
       "nome": "NR 6 (06 Adenilson Neves da Silva.pdf",
       "funcionario": "Adenilson Neves da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/adenilsonnevesdasilva/nr6/18062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/carteirinha nr 11 (16-emp) (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "nome": "carteirinha nr 11 (16-emp) (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/carteirinha11emp/18062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/fittest (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "nome": "fittest (Uniferco) Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/fittestunifercoadilsonaparecidodasnevesjunior/18062026"
-    },
-    {
-      "path": "_pdf_gerados/Adilson Aparecido das Neves Junior/NR 11 emp (16) Adilson Aparecido das Neves Junior.pdf",
-      "nome": "NR 11 emp (16) Adilson Aparecido das Neves Junior.pdf",
-      "funcionario": "Adilson Aparecido das Neves Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/adilsonaparecidodasnevesjunior/nr11/18062026"
     },
     {
       "path": "_pdf_gerados/Anderson de Jesus Souza/NR 18 (08 Anderson de Jesus Souza.pdf",
@@ -84,31 +66,19 @@
       "path": "_pdf_gerados/Anderson Vicentin/carteirinha nr 11 (16-emp) (Uniferco) Anderson Vicentin.pdf",
       "nome": "carteirinha nr 11 (16-emp) (Uniferco) Anderson Vicentin.pdf",
       "funcionario": "Anderson Vicentin",
-      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/carteirinha11emp/18062026",
-      "route_funcionario": "andersonvicentin",
-      "route_documento": "carteirinha11emp",
-      "route_data": "18062026",
-      "route": "andersonvicentin/carteirinha11emp/18062026"
+      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/carteirinha11emp/18062026"
     },
     {
       "path": "_pdf_gerados/Anderson Vicentin/fittest (Uniferco) Anderson Vicentin.pdf",
       "nome": "fittest (Uniferco) Anderson Vicentin.pdf",
       "funcionario": "Anderson Vicentin",
-      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/fittestunifercoandersonvicentin/18062026",
-      "route_funcionario": "andersonvicentin",
-      "route_documento": "fittestunifercoandersonvicentin",
-      "route_data": "18062026",
-      "route": "andersonvicentin/fittestunifercoandersonvicentin/18062026"
+      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/fittestunifercoandersonvicentin/18062026"
     },
     {
       "path": "_pdf_gerados/Anderson Vicentin/NR 11 emp (16) Anderson Vicentin.pdf",
       "nome": "NR 11 emp (16) Anderson Vicentin.pdf",
       "funcionario": "Anderson Vicentin",
-      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/nr11/18062026",
-      "route_funcionario": "andersonvicentin",
-      "route_documento": "nr11",
-      "route_data": "18062026",
-      "route": "andersonvicentin/nr11/18062026"
+      "consulta": "https://elizangela2805.github.io/documentos/andersonvicentin/nr11/18062026"
     },
     {
       "path": "_pdf_gerados/Antônio Luís do Nascimento/NR 18 (08 Antônio Luís do Nascimento.pdf",
