@@ -1640,49 +1640,32 @@
         const pathKey = normFolder(it?.path || "").toLowerCase();
         const chaveFunc = slugUrl(funcionario);
         let empSlug = "";
-        let empOrigem = "";
         const empresaItem = normalizarNomeEmpresa(it?.empresa || "");
         if (empresaItem) {
           empSlug = slugEmpresa(empresaItem);
-          empOrigem = "item";
+        }
+        // Regra principal: respeitar o cadastro do projeto (funcionario -> empresa).
+        if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
+          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
         }
         // Fallback: usar vinculo por caminho do documento quando nao houver cadastro.
         if (!empSlug && pathKey && empresaPorCaminho instanceof Map) {
           empSlug = String(empresaPorCaminho.get(pathKey) || "").trim();
-          if (empSlug) empOrigem = "caminho";
         }
         if (!empSlug) {
           const empresa = extrairEmpresaDoItem(it);
           empSlug = slugEmpresa(empresa);
-          if (empSlug) empOrigem = "arquivo";
         }
-        // Quando nao ha empresa explicita no item/caminho/nome, usa o cadastro.
-        if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
-          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
-          if (empSlug) empOrigem = "cadastro";
+        if (!EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
+        if (!empSlug) continue;
+        if (!catalogo.has(empSlug)) {
+          const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
+          const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
+          catalogo.set(empSlug, { nome: nomeEmp || empSlug, funcionarios: new Map() });
         }
-        const empSlugs = new Set();
-        if (empSlug) empSlugs.add(empSlug);
-        if (empOrigem === "cadastro" && funcionariosCadastro instanceof Map) {
-          for (const [empSlugCadastro, nomesSet] of funcionariosCadastro.entries()) {
-            if (!empSlugCadastro) continue;
-            const nomes = nomesSet instanceof Set ? [...nomesSet] : Array.isArray(nomesSet) ? nomesSet : [];
-            if (nomes.some((nomeFunc) => slugUrl(nomeFunc) === chaveFunc)) {
-              empSlugs.add(empSlugCadastro);
-            }
-          }
-        }
-        for (const empSlugItem of empSlugs) {
-          if (!empSlugItem || !EMPRESAS_PERMITIDAS_SLUG.has(empSlugItem)) continue;
-          if (!catalogo.has(empSlugItem)) {
-            const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlugItem) : "") || "").trim();
-            const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlugItem);
-            catalogo.set(empSlugItem, { nome: nomeEmp || empSlugItem, funcionarios: new Map() });
-          }
-          const grupoEmp = catalogo.get(empSlugItem);
-          if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
-          grupoEmp.funcionarios.get(funcionario).push(it);
-        }
+        const grupoEmp = catalogo.get(empSlug);
+        if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
+        grupoEmp.funcionarios.get(funcionario).push(it);
       }
       if (funcionariosCadastro instanceof Map) {
         for (const [empSlug, nomesSet] of funcionariosCadastro.entries()) {
