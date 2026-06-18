@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T19:04:23.758Z",
-  "total": 358,
+  "updated_at": "2026-06-18T19:06:20Z",
+  "total": 359,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2151,6 +2151,17 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/18062026"
+    },
+    {
+      "path": "_pdf_gerados/Lucas de Oliveira/NR 18 guin (120) (TMondini) Lucas de Oliveira.pdf",
+      "nome": "NR 18 guin (120) (TMondini) Lucas de Oliveira.pdf",
+      "funcionario": "Lucas de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/lucasdeoliveira/nr18guin/18062026",
+      "route_funcionario": "lucasdeoliveira",
+      "route_documento": "nr18guin",
+      "route_data": "18062026",
+      "route": "lucasdeoliveira/nr18guin/18062026",
+      "empresa": "Thiago Mondini"
     }
   ]
 }
