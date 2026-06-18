@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T12:47:11Z",
+  "updated_at": "2026-06-18T12:47:27Z",
   "total": 347,
   "items": [
     {
@@ -954,7 +954,11 @@
       "path": "_pdf_gerados/Jose Roberio Araujo Martins/carteirinha nr 11 (16-garra) (Uniferco) Jose Roberio Araujo Martins.pdf",
       "nome": "carteirinha nr 11 (16-garra) (Uniferco) Jose Roberio Araujo Martins.pdf",
       "funcionario": "Jose Roberio Araujo Martins",
-      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/carteirinha11garra/18062026"
+      "consulta": "https://elizangela2805.github.io/documentos/joseroberioaraujomartins/carteirinha11garra/18062026",
+      "route_funcionario": "joseroberioaraujomartins",
+      "route_documento": "carteirinha11garra",
+      "route_data": "18062026",
+      "route": "joseroberioaraujomartins/carteirinha11garra/18062026"
     },
     {
       "path": "_pdf_gerados/Jose Roberio Araujo Martins/NR 11 garra (16) Jose Roberio Araujo Martins.pdf",
