@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-10T13:04:11",
+  "updated_at": "2026-06-18T08:25:34",
   "empresas": [
     {
       "empresa_id": 1,
@@ -30,7 +30,7 @@
       "empresa_nome": "UNF Comércio de Ferro e Aço LTDA",
       "empresa_slug": "uniferco",
       "arquivo": "_publico_empresas/4_uniferco.json",
-      "total_funcionarios": 8,
+      "total_funcionarios": 13,
       "total_documentos": 1
     },
     {

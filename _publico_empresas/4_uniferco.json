@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-09T13:18:54",
+  "updated_at": "2026-06-18T08:25:34",
   "empresa": {
     "id": 4,
     "nome": "UNF Comércio de Ferro e Aço LTDA",
@@ -52,6 +52,36 @@
     {
       "id": 69,
       "nome": "Jose Roberto Rodrigues dos Santos",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 73,
+      "nome": "Anderson Vicentin",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 74,
+      "nome": "Gesse Cedraz de Miranda",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 75,
+      "nome": "Jose Roberio Araujo Martins",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 76,
+      "nome": "Edilson Joaquim Pereira",
+      "nome_pasta": "Uniferco",
+      "empresa_id": 4
+    },
+    {
+      "id": 77,
+      "nome": "Francisco de Souza Santos",
       "nome_pasta": "Uniferco",
       "empresa_id": 4
     }
