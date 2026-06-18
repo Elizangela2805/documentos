@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-18T10:59:20Z",
-  "total": 332,
+  "updated_at": "2026-06-18T10:59:35Z",
+  "total": 333,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1997,6 +1997,16 @@
       "route_documento": "nr11",
       "route_data": "18062026",
       "route": "gessecedrazdemiranda/nr11/18062026"
+    },
+    {
+      "path": "_pdf_gerados/Gesse Cedraz de Miranda/carteirinha nr 11 (16-emp) (Uniferco) Gesse Cedraz de Miranda.pdf",
+      "nome": "carteirinha nr 11 (16-emp) (Uniferco) Gesse Cedraz de Miranda.pdf",
+      "funcionario": "Gesse Cedraz de Miranda",
+      "consulta": "https://elizangela2805.github.io/documentos/gessecedrazdemiranda/carteirinha11emp/18062026",
+      "route_funcionario": "gessecedrazdemiranda",
+      "route_documento": "carteirinha11emp",
+      "route_data": "18062026",
+      "route": "gessecedrazdemiranda/carteirinha11emp/18062026"
     }
   ]
 }
