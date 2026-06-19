@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T14:07:38Z",
-  "total": 384,
+  "updated_at": "2026-06-19T14:07:51Z",
+  "total": 385,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2493,6 +2493,16 @@
       "route_documento": "fittestunifercofredsondasilvamoraesjunior",
       "route_data": "19062026",
       "route": "fredsondasilvamoraesjunior/fittestunifercofredsondasilvamoraesjunior/19062026"
+    },
+    {
+      "path": "_pdf_gerados/FREDSON DA SILVA MORAES JÚNIOR/carteirinha 11 pr (16) (Uniferco) FREDSON DA SILVA MORAES JÚNIOR.pdf",
+      "nome": "carteirinha 11 pr (16) (Uniferco) FREDSON DA SILVA MORAES JÚNIOR.pdf",
+      "funcionario": "FREDSON DA SILVA MORAES JÚNIOR",
+      "consulta": "https://elizangela2805.github.io/documentos/fredsondasilvamoraesjunior/carteirinha/19062026",
+      "route_funcionario": "fredsondasilvamoraesjunior",
+      "route_documento": "carteirinha",
+      "route_data": "19062026",
+      "route": "fredsondasilvamoraesjunior/carteirinha/19062026"
     }
   ]
 }
