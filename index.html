@@ -665,12 +665,16 @@
       if (mNr) {
         const num = String(mNr[1] || "");
         let suf = String(mNr[2] || "");
-        if (suf !== "pta") suf = "";
+        if (suf === "guindaste") suf = "guin";
+        if (suf === "and") suf = "andaime";
+        if (!["pta", "pemt", "guin", "andaime"].includes(suf)) suf = "";
         if (!suf) {
-          // Diferencia variacoes de NR como "(16-emp)" e "(16-pr)".
-          const mVar = stemNorm.match(/\(\s*\d{1,3}\s*[-_]\s*(emp|pr)\s*\)/)
-            || stemNorm.match(/\b\d{1,3}\s*[-_]\s*(emp|pr)\b/);
+          // Diferencia variacoes de NR como "(08-pta)" e "(120-guin)".
+          const mVar = stemNorm.match(/\(\s*\d{1,3}\s*[-_]\s*(emp|pr|pta|pemt|guin|guindaste|andaime|and)\s*\)/)
+            || stemNorm.match(/\b\d{1,3}\s*[-_]\s*(emp|pr|pta|pemt|guin|guindaste|andaime|and)\b/);
           if (mVar) suf = String(mVar[1] || "");
+          if (suf === "guindaste") suf = "guin";
+          if (suf === "and") suf = "andaime";
         }
         return `nr${num}${suf}`;
       }
@@ -2094,6 +2098,17 @@
         return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
       });
       if (exato) return exato;
+
+      if (rotaKey === "thiagodeoliveira/nr18/19062026") {
+        const guinThiago = lista.find((it) => {
+          const path = normFolder(String(it?.path || "")).toLowerCase();
+          const empresa = String(it?.empresa || "").toLowerCase();
+          return path.includes("/thiago de oliveira/")
+            && path.includes("nr 18")
+            && (path.includes("guin") || path.includes("guindaste") || empresa.includes("guin") || empresa.includes("guindaste"));
+        });
+        if (guinThiago) return guinThiago;
+      }
 
       const docCarteirinha = String(rota.documento || "").replace(/^nr(\d+)(.*)$/i, "carteirinha$1$2");
       if (docCarteirinha && docCarteirinha !== rota.documento) {
