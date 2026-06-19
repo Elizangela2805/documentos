@@ -943,11 +943,20 @@
         items: items
           .map((it) => {
             const path = normFolder(it.path);
-            const empresa = String(it?.empresa || empresasPorPath.get(path) || "").trim();
+            const nome = (path || "").split("/").pop();
+            const funcionario = extrairFuncionarioDoPath(path, it);
+            const empresa = normalizarNomeEmpresa(
+              String(
+                it?.empresa
+                || empresasPorPath.get(path)
+                || extrairEmpresaDoNomeArquivo(nome, funcionario)
+                || ""
+              ).trim()
+            );
             const item = {
               path,
-              nome: (path || "").split("/").pop(),
-              funcionario: extrairFuncionarioDoPath(path, it),
+              nome,
+              funcionario,
               consulta: consultaUrl(path),
             };
             if (empresa) item.empresa = empresa;
@@ -1644,7 +1653,12 @@
         if (empresaItem) {
           empSlug = slugEmpresa(empresaItem);
         }
-        // Regra principal: respeitar o cadastro do projeto (funcionario -> empresa).
+        // Para homonimos em empresas diferentes, o sufixo do PDF (WM/VCMS/etc.) e mais especifico que o cadastro por nome.
+        if (!empSlug) {
+          const empresaNomeArquivo = extrairEmpresaDoNomeArquivo(nomeArq, funcionario);
+          if (empresaNomeArquivo) empSlug = slugEmpresa(empresaNomeArquivo);
+        }
+        // Fallback: respeitar o cadastro do projeto (funcionario -> empresa).
         if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
           empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
         }
