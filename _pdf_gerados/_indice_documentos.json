@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T11:34:03Z",
-  "total": 373,
+  "updated_at": "2026-06-19T11:35:22Z",
+  "total": 374,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2275,6 +2275,16 @@
       "route_documento": "nr35",
       "route_data": "19062026",
       "route": "luizcarlosrochadesouza/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
+      "nome": "NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
+      "funcionario": "Paulo Roberto Mantovanini Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026",
+      "route_funcionario": "paulorobertomantovaninijunior",
+      "route_documento": "nr6",
+      "route_data": "19062026",
+      "route": "paulorobertomantovaninijunior/nr6/19062026"
     }
   ]
 }
