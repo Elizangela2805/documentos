@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19 10:21:49",
+  "updated_at": "2026-06-19 10:22:42",
   "empresa": {
     "id": 6,
     "nome": "VCMS Montagens Industriais LTDA",
@@ -44,7 +44,7 @@
       "empresa_id": 6
     },
     {
-      "id": 87,
+      "id": 82,
       "nome": "Glauber Sinezio",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
@@ -56,8 +56,8 @@
       "empresa_id": 6
     },
     {
-      "id": 84,
-      "nome": "Jos? Lu?s Borges dos Santos",
+      "id": 79,
+      "nome": "JosÃ© LuÃ­s Borges dos Santos",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
@@ -68,19 +68,19 @@
       "empresa_id": 6
     },
     {
-      "id": 86,
+      "id": 81,
       "nome": "Luiz Carlos Rocha de Souza",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
     {
-      "id": 88,
-      "nome": "Paulo Roberto Mantovanini Ju?nior",
+      "id": 83,
+      "nome": "Paulo Roberto Mantovanini JuÌnior",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
     {
-      "id": 85,
+      "id": 80,
       "nome": "Silvino Rosa dos Santos",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
