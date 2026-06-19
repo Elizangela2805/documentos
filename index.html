@@ -926,15 +926,9 @@
       if (!owner || !repo || !token) return;
       const now = new Date().toISOString();
       let empresasPorPath = new Map();
-      let itensPorPath = new Map();
       try {
         const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
         const itensAtuais = Array.isArray(atual?.data?.items) ? atual.data.items : [];
-        itensPorPath = new Map(
-          itensAtuais
-            .map((it) => [normFolder(String(it?.path || "")), it])
-            .filter(([path]) => path)
-        );
         empresasPorPath = new Map(
           itensAtuais
             .map((it) => [normFolder(String(it?.path || "")), String(it?.empresa || "").trim()])
@@ -942,7 +936,6 @@
         );
       } catch {
         empresasPorPath = new Map();
-        itensPorPath = new Map();
       }
       const payload = {
         updated_at: now,
@@ -950,42 +943,16 @@
         items: items
           .map((it) => {
             const path = normFolder(it.path);
-            if (path.toLowerCase().startsWith("_pdf_gerados/release/_pdf_gerados/paulo roberto mantovanini junior/")) return null;
-            const atual = itensPorPath.get(path) || {};
-            const funcionario = extrairFuncionarioDoPath(path, it);
-            const empresa = normalizarNomeEmpresa(
-              String(it?.empresa || empresasPorPath.get(path) || atual?.empresa || extrairEmpresaDoItem({ ...it, path, funcionario }) || "").trim()
-            );
+            const empresa = String(it?.empresa || empresasPorPath.get(path) || "").trim();
             const item = {
               path,
               nome: (path || "").split("/").pop(),
-              funcionario,
-              consulta: String(atual?.consulta || "").trim() || consultaUrl(path),
+              funcionario: extrairFuncionarioDoPath(path, it),
+              consulta: consultaUrl(path),
             };
             if (empresa) item.empresa = empresa;
-            const pathLower = path.toLowerCase();
-            const isPauloWm = (
-              pathLower.startsWith("_pdf_gerados/paulo roberto mantovanini junior/")
-              && pathLower.includes("(wm")
-            );
-            if (isPauloWm) {
-              const docSlug = pathLower.includes("nr 18") ? "nr18" : pathLower.includes("nr 6") ? "nr6" : extrairDocumentoSlug(path);
-              const route = `paulorobertomantovaninijuniorwm/${docSlug}/19062026`;
-              item.empresa = "WM Montagens Industriais";
-              item.route_funcionario = "paulorobertomantovaninijuniorwm";
-              item.route_documento = docSlug;
-              item.route_data = "19062026";
-              item.route = route;
-              item.consulta = `${PAGES_BASE_FIXED}/${route}`;
-            } else {
-              for (const campo of ["route_funcionario", "route_documento", "route_data", "route"]) {
-                const valor = String(atual?.[campo] || "").trim();
-                if (valor) item[campo] = valor;
-              }
-            }
             return item;
           })
-          .filter(Boolean)
           .filter((it) => !isGrupoFuncionarioInvalido(it.funcionario)),
       };
       payload.total = payload.items.length;
@@ -1673,49 +1640,32 @@
         const pathKey = normFolder(it?.path || "").toLowerCase();
         const chaveFunc = slugUrl(funcionario);
         let empSlug = "";
-        let empOrigem = "";
         const empresaItem = normalizarNomeEmpresa(it?.empresa || "");
         if (empresaItem) {
           empSlug = slugEmpresa(empresaItem);
-          empOrigem = "item";
+        }
+        // Regra principal: respeitar o cadastro do projeto (funcionario -> empresa).
+        if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
+          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
         }
         // Fallback: usar vinculo por caminho do documento quando nao houver cadastro.
         if (!empSlug && pathKey && empresaPorCaminho instanceof Map) {
           empSlug = String(empresaPorCaminho.get(pathKey) || "").trim();
-          if (empSlug) empOrigem = "caminho";
         }
         if (!empSlug) {
           const empresa = extrairEmpresaDoItem(it);
           empSlug = slugEmpresa(empresa);
-          if (empSlug) empOrigem = "arquivo";
         }
-        // Quando nao ha empresa explicita no item/caminho/nome, usa o cadastro.
-        if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
-          empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
-          if (empSlug) empOrigem = "cadastro";
+        if (!EMPRESAS_PERMITIDAS_SLUG.has(empSlug)) continue;
+        if (!empSlug) continue;
+        if (!catalogo.has(empSlug)) {
+          const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlug) : "") || "").trim();
+          const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlug);
+          catalogo.set(empSlug, { nome: nomeEmp || empSlug, funcionarios: new Map() });
         }
-        const empSlugs = new Set();
-        if (empSlug) empSlugs.add(empSlug);
-        if (empOrigem === "cadastro" && funcionariosCadastro instanceof Map) {
-          for (const [empSlugCadastro, nomesSet] of funcionariosCadastro.entries()) {
-            if (!empSlugCadastro) continue;
-            const nomes = nomesSet instanceof Set ? [...nomesSet] : Array.isArray(nomesSet) ? nomesSet : [];
-            if (nomes.some((nomeFunc) => slugUrl(nomeFunc) === chaveFunc)) {
-              empSlugs.add(empSlugCadastro);
-            }
-          }
-        }
-        for (const empSlugItem of empSlugs) {
-          if (!empSlugItem || !EMPRESAS_PERMITIDAS_SLUG.has(empSlugItem)) continue;
-          if (!catalogo.has(empSlugItem)) {
-            const nomeEmpCadastro = String((nomesEmpresaPorSlug instanceof Map ? nomesEmpresaPorSlug.get(empSlugItem) : "") || "").trim();
-            const nomeEmp = normalizarNomeEmpresa(nomeEmpCadastro || empSlugItem);
-            catalogo.set(empSlugItem, { nome: nomeEmp || empSlugItem, funcionarios: new Map() });
-          }
-          const grupoEmp = catalogo.get(empSlugItem);
-          if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
-          grupoEmp.funcionarios.get(funcionario).push(it);
-        }
+        const grupoEmp = catalogo.get(empSlug);
+        if (!grupoEmp.funcionarios.has(funcionario)) grupoEmp.funcionarios.set(funcionario, []);
+        grupoEmp.funcionarios.get(funcionario).push(it);
       }
       if (funcionariosCadastro instanceof Map) {
         for (const [empSlug, nomesSet] of funcionariosCadastro.entries()) {
@@ -2136,6 +2086,15 @@
 
     const selecionarDocumentoPorRota = (rota, itens) => {
       const lista = Array.isArray(itens) ? itens : [];
+      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
+      const exato = lista.find((it) => {
+        const routeItem = String(it?.route || "").trim().toLowerCase();
+        if (routeItem) return routeItem === rotaKey;
+        const r = assinaturaRotaFromItem(it);
+        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
+      });
+      if (exato) return exato;
+
       const docCarteirinha = String(rota.documento || "").replace(/^nr(\d+)(.*)$/i, "carteirinha$1$2");
       if (docCarteirinha && docCarteirinha !== rota.documento) {
         const cartExata = lista.find((it) => {
@@ -2153,14 +2112,6 @@
         if (cartMesmoFuncionario) return cartMesmoFuncionario;
       }
 
-      const rotaKey = `${rota.funcionario}/${rota.documento}/${rota.dataRef}`;
-      const exato = lista.find((it) => {
-        const routeItem = String(it?.route || "").trim().toLowerCase();
-        if (routeItem) return routeItem === rotaKey;
-        const r = assinaturaRotaFromItem(it);
-        return r.funcionario === rota.funcionario && r.documento === rota.documento && r.dataRef === rota.dataRef;
-      });
-      if (exato) return exato;
 
       let melhor = null;
       let melhorScore = -1;
