@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T11:27:53Z",
-  "total": 361,
+  "updated_at": "2026-06-19T11:28:53.505Z",
+  "total": 365,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -949,6 +949,36 @@
       "nome": "NR 6 (06 José Antonio dos Santos Neto.pdf",
       "funcionario": "José Antonio dos Santos Neto",
       "consulta": "https://elizangela2805.github.io/documentos/joseantoniodossantosneto/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 12 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 12 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr12/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 18 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 18 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 34 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 34 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr34/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 35 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 35 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 6 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 6 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr6/19062026"
     },
     {
       "path": "_pdf_gerados/Jose Roberio Araujo Martins/carteirinha nr 11 (16-garra) (Uniferco) Jose Roberio Araujo Martins.pdf",
@@ -2165,16 +2195,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/19062026"
-    },
-    {
-      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 35 (08) (VCMS) José Luís Borges dos Santos.pdf",
-      "nome": "NR 35 (08) (VCMS) José Luís Borges dos Santos.pdf",
-      "funcionario": "José Luís Borges dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr35/19062026",
-      "route_funcionario": "joseluisborgesdossantos",
-      "route_documento": "nr35",
-      "route_data": "19062026",
-      "route": "joseluisborgesdossantos/nr35/19062026"
     }
   ]
 }
