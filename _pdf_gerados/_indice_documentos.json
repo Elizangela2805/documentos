@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T14:07:11Z",
-  "total": 382,
+  "updated_at": "2026-06-19T14:07:24Z",
+  "total": 383,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2473,6 +2473,16 @@
       "route_documento": "nr11",
       "route_data": "19062026",
       "route": "fredsondasilvamoraesjunior/nr11/19062026"
+    },
+    {
+      "path": "_pdf_gerados/FREDSON DA SILVA MORAES JÚNIOR/NR 34 FREDSON DA SILVA MORAES JÚNIOR.pdf",
+      "nome": "NR 34 FREDSON DA SILVA MORAES JÚNIOR.pdf",
+      "funcionario": "FREDSON DA SILVA MORAES JÚNIOR",
+      "consulta": "https://elizangela2805.github.io/documentos/fredsondasilvamoraesjunior/nr34/19062026",
+      "route_funcionario": "fredsondasilvamoraesjunior",
+      "route_documento": "nr34",
+      "route_data": "19062026",
+      "route": "fredsondasilvamoraesjunior/nr34/19062026"
     }
   ]
 }
