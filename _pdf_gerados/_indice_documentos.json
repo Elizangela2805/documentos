@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T09:10:08",
-  "total": 335,
+  "updated_at": "2026-06-19T12:10:32.995Z",
+  "total": 379,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1558,44 +1558,33 @@
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026",
-      "empresa": "VCMS Montagens"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "nome": "NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorwm/nr18/19062026",
-      "empresa": "WM Montagens Industriais",
-      "route_funcionario": "paulorobertomantovaninijuniorwm",
-      "route_documento": "nr18",
-      "route_data": "19062026",
-      "route": "paulorobertomantovaninijuniorwm/nr18/19062026"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026",
+      "empresa": "WM Montagens Industriais"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr35/19062026",
-      "empresa": "VCMS Montagens"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr35/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026",
-      "empresa": "VCMS Montagens"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "nome": "NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorwm/nr6/19062026",
-      "empresa": "WM Montagens Industriais",
-      "route_funcionario": "paulorobertomantovaninijuniorwm",
-      "route_documento": "nr6",
-      "route_data": "19062026",
-      "route": "paulorobertomantovaninijuniorwm/nr6/19062026"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026",
+      "empresa": "WM Montagens Industriais"
     },
     {
       "path": "_pdf_gerados/Pedro Eduardo Del Villar Pereira/NR 18 (08 Pedro Eduardo Del Villar Pereira.pdf",
@@ -1608,6 +1597,270 @@
       "nome": "NR 6 (06 Pedro Eduardo Del Villar Pereira.pdf",
       "funcionario": "Pedro Eduardo Del Villar Pereira",
       "consulta": "https://elizangela2805.github.io/documentos/pedroeduardodelvillarpereira/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Claudinei Ribas/NR 12 (08) (WM Claudinei Ribas.pdf",
+      "nome": "NR 12 (08) (WM Claudinei Ribas.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr12/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Claudinei Ribas/NR 6 (08) (WM Claudinei Ribas.pdf",
+      "nome": "NR 6 (08) (WM Claudinei Ribas.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Douglas Aparecido Benjamin/NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
+      "nome": "NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr10/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/anuencia (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "anuencia (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/anuenciaprojettaelizangelaaparecidadeoliveira/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/carteirinha nr 11 (16-emp) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "carteirinha nr 11 (16-emp) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/carteirinha11emp/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/carteirinha nr 18 (120-guin) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "carteirinha nr 18 (120-guin) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/carteirinha18guin/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/carteirinha nr 18 (16-andaime) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "carteirinha nr 18 (16-andaime) (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/carteirinha18andaime/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/fittest (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "fittest (Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/fittestprojettaelizangelaaparecidadeoliveira/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 10 (160 Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 10 (160 Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr10/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 11 (16-emp Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 11 (16-emp Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr11emp/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 11 (40-munck Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 11 (40-munck Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr11/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 18 (120-guin Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 18 (120-guin Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 18 (16-andaime Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 18 (16-andaime Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/NR 35 (08 Elizangela Aparecida de Oliveira.pdf",
+      "nome": "NR 35 (08 Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Elizangela Aparecida de Oliveira/OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "nome": "OS Sócio Proprietário(a)(Projetta) Elizangela Aparecida de Oliveira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/ossocioproprietarioaprojettaelizangelaaparecidadeoliveira/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Francisco das Chagas Ferreira/NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
+      "nome": "NR 34 (08) (VCMS Francisco das Chagas Ferreira.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr34/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Francisco Djalma de Lima/NR 34 (08) (VCMS Francisco Djalma de Lima.pdf",
+      "nome": "NR 34 (08) (VCMS Francisco Djalma de Lima.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr34/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Isac Marcelino/NR 12 (08) (WM Isac Marcelino.pdf",
+      "nome": "NR 12 (08) (WM Isac Marcelino.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr12/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Isac Marcelino/NR 6 (08) (WM Isac Marcelino.pdf",
+      "nome": "NR 6 (08) (WM Isac Marcelino.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Jorge Alves Silva/NR 18 (08) (WM Jorge Alves Silva.pdf",
+      "nome": "NR 18 (08) (WM Jorge Alves Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Jorge Alves Silva/NR 35 (08) (WM Jorge Alves Silva.pdf",
+      "nome": "NR 35 (08) (WM Jorge Alves Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Jorge Alves Silva/NR 6 (08) (WM Jorge Alves Silva.pdf",
+      "nome": "NR 6 (08) (WM Jorge Alves Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Joseilson Rodrigues de Andrade/NR 12 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "nome": "NR 12 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr12/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Joseilson Rodrigues de Andrade/NR 18 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "nome": "NR 18 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Joseilson Rodrigues de Andrade/NR 34 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "nome": "NR 34 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr34/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Joseilson Rodrigues de Andrade/NR 35 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "nome": "NR 35 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Joseilson Rodrigues de Andrade/NR 6 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "nome": "NR 6 (08) (WM Joseilson Rodrigues de Andrade.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Judson Cleyton Dias/NR 34 (08) (VCMS Judson Cleyton Dias.pdf",
+      "nome": "NR 34 (08) (VCMS Judson Cleyton Dias.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr34/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "anuencia (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/anuenciaprojettalucasferreiradasilvasantos/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/carteirinha nr 11 (16-pr) (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "carteirinha nr 11 (16-pr) (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/carteirinha11pr/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/fittest (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "fittest (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/fittestprojettalucasferreiradasilvasantos/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/NR 11 (16-pr Lucas Ferreira da Silva Santos.pdf",
+      "nome": "NR 11 (16-pr Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr11pr/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
+      "nome": "NR 35 (08 Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Lucas Ferreira da Silva Santos/OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "nome": "OS Soldador (Projetta) Lucas Ferreira da Silva Santos.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/ossoldadorprojettalucasferreiradasilvasantos/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "nome": "NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "nome": "NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/carteirinha nr 11 (16-garra) (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "nome": "carteirinha nr 11 (16-garra) (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/carteirinha11garra/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/fittest (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "nome": "fittest (Uniferco) Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/fittestunifercoricardocesarbortoleto/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/NR 11 (16-garra Ricardo Cesar Bortoleto.pdf",
+      "nome": "NR 11 (16-garra Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr11/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/NR 12 (08-Garra Ricardo Cesar Bortoleto.pdf",
+      "nome": "NR 12 (08-Garra Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr12/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/NR 6 (06 Ricardo Cesar Bortoleto.pdf",
+      "nome": "NR 6 (06 Ricardo Cesar Bortoleto.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Sidnei Vilela da Silva/NR 18 (08) (WM Sidnei Vilela da Silva.pdf",
+      "nome": "NR 18 (08) (WM Sidnei Vilela da Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Sidnei Vilela da Silva/NR 35 (08) (WM Sidnei Vilela da Silva.pdf",
+      "nome": "NR 35 (08) (WM Sidnei Vilela da Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Sidnei Vilela da Silva/NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
+      "nome": "NR 6 (08) (WM Sidnei Vilela da Silva.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
     },
     {
       "path": "_pdf_gerados/Ricardo Cesar Bortoleto/anuencia (Uniferco) Ricardo Cesar Bortoleto.pdf",
