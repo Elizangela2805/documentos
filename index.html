@@ -2105,6 +2105,7 @@
           const empresa = String(it?.empresa || "").toLowerCase();
           return path.includes("/thiago de oliveira/")
             && path.includes("nr 18")
+            && !path.includes("carteirinha")
             && (path.includes("guin") || path.includes("guindaste") || empresa.includes("guin") || empresa.includes("guindaste"));
         });
         if (guinThiago) return guinThiago;
