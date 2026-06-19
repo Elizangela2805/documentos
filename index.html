@@ -950,7 +950,7 @@
         items: items
           .map((it) => {
             const path = normFolder(it.path);
-            if (path.startsWith("_pdf_gerados/release/")) return null;
+            if (path.toLowerCase().startsWith("_pdf_gerados/release/_pdf_gerados/paulo roberto mantovanini junior/")) return null;
             const atual = itensPorPath.get(path) || {};
             const funcionario = extrairFuncionarioDoPath(path, it);
             const empresa = normalizarNomeEmpresa(
