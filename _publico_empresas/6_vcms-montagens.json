@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T08:25:34",
+  "updated_at": "2026-06-19 10:21:49",
   "empresa": {
     "id": 6,
     "nome": "VCMS Montagens Industriais LTDA",
@@ -7,6 +7,30 @@
     "logo": ""
   },
   "funcionarios": [
+    {
+      "id": 52,
+      "nome": "Diego Augusto da Silva",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 70,
+      "nome": "Elias Mendes da Costa",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 72,
+      "nome": "Erivan Santos Pereira Neto",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 53,
+      "nome": "Francineudo Alves de Sousa",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
     {
       "id": 18,
       "nome": "Francisco das Chagas Ferreira",
@@ -20,26 +44,8 @@
       "empresa_id": 6
     },
     {
-      "id": 20,
-      "nome": "Judson Cleyton Dias",
-      "nome_pasta": "VCMS Montagens",
-      "empresa_id": 6
-    },
-    {
-      "id": 52,
-      "nome": "Diego Augusto da Silva",
-      "nome_pasta": "VCMS Montagens",
-      "empresa_id": 6
-    },
-    {
-      "id": 53,
-      "nome": "Francineudo Alves de Sousa",
-      "nome_pasta": "VCMS Montagens",
-      "empresa_id": 6
-    },
-    {
-      "id": 70,
-      "nome": "Elias Mendes da Costa",
+      "id": 87,
+      "nome": "Glauber Sinezio",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
@@ -50,8 +56,32 @@
       "empresa_id": 6
     },
     {
-      "id": 72,
-      "nome": "Erivan Santos Pereira Neto",
+      "id": 84,
+      "nome": "Jos? Lu?s Borges dos Santos",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 20,
+      "nome": "Judson Cleyton Dias",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 86,
+      "nome": "Luiz Carlos Rocha de Souza",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 88,
+      "nome": "Paulo Roberto Mantovanini Ju?nior",
+      "nome_pasta": "VCMS Montagens",
+      "empresa_id": 6
+    },
+    {
+      "id": 85,
+      "nome": "Silvino Rosa dos Santos",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     }
@@ -63,5 +93,6 @@
       "funcionario_id": null,
       "tipo_documento": ""
     }
-  ]
+  ],
+  "total_funcionarios": 13
 }
