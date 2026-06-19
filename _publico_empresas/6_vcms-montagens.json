@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19 10:23:14",
+  "updated_at": "2026-06-19 10:36:25",
   "empresa": {
     "id": 6,
     "nome": "VCMS Montagens Industriais LTDA",
@@ -75,7 +75,7 @@
     },
     {
       "id": 83,
-      "nome": "Paulo Roberto Mantovanini Júnior",
+      "nome": "Paulo Roberto Mantovanini Junior (VCMS)",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
