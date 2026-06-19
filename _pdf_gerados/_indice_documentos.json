@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T11:31:31Z",
-  "total": 370,
+  "updated_at": "2026-06-19T11:33:41Z",
+  "total": 371,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2245,6 +2245,16 @@
       "route_documento": "nr35",
       "route_data": "19062026",
       "route": "silvinorosadossantos/nr35/19062026"
+    },
+    {
+      "path": "_pdf_gerados/Luiz Carlos Rocha de Souza/NR 6 (08) (VCMS) Luiz Carlos Rocha de Souza.pdf",
+      "nome": "NR 6 (08) (VCMS) Luiz Carlos Rocha de Souza.pdf",
+      "funcionario": "Luiz Carlos Rocha de Souza",
+      "consulta": "https://elizangela2805.github.io/documentos/luizcarlosrochadesouza/nr6/19062026",
+      "route_funcionario": "luizcarlosrochadesouza",
+      "route_documento": "nr6",
+      "route_data": "19062026",
+      "route": "luizcarlosrochadesouza/nr6/19062026"
     }
   ]
 }
