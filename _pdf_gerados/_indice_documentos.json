@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T13:45:15.904300Z",
-  "total": 377,
+  "updated_at": "2026-06-19T13:46:28.362Z",
+  "total": 379,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -1646,13 +1646,8 @@
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
-      "funcionario": "Paulo Roberto Mantovanini Junior (VCMS)",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorvcms/nr18/19062026",
-      "empresa": "VCMS",
-      "route_funcionario": "paulorobertomantovaninijuniorvcms",
-      "route_documento": "nr18",
-      "route_data": "19062026",
-      "route": "paulorobertomantovaninijuniorvcms/nr18/19062026"
+      "funcionario": "Paulo Roberto Mantovanini Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
@@ -1664,24 +1659,14 @@
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
-      "funcionario": "Paulo Roberto Mantovanini Junior (VCMS)",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorvcms/nr35/19062026",
-      "empresa": "VCMS",
-      "route_funcionario": "paulorobertomantovaninijuniorvcms",
-      "route_documento": "nr35",
-      "route_data": "19062026",
-      "route": "paulorobertomantovaninijuniorvcms/nr35/19062026"
+      "funcionario": "Paulo Roberto Mantovanini Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr35/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
-      "funcionario": "Paulo Roberto Mantovanini Junior (VCMS)",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorvcms/nr6/19062026",
-      "empresa": "VCMS",
-      "route_funcionario": "paulorobertomantovaninijuniorvcms",
-      "route_documento": "nr6",
-      "route_data": "19062026",
-      "route": "paulorobertomantovaninijuniorvcms/nr6/19062026"
+      "funcionario": "Paulo Roberto Mantovanini Júnior",
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
@@ -1938,6 +1923,18 @@
       "funcionario": "release",
       "consulta": "https://elizangela2805.github.io/documentos/release/ossoldadorprojettalucasferreiradasilvasantos/19062026",
       "empresa": "Projetta"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "nome": "NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/release/_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "nome": "NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
+      "funcionario": "release",
+      "consulta": "https://elizangela2805.github.io/documentos/release/nr6/19062026"
     },
     {
       "path": "_pdf_gerados/release/_pdf_gerados/Ricardo Cesar Bortoleto/carteirinha nr 11 (16-garra) (Uniferco) Ricardo Cesar Bortoleto.pdf",
