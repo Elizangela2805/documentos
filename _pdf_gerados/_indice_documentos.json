@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19T12:35:39.239Z",
+  "updated_at": "2026-06-19T09:36:00",
   "total": 379,
   "items": [
     {
@@ -1750,33 +1750,44 @@
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 18 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026",
+      "empresa": "VCMS Montagens"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "nome": "NR 18 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr18/19062026",
-      "empresa": "WM Montagens Industriais"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorwm/nr18/19032026",
+      "empresa": "WM Montagens Industriais",
+      "route_funcionario": "paulorobertomantovaninijuniorwm",
+      "route_documento": "nr18",
+      "route_data": "19032026",
+      "route": "paulorobertomantovaninijuniorwm/nr18/19032026"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 35 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr35/19062026"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr35/19062026",
+      "empresa": "VCMS Montagens"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Júnior/NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "nome": "NR 6 (08) (VCMS) Paulo Roberto Mantovanini Júnior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Júnior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026",
+      "empresa": "VCMS Montagens"
     },
     {
       "path": "_pdf_gerados/Paulo Roberto Mantovanini Junior/NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "nome": "NR 6 (08) (WM Paulo Roberto Mantovanini Junior.pdf",
       "funcionario": "Paulo Roberto Mantovanini Junior",
-      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijunior/nr6/19062026",
-      "empresa": "WM Montagens Industriais"
+      "consulta": "https://elizangela2805.github.io/documentos/paulorobertomantovaninijuniorwm/nr6/19032026",
+      "empresa": "WM Montagens Industriais",
+      "route_funcionario": "paulorobertomantovaninijuniorwm",
+      "route_documento": "nr6",
+      "route_data": "19032026",
+      "route": "paulorobertomantovaninijuniorwm/nr6/19032026"
     },
     {
       "path": "_pdf_gerados/Pedro Eduardo Del Villar Pereira/NR 18 (08 Pedro Eduardo Del Villar Pereira.pdf",
