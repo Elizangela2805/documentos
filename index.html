@@ -472,6 +472,29 @@
       </div>
 
       <div class="box">
+        <h2 style="margin:0 0 10px;font-size:1rem;">Cadastrar funcionario e documentos</h2>
+        <div class="grid">
+          <div class="field">
+            <label for="cadEmpresa">Empresa</label>
+            <select id="cadEmpresa">
+              <option value="">Selecione uma empresa</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="cadFuncionario">Funcionario</label>
+            <input id="cadFuncionario" type="text" placeholder="Nome completo" />
+          </div>
+        </div>
+        <div class="field" style="margin-top:8px;">
+          <label for="cadDocs">Documentos PDF</label>
+          <input id="cadDocs" type="file" accept=".pdf,application/pdf" multiple />
+        </div>
+        <div class="actions">
+          <button id="btnCadastrarSite" type="button">Cadastrar no site</button>
+        </div>
+      </div>
+
+      <div class="box">
         <div class="field">
           <label for="pdfs">Arquivos PDF para upload</label>
           <input id="pdfs" type="file" accept=".pdf,application/pdf" multiple />
@@ -555,6 +578,10 @@
       btnFiltrarHistorico: document.getElementById("btnFiltrarHistorico"),
       btnLimparFiltroHistorico: document.getElementById("btnLimparFiltroHistorico"),
       autoUpload: document.getElementById("autoUpload"),
+      cadEmpresa: document.getElementById("cadEmpresa"),
+      cadFuncionario: document.getElementById("cadFuncionario"),
+      cadDocs: document.getElementById("cadDocs"),
+      btnCadastrarSite: document.getElementById("btnCadastrarSite"),
       status: document.getElementById("status"),
       listaFuncionarios: document.getElementById("listaFuncionarios"),
       tbodyHistorico: document.getElementById("tbodyHistorico"),
@@ -577,6 +604,12 @@
     const logTs = () => new Date().toISOString().replace("T", " ").slice(0, 19);
     const sanitize = (s) => String(s || "").replace(/[<>:"/\\|?*\u0000-\u001f]/g, "_").trim();
     const normFolder = (s) => String(s || "").replace(/\\/g, "/").replace(/^\/+|\/+$/g, "");
+    const escapeHtml = (s) => String(s ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
     const slugUrl = (s) => String(s || "")
       .normalize("NFD")
       .replace(/[\u0300-\u036f]/g, "")
@@ -947,11 +980,20 @@
         items: items
           .map((it) => {
             const path = normFolder(it.path);
-            const empresa = String(it?.empresa || empresasPorPath.get(path) || "").trim();
+            const nome = (path || "").split("/").pop();
+            const funcionario = extrairFuncionarioDoPath(path, it);
+            const empresa = normalizarNomeEmpresa(
+              String(
+                it?.empresa
+                || empresasPorPath.get(path)
+                || extrairEmpresaDoNomeArquivo(nome, funcionario)
+                || ""
+              ).trim()
+            );
             const item = {
               path,
-              nome: (path || "").split("/").pop(),
-              funcionario: extrairFuncionarioDoPath(path, it),
+              nome,
+              funcionario,
               consulta: consultaUrl(path),
             };
             if (empresa) item.empresa = empresa;
@@ -1199,6 +1241,19 @@
       if (/\buniferco\b/.test(txt)) return "Uniferco";
       if (/\bprojetta\b/.test(txt) || txt.includes("projetta engenharia")) return "Projetta";
       return base;
+    };
+
+    const preencherEmpresasCadastro = (nomes = []) => {
+      if (!el.cadEmpresa) return;
+      const atual = String(el.cadEmpresa.value || "").trim();
+      const lista = [...new Set([...EMPRESAS_PADRAO, ...(Array.isArray(nomes) ? nomes : [])]
+        .map((n) => normalizarNomeEmpresa(n))
+        .filter(Boolean))]
+        .sort((a, b) => a.localeCompare(b, "pt-BR"));
+      el.cadEmpresa.innerHTML = `<option value="">Selecione uma empresa</option>${
+        lista.map((nome) => `<option value="${escapeHtml(nome)}">${escapeHtml(nome)}</option>`).join("")
+      }`;
+      if (atual && lista.includes(atual)) el.cadEmpresa.value = atual;
     };
 
     const isEmpresaConhecida = (nome) => {
@@ -1648,7 +1703,12 @@
         if (empresaItem) {
           empSlug = slugEmpresa(empresaItem);
         }
-        // Regra principal: respeitar o cadastro do projeto (funcionario -> empresa).
+        // Para homonimos em empresas diferentes, o sufixo do PDF (WM/VCMS/etc.) e mais especifico que o cadastro por nome.
+        if (!empSlug) {
+          const empresaNomeArquivo = extrairEmpresaDoNomeArquivo(nomeArq, funcionario);
+          if (empresaNomeArquivo) empSlug = slugEmpresa(empresaNomeArquivo);
+        }
+        // Fallback: respeitar o cadastro do projeto (funcionario -> empresa).
         if (!empSlug && chaveFunc && empresaPorFuncionario instanceof Map) {
           empSlug = String(empresaPorFuncionario.get(chaveFunc) || "").trim();
         }
@@ -1882,6 +1942,152 @@
     };
 
     let uploadEmAndamento = false;
+    let cadastroEmAndamento = false;
+
+    const proximoIdNumerico = (lista) => {
+      const ids = Array.isArray(lista) ? lista.map((x) => Number(x?.id)).filter(Number.isFinite) : [];
+      return ids.length ? Math.max(...ids) + 1 : 1;
+    };
+
+    const nomePdfUnico = async (owner, repo, branch, pasta, nomeArquivo, token) => {
+      const base = sanitize(nomeArquivo).replace(/\.pdf$/i, "") || "documento";
+      let candidato = `${base}.pdf`;
+      for (let i = 2; i < 1000; i += 1) {
+        const path = normFolder(`${pasta}/${candidato}`);
+        const sha = await githubGetSha(owner, repo, branch, path, token);
+        if (!sha) return { nome: candidato, path };
+        candidato = `${base} (${i}).pdf`;
+      }
+      throw new Error("Nao foi possivel gerar nome unico para o PDF.");
+    };
+
+    const salvarCadastroPublicoFuncionario = async (owner, repo, branch, token, empresaNome, funcionarioNome, docs) => {
+      const atual = await githubGetJsonFile(owner, repo, branch, "cadnr_publico.json", token);
+      const data = atual.data && typeof atual.data === "object" ? atual.data : {};
+      data.updated_at = logTs();
+      data.empresas = Array.isArray(data.empresas) ? data.empresas : [];
+      data.funcionarios = Array.isArray(data.funcionarios) ? data.funcionarios : [];
+      data.documentos = Array.isArray(data.documentos) ? data.documentos : [];
+
+      const empresaNorm = normalizarNomeEmpresa(empresaNome);
+      const empresaSlug = slugEmpresa(empresaNorm);
+      let empresa = data.empresas.find((e) => slugEmpresa(e?.nome_pasta || e?.nome || "") === empresaSlug);
+      if (!empresa) {
+        empresa = { id: proximoIdNumerico(data.empresas), nome: empresaNorm, nome_pasta: empresaNorm, logo: "" };
+        data.empresas.push(empresa);
+      }
+      const empresaId = Number(empresa.id);
+
+      const funcSlug = slugUrl(funcionarioNome);
+      let funcionario = data.funcionarios.find((f) => Number(f?.empresa_id) === empresaId && slugUrl(f?.nome || "") === funcSlug);
+      if (!funcionario) {
+        funcionario = {
+          id: proximoIdNumerico(data.funcionarios),
+          nome: funcionarioNome,
+          nome_pasta: empresa.nome_pasta || empresaNorm,
+          empresa_id: empresaId,
+        };
+        data.funcionarios.push(funcionario);
+      }
+      const funcionarioId = Number(funcionario.id);
+
+      const caminhosExistentes = new Set(data.documentos.map((d) => normFolder(String(d?.caminho || "")).toLowerCase()).filter(Boolean));
+      for (const doc of docs) {
+        const caminho = normFolder(doc.path);
+        if (!caminho || caminhosExistentes.has(caminho.toLowerCase())) continue;
+        data.documentos.push({
+          caminho,
+          empresa_id: empresaId,
+          funcionario_id: funcionarioId,
+          tipo_documento: String(doc.nome || "").replace(/\.pdf$/i, ""),
+        });
+        caminhosExistentes.add(caminho.toLowerCase());
+      }
+
+      await githubPutJsonFile(owner, repo, branch, "cadnr_publico.json", token, data, `Atualiza cadastro publico de ${funcionarioNome}`);
+    };
+
+    const adicionarDocsAoIndiceRemoto = async (owner, repo, branch, token, empresaNome, funcionarioNome, docs) => {
+      const atual = await githubGetJsonFile(owner, repo, branch, REPO_INDEX_PATH, token);
+      const data = atual.data && typeof atual.data === "object" ? atual.data : {};
+      const items = Array.isArray(data.items) ? data.items : [];
+      const porPath = new Map(items.map((it) => [normFolder(String(it?.path || "")).toLowerCase(), it]));
+      for (const doc of docs) {
+        const path = normFolder(doc.path);
+        if (!path) continue;
+        const item = {
+          path,
+          nome: path.split("/").pop() || doc.nome || "documento.pdf",
+          funcionario: funcionarioNome,
+          consulta: consultaUrl(path),
+          empresa: empresaNome,
+        };
+        porPath.set(path.toLowerCase(), item);
+      }
+      const novosItems = [...porPath.values()]
+        .filter((it) => it && String(it.path || "").toLowerCase().endsWith(".pdf"))
+        .sort((a, b) => String(a.path || "").localeCompare(String(b.path || ""), "pt-BR"));
+      await githubPutJsonFile(owner, repo, branch, REPO_INDEX_PATH, token, {
+        updated_at: new Date().toISOString(),
+        total: novosItems.length,
+        items: novosItems,
+      }, `Atualiza indice com documentos de ${funcionarioNome}`);
+    };
+
+    const cadastrarFuncionarioDocumentosSite = async () => {
+      if (cadastroEmAndamento) return log("Ja existe um cadastro em andamento.", "err");
+      const owner = el.owner.value.trim();
+      const repo = el.repo.value.trim();
+      const branch = el.branch.value.trim() || "main";
+      const token = el.token.value.trim();
+      const folder = normFolder(el.folder.value || "_pdf_gerados");
+      const empresa = normalizarNomeEmpresa(el.cadEmpresa.value);
+      const funcionario = String(el.cadFuncionario.value || "").trim();
+      const files = [...(el.cadDocs?.files || [])].filter((f) => /\.pdf$/i.test(f.name));
+      if (!owner || !repo || !token) return log("Preencha owner, repositorio e token.", "err");
+      if (!empresa) return log("Selecione a empresa.", "err");
+      if (!funcionario) return log("Informe o nome do funcionario.", "err");
+      if (!files.length) return log("Selecione pelo menos um PDF para cadastrar.", "err");
+
+      cadastroEmAndamento = true;
+      el.btnCadastrarSite.disabled = true;
+      try {
+        const pastaFuncionario = normFolder(`${folder}/${sanitize(funcionario)}`);
+        const docsPublicados = [];
+        log(`Cadastrando ${funcionario} em ${empresa} com ${files.length} documento(s)...`);
+        for (const f of files) {
+          const unico = await nomePdfUnico(owner, repo, branch, pastaFuncionario, f.name, token);
+          const fileNoExt = unico.nome.replace(/\.pdf$/i, "");
+          const qrPath = normFolder(`${pastaFuncionario}/_qrcodes/${fileNoExt}_qrcode.png`);
+          const linkConsulta = linkPublicoPdf(owner, repo, branch, unico.path);
+          const qrBlob = await renderQrBlob(linkConsulta);
+          await githubUpload(owner, repo, branch, unico.path, f, token, `Cadastro PDF: ${funcionario} - ${unico.nome}`);
+          await githubUpload(owner, repo, branch, qrPath, qrBlob, token, `Cadastro QR: ${funcionario} - ${fileNoExt}`);
+          docsPublicados.push({ path: unico.path, nome: unico.nome });
+          await adicionarHistorico({
+            criado_em: new Date().toISOString(),
+            data_br: new Date().toLocaleString("pt-BR"),
+            arquivo: unico.nome,
+            pasta: pastaFuncionario,
+            path: unico.path,
+            funcionario,
+            link: linkConsulta,
+            blob_pdf: f,
+          });
+          log(`Documento cadastrado: ${unico.nome}`, "ok");
+        }
+        await adicionarDocsAoIndiceRemoto(owner, repo, branch, token, empresa, funcionario, docsPublicados);
+        await salvarCadastroPublicoFuncionario(owner, repo, branch, token, empresa, funcionario, docsPublicados);
+        log(`${funcionario} cadastrado no site sem remover documentos existentes.`, "ok");
+        if (el.cadDocs) el.cadDocs.value = "";
+        await atualizarLista();
+      } catch (err) {
+        log(err.message || String(err), "err");
+      } finally {
+        cadastroEmAndamento = false;
+        el.btnCadastrarSite.disabled = false;
+      }
+    };
 
     const enviarSelecionados = async (origem = "manual") => {
       if (uploadEmAndamento) return log("Ja existe uma publicacao em andamento.", "err");
@@ -1938,6 +2144,14 @@
       const folder = normFolder(el.folder.value);
       const token = el.token.value.trim();
       if (!owner || !repo) return log("Owner/repositorio nao preenchidos para listar arquivos.", "err");
+      if (isAdminMode) {
+        try {
+          const extrasCadastro = await obterEmpresasExtrasPublicas(owner, repo, branch);
+          preencherEmpresasCadastro(extrasCadastro.empresas);
+        } catch {
+          preencherEmpresasCadastro();
+        }
+      }
       el.btnAtualizar.disabled = true;
       try {
         let items = [];
@@ -2016,6 +2230,7 @@
         }
       });
       el.btnEnviar.addEventListener("click", async () => { await enviarSelecionados("manual"); });
+      el.btnCadastrarSite.addEventListener("click", async () => { await cadastrarFuncionarioDocumentosSite(); });
       el.btnAtualizar.addEventListener("click", atualizarLista);
     }
 
