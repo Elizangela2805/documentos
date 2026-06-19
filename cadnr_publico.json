@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-19 10:21:49",
+  "updated_at": "2026-06-19 10:22:42",
   "empresas": [
     {
       "id": 1,
@@ -497,7 +497,7 @@
     },
     {
       "id": 79,
-      "nome": "Jos? Lu?s Borges dos Santos",
+      "nome": "JosÃ© LuÃ­s Borges dos Santos",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
@@ -515,7 +515,7 @@
     },
     {
       "id": 83,
-      "nome": "Paulo Roberto Mantovanini Ju?nior",
+      "nome": "Paulo Roberto Mantovanini JuÌnior",
       "nome_pasta": "VCMS Montagens",
       "empresa_id": 6
     },
