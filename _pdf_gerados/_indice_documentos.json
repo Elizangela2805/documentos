@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T11:27:28Z",
-  "total": 363,
+  "updated_at": "2026-06-19T11:27:40Z",
+  "total": 364,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2195,6 +2195,16 @@
       "route_documento": "nr18",
       "route_data": "19062026",
       "route": "joseluisborgesdossantos/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/José Luís Borges dos Santos/NR 34 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "nome": "NR 34 (08) (VCMS) José Luís Borges dos Santos.pdf",
+      "funcionario": "José Luís Borges dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/joseluisborgesdossantos/nr34/19062026",
+      "route_funcionario": "joseluisborgesdossantos",
+      "route_documento": "nr34",
+      "route_data": "19062026",
+      "route": "joseluisborgesdossantos/nr34/19062026"
     }
   ]
 }
