@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-19T11:37:50Z",
-  "total": 378,
+  "updated_at": "2026-06-19T11:38:07Z",
+  "total": 379,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2325,6 +2325,16 @@
       "route_documento": "nr18",
       "route_data": "19062026",
       "route": "glaubersinezio/nr18/19062026"
+    },
+    {
+      "path": "_pdf_gerados/Glauber Sinezio/NR 35 (08) (VCMS) Glauber Sinezio.pdf",
+      "nome": "NR 35 (08) (VCMS) Glauber Sinezio.pdf",
+      "funcionario": "Glauber Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glaubersinezio/nr35/19062026",
+      "route_funcionario": "glaubersinezio",
+      "route_documento": "nr35",
+      "route_data": "19062026",
+      "route": "glaubersinezio/nr35/19062026"
     }
   ]
 }
