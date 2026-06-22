@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-22T10:46:29Z",
-  "total": 384,
+  "updated_at": "2026-06-22T10:46:43Z",
+  "total": 385,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -2474,6 +2474,16 @@
       "route_documento": "nr6",
       "route_data": "22062026",
       "route": "glauciosinezio/nr6/22062026"
+    },
+    {
+      "path": "_pdf_gerados/Glaucio Sinezio/NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
+      "nome": "NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
+      "funcionario": "Glaucio Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr12/22062026",
+      "route_funcionario": "glauciosinezio",
+      "route_documento": "nr12",
+      "route_data": "22062026",
+      "route": "glauciosinezio/nr12/22062026"
     }
   ]
 }
