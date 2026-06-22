@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-22T10:47:13Z",
-  "total": 386,
+  "updated_at": "2026-06-22T10:51:25.124Z",
+  "total": 387,
   "items": [
     {
       "path": "_pdf_gerados/Adenilson Neves da Silva/carteirinha nr 18 (08-pta) (RJM) Adenilson Neves da Silva.pdf",
@@ -773,6 +773,30 @@
       "nome": "NR 6 (06 Gilmar de Jesus Batalha dos Reis.pdf",
       "funcionario": "Gilmar de Jesus Batalha dos Reis",
       "consulta": "https://elizangela2805.github.io/documentos/gilmardejesusbatalhadosreis/nr6/22062026"
+    },
+    {
+      "path": "_pdf_gerados/Glaucio Sinezio/NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
+      "nome": "NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
+      "funcionario": "Glaucio Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr12/22062026"
+    },
+    {
+      "path": "_pdf_gerados/Glaucio Sinezio/NR 18 (08) (VCMS) Glaucio Sinezio.pdf",
+      "nome": "NR 18 (08) (VCMS) Glaucio Sinezio.pdf",
+      "funcionario": "Glaucio Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr18/22062026"
+    },
+    {
+      "path": "_pdf_gerados/Glaucio Sinezio/NR 35 (08) (VCMS) Glaucio Sinezio.pdf",
+      "nome": "NR 35 (08) (VCMS) Glaucio Sinezio.pdf",
+      "funcionario": "Glaucio Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr35/22062026"
+    },
+    {
+      "path": "_pdf_gerados/Glaucio Sinezio/NR 6 (08) (VCMS) Glaucio Sinezio.pdf",
+      "nome": "NR 6 (08) (VCMS) Glaucio Sinezio.pdf",
+      "funcionario": "Glaucio Sinezio",
+      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr6/22062026"
     },
     {
       "path": "_pdf_gerados/Gustavo Hilário Monsão da Silva/NR 1.5.7 (08 Gustavo Hilário Monsão da Silva.pdf",
@@ -2464,36 +2488,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/22062026"
-    },
-    {
-      "path": "_pdf_gerados/Glaucio Sinezio/NR 6 (08) (VCMS) Glaucio Sinezio.pdf",
-      "nome": "NR 6 (08) (VCMS) Glaucio Sinezio.pdf",
-      "funcionario": "Glaucio Sinezio",
-      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr6/22062026",
-      "route_funcionario": "glauciosinezio",
-      "route_documento": "nr6",
-      "route_data": "22062026",
-      "route": "glauciosinezio/nr6/22062026"
-    },
-    {
-      "path": "_pdf_gerados/Glaucio Sinezio/NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
-      "nome": "NR 12 (08) (VCMS) Glaucio Sinezio.pdf",
-      "funcionario": "Glaucio Sinezio",
-      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr12/22062026",
-      "route_funcionario": "glauciosinezio",
-      "route_documento": "nr12",
-      "route_data": "22062026",
-      "route": "glauciosinezio/nr12/22062026"
-    },
-    {
-      "path": "_pdf_gerados/Glaucio Sinezio/NR 35 (08) (VCMS) Glaucio Sinezio.pdf",
-      "nome": "NR 35 (08) (VCMS) Glaucio Sinezio.pdf",
-      "funcionario": "Glaucio Sinezio",
-      "consulta": "https://elizangela2805.github.io/documentos/glauciosinezio/nr35/22062026",
-      "route_funcionario": "glauciosinezio",
-      "route_documento": "nr35",
-      "route_data": "22062026",
-      "route": "glauciosinezio/nr35/22062026"
     }
   ]
 }
