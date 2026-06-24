@@ -3476,7 +3476,10 @@ class App(tk.Tk):
             stem_ascii = f"carteirinha {stem_ascii}"
         if "carteirinha" in stem_ascii:
             # Mantem slug curto para reduzir densidade do QR na carteirinha.
-            m_nr_cart = re.search(r"\bnr\s*0*([0-9]{1,3})\b", stem_ascii)
+            m_nr_cart = (
+                re.search(r"\bcarteirinha\s+(?:nr\s*)?0*([0-9]{1,3})\b", stem_ascii)
+                or re.search(r"\bnr\s*0*([0-9]{1,3})\b", stem_ascii)
+            )
             nr_cart = str(m_nr_cart.group(1) or "").strip() if m_nr_cart else ""
             m_sub_cart = re.search(r"\b(emp|pr|garra|munck|pta|pemt|guin|andaime|and)\b", stem_ascii)
             sub_cart = str(m_sub_cart.group(1) or "").strip() if m_sub_cart else ""

@@ -643,7 +643,8 @@
         .replace(/[\u0300-\u036f]/g, "")
         .toLowerCase();
       if (stemNorm.includes("carteirinha")) {
-        const mNrCart = stemNorm.match(/\bnr\s*0*([0-9]{1,3})\b/);
+        const mNrCart = stemNorm.match(/\bcarteirinha\s+(?:nr\s*)?0*([0-9]{1,3})\b/)
+          || stemNorm.match(/\bnr\s*0*([0-9]{1,3})\b/);
         const nrCart = mNrCart ? String(mNrCart[1] || "") : "";
         let subCart = "";
         const mSubCart = stemNorm.match(/\b(emp|pr|garra|munck|pta|pemt|guin|guindaste|andaime|and)\b/);
