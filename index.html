@@ -758,8 +758,21 @@
       const rt = String(item?.route_data || "").trim();
       if (rf && rd && rt) return `${PAGES_BASE_FIXED}/${encodeURIComponent(rf)}/${encodeURIComponent(rd)}/${encodeURIComponent(rt)}`;
       const consulta = String(item?.consulta || "").trim();
-      if (consulta) return consulta;
       const path = String(item?.path || "").trim();
+      if (consulta && path) {
+        const documentoCalculado = extrairDocumentoSlug(path);
+        if (
+          documentoCalculado
+          && documentoCalculado !== "carteirinha"
+          && /\/carteirinha\/[0-9]{8}\/?$/i.test(consulta)
+        ) {
+          return consulta.replace(
+            /\/carteirinha\/([0-9]{8})\/?$/i,
+            `/${documentoCalculado}/$1`
+          );
+        }
+      }
+      if (consulta) return consulta;
       if (path) return linkPublicoPdf("", "", "", path);
       return `${PAGES_BASE_FIXED}/funcionario/documento/${dataHojeDdMmAaaa()}`;
     };
