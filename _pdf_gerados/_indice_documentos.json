@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24T16:35:23.076Z",
+  "updated_at": "2026-06-24T16:38:55Z",
   "total": 391,
   "items": [
     {
@@ -651,8 +651,12 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18andaime/24062026",
-      "empresa": "Uniferco"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18/24062026",
+      "empresa": "Uniferco",
+      "route_funcionario": "franciscoizaildosilvadeabreu",
+      "route_documento": "nr18",
+      "route_data": "24062026",
+      "route": "franciscoizaildosilvadeabreu/nr18/24062026"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 Francisco Izaildo Silva de Abreu.pdf",
