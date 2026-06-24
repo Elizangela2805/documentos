@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24T16:40:55Z",
+  "updated_at": "2026-06-24T16:44:46.179Z",
   "total": 391,
   "items": [
     {
@@ -609,10 +609,6 @@
       "nome": "carteirinha 18 and (16) (Uniferco) Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/carteirinha/24062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "carteirinha",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/carteirinha/24062026",
       "empresa": "Uniferco"
     },
     {
@@ -620,10 +616,6 @@
       "nome": "carteirinha 18 pta (08) (Uniferco) Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/carteirinha/24062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "carteirinha",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/carteirinha/24062026",
       "empresa": "Uniferco"
     },
     {
@@ -631,10 +623,6 @@
       "nome": "carteirinha nr 18 (08-pta) (Uniferco) Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/carteirinha18pta/24062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "carteirinha18pta",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/carteirinha18pta/24062026",
       "empresa": "Uniferco"
     },
     {
@@ -642,10 +630,6 @@
       "nome": "carteirinha nr 18 (16-andaime) (Uniferco) Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/carteirinha18andaime/24062026",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "carteirinha18andaime",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/carteirinha18andaime/24062026",
       "empresa": "Uniferco"
     },
     {
@@ -653,11 +637,7 @@
       "nome": "fittest (Uniferco) Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/fittestunifercofranciscoizaildosilvadeabreu/24062026",
-      "empresa": "Uniferco",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "fittestunifercofranciscoizaildosilvadeabreu",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/fittestunifercofranciscoizaildosilvadeabreu/24062026"
+      "empresa": "Uniferco"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 1.5.7 Francisco Izaildo Silva de Abreu.pdf",
@@ -675,12 +655,8 @@
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "nome": "NR 18 and Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
-      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18/24062026",
-      "empresa": "Uniferco",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "nr18",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/nr18/24062026"
+      "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18andaime/24062026",
+      "empresa": "Uniferco"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 18 Francisco Izaildo Silva de Abreu.pdf",
@@ -693,11 +669,7 @@
       "nome": "NR 18 pta Francisco Izaildo Silva de Abreu.pdf",
       "funcionario": "Francisco Izaildo Silva de Abreu",
       "consulta": "https://elizangela2805.github.io/documentos/franciscoizaildosilvadeabreu/nr18pta/24062026",
-      "empresa": "Uniferco",
-      "route_funcionario": "franciscoizaildosilvadeabreu",
-      "route_documento": "nr18pta",
-      "route_data": "24062026",
-      "route": "franciscoizaildosilvadeabreu/nr18pta/24062026"
+      "empresa": "Uniferco"
     },
     {
       "path": "_pdf_gerados/Francisco Izaildo Silva de Abreu/NR 20 (08) Francisco Izaildo Silva de Abreu.pdf",
