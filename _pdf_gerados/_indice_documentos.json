@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-06-30T20:38:33Z",
-  "total": 412,
+  "updated_at": "2026-07-01T17:09:19Z",
+  "total": 413,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2663,6 +2663,16 @@
       "route_documento": "nr33",
       "route_data": "30062026",
       "route": "joseluisborgesdossantos/nr33/30062026"
+    },
+    {
+      "path": "_pdf_gerados/Vitor Roberto de Oliveira/NR 33 (16) (VCMS) Vitor Roberto de Oliveira.pdf",
+      "nome": "NR 33 (16) (VCMS) Vitor Roberto de Oliveira.pdf",
+      "funcionario": "Vitor Roberto de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/vitorrobertodeoliveira/nr33/01072026",
+      "route_funcionario": "vitorrobertodeoliveira",
+      "route_documento": "nr33",
+      "route_data": "01072026",
+      "route": "vitorrobertodeoliveira/nr33/01072026"
     }
   ]
 }
