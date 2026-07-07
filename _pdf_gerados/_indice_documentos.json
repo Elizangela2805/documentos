@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-07T12:43:09Z",
-  "total": 421,
+  "updated_at": "2026-07-07T12:43:22Z",
+  "total": 422,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2718,6 +2718,16 @@
       "route_documento": "nr34",
       "route_data": "07072026",
       "route": "taylorsantosnunes/nr34/07072026"
+    },
+    {
+      "path": "_pdf_gerados/Taylor Santos nunes/NR 35 (08) (VCMS) Taylor Santos nunes.pdf",
+      "nome": "NR 35 (08) (VCMS) Taylor Santos nunes.pdf",
+      "funcionario": "Taylor Santos nunes",
+      "consulta": "https://elizangela2805.github.io/documentos/taylorsantosnunes/nr35/07072026",
+      "route_funcionario": "taylorsantosnunes",
+      "route_documento": "nr35",
+      "route_data": "07072026",
+      "route": "taylorsantosnunes/nr35/07072026"
     }
   ]
 }
