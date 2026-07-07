@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-07T12:45:52Z",
-  "total": 427,
+  "updated_at": "2026-07-07T12:46:05Z",
+  "total": 428,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2778,6 +2778,16 @@
       "route_documento": "nr34",
       "route_data": "07072026",
       "route": "fernandocandidolourenco/nr34/07072026"
+    },
+    {
+      "path": "_pdf_gerados/Fernando Cândido Lourenço/NR 35 (08) (VCMS) Fernando Cândido Lourenço.pdf",
+      "nome": "NR 35 (08) (VCMS) Fernando Cândido Lourenço.pdf",
+      "funcionario": "Fernando Cândido Lourenço",
+      "consulta": "https://elizangela2805.github.io/documentos/fernandocandidolourenco/nr35/07072026",
+      "route_funcionario": "fernandocandidolourenco",
+      "route_documento": "nr35",
+      "route_data": "07072026",
+      "route": "fernandocandidolourenco/nr35/07072026"
     }
   ]
 }
