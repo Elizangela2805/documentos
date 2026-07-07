@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-01T17:28:06.906Z",
-  "total": 416,
+  "updated_at": "2026-07-07T12:42:11Z",
+  "total": 417,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2668,6 +2668,16 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01072026"
+    },
+    {
+      "path": "_pdf_gerados/Taylor Santos nunes/NR 6 (08) (VCMS) Taylor Santos nunes.pdf",
+      "nome": "NR 6 (08) (VCMS) Taylor Santos nunes.pdf",
+      "funcionario": "Taylor Santos nunes",
+      "consulta": "https://elizangela2805.github.io/documentos/taylorsantosnunes/nr6/07072026",
+      "route_funcionario": "taylorsantosnunes",
+      "route_documento": "nr6",
+      "route_data": "07072026",
+      "route": "taylorsantosnunes/nr6/07072026"
     }
   ]
 }
