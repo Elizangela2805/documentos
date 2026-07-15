@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-15T13:22:36Z",
-  "total": 435,
+  "updated_at": "2026-07-15T13:22:49Z",
+  "total": 436,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2858,6 +2858,16 @@
       "route_documento": "nr6",
       "route_data": "15072026",
       "route": "fernandochavesdesouza/nr6/15072026"
+    },
+    {
+      "path": "_pdf_gerados/Fernando Chaves de Souza/NR 12 (08) (VCMS) Fernando Chaves de Souza.pdf",
+      "nome": "NR 12 (08) (VCMS) Fernando Chaves de Souza.pdf",
+      "funcionario": "Fernando Chaves de Souza",
+      "consulta": "https://elizangela2805.github.io/documentos/fernandochavesdesouza/nr12/15072026",
+      "route_funcionario": "fernandochavesdesouza",
+      "route_documento": "nr12",
+      "route_data": "15072026",
+      "route": "fernandochavesdesouza/nr12/15072026"
     }
   ]
 }
