@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-23T18:08:29Z",
-  "total": 443,
+  "updated_at": "2026-07-23T18:21:46Z",
+  "total": 444,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2942,6 +2942,16 @@
       "route_data": "23072026",
       "route": "moisesfaustinodejesusjunior/nr35/23072026",
       "empresa": "Guaritec"
+    },
+    {
+      "path": "_pdf_gerados/Cristiano Borges Dias/NR 10 Cristiano Borges Dias.pdf",
+      "nome": "NR 10 Cristiano Borges Dias.pdf",
+      "funcionario": "Cristiano Borges Dias",
+      "consulta": "https://elizangela2805.github.io/documentos/cristianoborgesdias/nr10/23072026",
+      "route_funcionario": "cristianoborgesdias",
+      "route_documento": "nr10",
+      "route_data": "23072026",
+      "route": "cristianoborgesdias/nr10/23072026"
     }
   ]
 }
