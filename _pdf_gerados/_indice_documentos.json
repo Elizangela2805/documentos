@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-23T18:22:01Z",
-  "total": 445,
+  "updated_at": "2026-07-23T18:22:15Z",
+  "total": 446,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2962,6 +2962,16 @@
       "route_documento": "nr33",
       "route_data": "23072026",
       "route": "cristianoborgesdias/nr33/23072026"
+    },
+    {
+      "path": "_pdf_gerados/Cristiano Borges Dias/NR 35 Cristiano Borges Dias.pdf",
+      "nome": "NR 35 Cristiano Borges Dias.pdf",
+      "funcionario": "Cristiano Borges Dias",
+      "consulta": "https://elizangela2805.github.io/documentos/cristianoborgesdias/nr35/23072026",
+      "route_funcionario": "cristianoborgesdias",
+      "route_documento": "nr35",
+      "route_data": "23072026",
+      "route": "cristianoborgesdias/nr35/23072026"
     }
   ]
 }
