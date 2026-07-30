@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-30T15:58:25Z",
-  "total": 451,
+  "updated_at": "2026-07-30T15:58:41Z",
+  "total": 452,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2886,6 +2886,16 @@
       "route_documento": "nr1",
       "route_data": "30072026",
       "route": "julioclaudemirdasilva/nr1/30072026"
+    },
+    {
+      "path": "_pdf_gerados/Julio Claudemir da Silva/NR 6 Julio Claudemir da Silva.pdf",
+      "nome": "NR 6 Julio Claudemir da Silva.pdf",
+      "funcionario": "Julio Claudemir da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/julioclaudemirdasilva/nr6/30072026",
+      "route_funcionario": "julioclaudemirdasilva",
+      "route_documento": "nr6",
+      "route_data": "30072026",
+      "route": "julioclaudemirdasilva/nr6/30072026"
     }
   ]
 }
