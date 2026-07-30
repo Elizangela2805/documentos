@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-30T15:59:10Z",
-  "total": 454,
+  "updated_at": "2026-07-30T15:59:26Z",
+  "total": 455,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -2916,6 +2916,16 @@
       "route_documento": "fittestunifercojulioclaudemirdasilva",
       "route_data": "30072026",
       "route": "julioclaudemirdasilva/fittestunifercojulioclaudemirdasilva/30072026"
+    },
+    {
+      "path": "_pdf_gerados/Julio Claudemir da Silva/anuencia (Uniferco) Julio Claudemir da Silva.pdf",
+      "nome": "anuencia (Uniferco) Julio Claudemir da Silva.pdf",
+      "funcionario": "Julio Claudemir da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/julioclaudemirdasilva/anuenciaunifercojulioclaudemirdasilva/30072026",
+      "route_funcionario": "julioclaudemirdasilva",
+      "route_documento": "anuenciaunifercojulioclaudemirdasilva",
+      "route_data": "30072026",
+      "route": "julioclaudemirdasilva/anuenciaunifercojulioclaudemirdasilva/30072026"
     }
   ]
 }
