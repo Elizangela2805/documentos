@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-30T16:36:55Z",
-  "total": 466,
+  "updated_at": "2026-07-30T16:37:07Z",
+  "total": 467,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3036,6 +3036,16 @@
       "route_documento": "carteirinha",
       "route_data": "30072026",
       "route": "josecicerodasilva/carteirinha/30072026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Cicero da Silva/anuencia (Uniferco) Jose Cicero da Silva.pdf",
+      "nome": "anuencia (Uniferco) Jose Cicero da Silva.pdf",
+      "funcionario": "Jose Cicero da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/josecicerodasilva/anuenciaunifercojosecicerodasilva/30072026",
+      "route_funcionario": "josecicerodasilva",
+      "route_documento": "anuenciaunifercojosecicerodasilva",
+      "route_data": "30072026",
+      "route": "josecicerodasilva/anuenciaunifercojosecicerodasilva/30072026"
     }
   ]
 }
