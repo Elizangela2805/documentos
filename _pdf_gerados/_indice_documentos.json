@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-07-31T12:01:54Z",
-  "total": 474,
+  "updated_at": "2026-08-03T08:45:42Z",
+  "total": 475,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3124,6 +3124,16 @@
       "route_documento": "nr33",
       "route_data": "31072026",
       "route": "paulorobertomantovaninijunior/nr33/31072026"
+    },
+    {
+      "path": "_pdf_gerados/Gilmar Souza dos Santos/NR 6 (08) (VCMS) Gilmar Souza dos Santos.pdf",
+      "nome": "NR 6 (08) (VCMS) Gilmar Souza dos Santos.pdf",
+      "funcionario": "Gilmar Souza dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/gilmarsouzadossantos/nr6/03082026",
+      "route_funcionario": "gilmarsouzadossantos",
+      "route_documento": "nr6",
+      "route_data": "03082026",
+      "route": "gilmarsouzadossantos/nr6/03082026"
     }
   ]
 }
