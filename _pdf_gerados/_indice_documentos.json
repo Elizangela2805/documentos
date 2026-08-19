@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-03T08:47:44Z",
-  "total": 480,
+  "updated_at": "2026-08-19T11:12:24Z",
+  "total": 481,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3184,6 +3184,16 @@
       "route_documento": "nr35",
       "route_data": "03082026",
       "route": "gilmarsouzadossantos/nr35/03082026"
+    },
+    {
+      "path": "_pdf_gerados/Josenildo Pereira Miranda/NR 20 (16) Josenildo Pereira Miranda.pdf",
+      "nome": "NR 20 (16) Josenildo Pereira Miranda.pdf",
+      "funcionario": "Josenildo Pereira Miranda",
+      "consulta": "https://elizangela2805.github.io/documentos/josenildopereiramiranda/nr20/19082026",
+      "route_funcionario": "josenildopereiramiranda",
+      "route_documento": "nr20",
+      "route_data": "19082026",
+      "route": "josenildopereiramiranda/nr20/19082026"
     }
   ]
 }
