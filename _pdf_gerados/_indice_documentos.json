@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-19T11:12:39Z",
-  "total": 482,
+  "updated_at": "2026-08-20T10:31:12Z",
+  "total": 483,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3204,6 +3204,16 @@
       "route_documento": "nr34",
       "route_data": "19082026",
       "route": "josenildopereiramiranda/nr34/19082026"
+    },
+    {
+      "path": "_pdf_gerados/Romero de Almeida Linhares/NR 18 Romero de Almeida Linhares.pdf",
+      "nome": "NR 18 Romero de Almeida Linhares.pdf",
+      "funcionario": "Romero de Almeida Linhares",
+      "consulta": "https://elizangela2805.github.io/documentos/romerodealmeidalinhares/nr18/20082026",
+      "route_funcionario": "romerodealmeidalinhares",
+      "route_documento": "nr18",
+      "route_data": "20082026",
+      "route": "romerodealmeidalinhares/nr18/20082026"
     }
   ]
 }
