@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-20T10:31:32Z",
-  "total": 484,
+  "updated_at": "2026-08-20T10:33:10Z",
+  "total": 485,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3224,6 +3224,16 @@
       "route_documento": "nr34",
       "route_data": "20082026",
       "route": "romerodealmeidalinhares/nr34/20082026"
+    },
+    {
+      "path": "_pdf_gerados/Oriel Monteiro Linhares/NR 18 Oriel Monteiro Linhares.pdf",
+      "nome": "NR 18 Oriel Monteiro Linhares.pdf",
+      "funcionario": "Oriel Monteiro Linhares",
+      "consulta": "https://elizangela2805.github.io/documentos/orielmonteirolinhares/nr18/20082026",
+      "route_funcionario": "orielmonteirolinhares",
+      "route_documento": "nr18",
+      "route_data": "20082026",
+      "route": "orielmonteirolinhares/nr18/20082026"
     }
   ]
 }
