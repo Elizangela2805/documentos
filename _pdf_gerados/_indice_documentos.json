@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-21T10:22:55Z",
-  "total": 493,
+  "updated_at": "2026-08-21T10:23:08Z",
+  "total": 494,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3314,6 +3314,16 @@
       "route_documento": "anuenciaunifercocicerofranciscodasilva",
       "route_data": "21082026",
       "route": "cicerofranciscodasilva/anuenciaunifercocicerofranciscodasilva/21082026"
+    },
+    {
+      "path": "_pdf_gerados/Cicero Francisco da Silva/fittest (Uniferco) Cicero Francisco da Silva.pdf",
+      "nome": "fittest (Uniferco) Cicero Francisco da Silva.pdf",
+      "funcionario": "Cicero Francisco da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/cicerofranciscodasilva/fittestunifercocicerofranciscodasilva/21082026",
+      "route_funcionario": "cicerofranciscodasilva",
+      "route_documento": "fittestunifercocicerofranciscodasilva",
+      "route_data": "21082026",
+      "route": "cicerofranciscodasilva/fittestunifercocicerofranciscodasilva/21082026"
     }
   ]
 }
