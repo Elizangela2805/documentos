@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-21T10:21:28Z",
-  "total": 487,
+  "updated_at": "2026-08-21T10:21:42Z",
+  "total": 488,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3254,6 +3254,16 @@
       "route_documento": "nr18",
       "route_data": "21082026",
       "route": "cicerofranciscodasilva/nr18/21082026"
+    },
+    {
+      "path": "_pdf_gerados/Cicero Francisco da Silva/NR 18 pta Cicero Francisco da Silva.pdf",
+      "nome": "NR 18 pta Cicero Francisco da Silva.pdf",
+      "funcionario": "Cicero Francisco da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/cicerofranciscodasilva/nr18pta/21082026",
+      "route_funcionario": "cicerofranciscodasilva",
+      "route_documento": "nr18pta",
+      "route_data": "21082026",
+      "route": "cicerofranciscodasilva/nr18pta/21082026"
     }
   ]
 }
