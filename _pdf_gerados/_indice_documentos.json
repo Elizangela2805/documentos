@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-26T11:57:38Z",
-  "total": 497,
+  "updated_at": "2026-08-26T11:58:00Z",
+  "total": 498,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3364,6 +3364,16 @@
       "route_documento": "nr18",
       "route_data": "26082026",
       "route": "cicerofranciscodasilva/nr18/26082026"
+    },
+    {
+      "path": "_pdf_gerados/Cicero Francisco da Silva/carteirinha 18 and (16) (Uniferco) Cicero Francisco da Silva.pdf",
+      "nome": "carteirinha 18 and (16) (Uniferco) Cicero Francisco da Silva.pdf",
+      "funcionario": "Cicero Francisco da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/cicerofranciscodasilva/carteirinha/26082026",
+      "route_funcionario": "cicerofranciscodasilva",
+      "route_documento": "carteirinha",
+      "route_data": "26082026",
+      "route": "cicerofranciscodasilva/carteirinha/26082026"
     }
   ]
 }
