@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-27T10:11:12Z",
-  "total": 504,
+  "updated_at": "2026-08-27T10:11:26Z",
+  "total": 505,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3434,6 +3434,16 @@
       "route_documento": "nr33",
       "route_data": "27082026",
       "route": "ednaldoalmeidadejesus/nr33/27082026"
+    },
+    {
+      "path": "_pdf_gerados/Ednaldo Almeida de Jesus/NR 34 (08) (VCMS) Ednaldo Almeida de Jesus.pdf",
+      "nome": "NR 34 (08) (VCMS) Ednaldo Almeida de Jesus.pdf",
+      "funcionario": "Ednaldo Almeida de Jesus",
+      "consulta": "https://elizangela2805.github.io/documentos/ednaldoalmeidadejesus/nr34/27082026",
+      "route_funcionario": "ednaldoalmeidadejesus",
+      "route_documento": "nr34",
+      "route_data": "27082026",
+      "route": "ednaldoalmeidadejesus/nr34/27082026"
     }
   ]
 }
