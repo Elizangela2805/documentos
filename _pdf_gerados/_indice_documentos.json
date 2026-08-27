@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-27T10:38:24Z",
-  "total": 509,
+  "updated_at": "2026-08-27T10:38:40Z",
+  "total": 510,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3486,6 +3486,16 @@
       "route_documento": "nr18pta",
       "route_data": "27082026",
       "route": "romerodealmeidalinhares/nr18pta/27082026"
+    },
+    {
+      "path": "_pdf_gerados/Romero de Almeida Linhares/carteirinha nr 18 pta (08) (RJM) Romero de Almeida Linhares.pdf",
+      "nome": "carteirinha nr 18 pta (08) (RJM) Romero de Almeida Linhares.pdf",
+      "funcionario": "Romero de Almeida Linhares",
+      "consulta": "https://elizangela2805.github.io/documentos/romerodealmeidalinhares/carteirinha18pta/27082026",
+      "route_funcionario": "romerodealmeidalinhares",
+      "route_documento": "carteirinha18pta",
+      "route_data": "27082026",
+      "route": "romerodealmeidalinhares/carteirinha18pta/27082026"
     }
   ]
 }
