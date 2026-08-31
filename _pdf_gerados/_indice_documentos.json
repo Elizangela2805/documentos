@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T14:17:35Z",
-  "total": 598,
+  "updated_at": "2026-08-31T14:17:52Z",
+  "total": 599,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4413,6 +4413,16 @@
     {
       "path": "_pdf_gerados/Rafael Marques Feitosa/carteirinha escav (TMondini) Rafael Marques Feitosa.pdf",
       "nome": "carteirinha escav (TMondini) Rafael Marques Feitosa.pdf",
+      "funcionario": "Rafael Marques Feitosa",
+      "consulta": "https://elizangela2805.github.io/documentos/rafaelmarquesfeitosa/carteirinha/31082026",
+      "route_funcionario": "rafaelmarquesfeitosa",
+      "route_documento": "carteirinha",
+      "route_data": "31082026",
+      "route": "rafaelmarquesfeitosa/carteirinha/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Rafael Marques Feitosa/carteirinha guin (TMondini) Rafael Marques Feitosa.pdf",
+      "nome": "carteirinha guin (TMondini) Rafael Marques Feitosa.pdf",
       "funcionario": "Rafael Marques Feitosa",
       "consulta": "https://elizangela2805.github.io/documentos/rafaelmarquesfeitosa/carteirinha/31082026",
       "route_funcionario": "rafaelmarquesfeitosa",
