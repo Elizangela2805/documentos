@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T16:33:39Z",
-  "total": 644,
+  "updated_at": "2026-08-31T16:36:11Z",
+  "total": 645,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4884,6 +4884,16 @@
       "route_documento": "osencarregado4estacoesdionwagnerbarbosadepaula",
       "route_data": "31082026",
       "route": "dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Werik Gustavo Lisboa Duarte/NR 6 Werik Gustavo Lisboa Duarte.pdf",
+      "nome": "NR 6 Werik Gustavo Lisboa Duarte.pdf",
+      "funcionario": "Werik Gustavo Lisboa Duarte",
+      "consulta": "https://elizangela2805.github.io/documentos/werikgustavolisboaduarte/nr6/31082026",
+      "route_funcionario": "werikgustavolisboaduarte",
+      "route_documento": "nr6",
+      "route_data": "31082026",
+      "route": "werikgustavolisboaduarte/nr6/31082026"
     }
   ]
 }
