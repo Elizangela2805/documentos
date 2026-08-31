@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T16:30:35Z",
-  "total": 637,
+  "updated_at": "2026-08-31T16:30:48Z",
+  "total": 638,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4814,6 +4814,16 @@
       "route_documento": "nr35",
       "route_data": "31082026",
       "route": "josecarlosjorgedasilva/nr35/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Carlos Jorge da Silva/OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
+      "nome": "OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
+      "funcionario": "Jose Carlos Jorge da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/31082026",
+      "route_funcionario": "josecarlosjorgedasilva",
+      "route_documento": "ossoldador4estacoesjosecarlosjorgedasilva",
+      "route_data": "31082026",
+      "route": "josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/31082026"
     }
   ]
 }
