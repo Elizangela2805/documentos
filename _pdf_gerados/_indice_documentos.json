@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T14:15:53Z",
-  "total": 591,
+  "updated_at": "2026-08-31T14:16:09Z",
+  "total": 592,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4349,6 +4349,16 @@
       "route_documento": "nr33",
       "route_data": "31082026",
       "route": "rafaelmarquesfeitosa/nr33/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Rafael Marques Feitosa/NR 34 (08) (TMondini) Rafael Marques Feitosa.pdf",
+      "nome": "NR 34 (08) (TMondini) Rafael Marques Feitosa.pdf",
+      "funcionario": "Rafael Marques Feitosa",
+      "consulta": "https://elizangela2805.github.io/documentos/rafaelmarquesfeitosa/nr34/31082026",
+      "route_funcionario": "rafaelmarquesfeitosa",
+      "route_documento": "nr34",
+      "route_data": "31082026",
+      "route": "rafaelmarquesfeitosa/nr34/31082026"
     }
   ]
 }
