@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-08-31T13:58:17Z",
+  "updated_at": "2026-08-31T13:58:32Z",
   "total": 584,
   "items": [
     {
@@ -4025,7 +4025,8 @@
       "route_funcionario": "lindailsondesouzatrajano",
       "route_documento": "carteirinha18pta",
       "route_data": "31082026",
-      "route": "lindailsondesouzatrajano/carteirinha18pta/31082026"
+      "route": "lindailsondesouzatrajano/carteirinha18pta/31082026",
+      "empresa": "Thiago Mondini"
     },
     {
       "path": "_pdf_gerados/Lindailson de Souza Trajano/carteirinha nr 18 (120-guin) (TMondini) Lindailson de Souza Trajano.pdf",
