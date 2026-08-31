@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T16:32:25Z",
-  "total": 639,
+  "updated_at": "2026-08-31T16:32:39Z",
+  "total": 640,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4834,6 +4834,16 @@
       "route_documento": "nr6",
       "route_data": "31082026",
       "route": "dionwagnerbarbosadepaula/nr6/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Dion Wagner Barbosa de Paula/NR 12 Dion Wagner Barbosa de Paula.pdf",
+      "nome": "NR 12 Dion Wagner Barbosa de Paula.pdf",
+      "funcionario": "Dion Wagner Barbosa de Paula",
+      "consulta": "https://elizangela2805.github.io/documentos/dionwagnerbarbosadepaula/nr12/31082026",
+      "route_funcionario": "dionwagnerbarbosadepaula",
+      "route_documento": "nr12",
+      "route_data": "31082026",
+      "route": "dionwagnerbarbosadepaula/nr12/31082026"
     }
   ]
 }
