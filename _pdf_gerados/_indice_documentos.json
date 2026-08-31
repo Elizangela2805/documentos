@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T16:29:49Z",
-  "total": 634,
+  "updated_at": "2026-08-31T16:30:04Z",
+  "total": 635,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4784,6 +4784,16 @@
       "route_documento": "nr12",
       "route_data": "31082026",
       "route": "josecarlosjorgedasilva/nr12/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Carlos Jorge da Silva/NR 33 Jose Carlos Jorge da Silva.pdf",
+      "nome": "NR 33 Jose Carlos Jorge da Silva.pdf",
+      "funcionario": "Jose Carlos Jorge da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/nr33/31082026",
+      "route_funcionario": "josecarlosjorgedasilva",
+      "route_documento": "nr33",
+      "route_data": "31082026",
+      "route": "josecarlosjorgedasilva/nr33/31082026"
     }
   ]
 }
