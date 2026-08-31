@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T13:31:02Z",
-  "total": 554,
+  "updated_at": "2026-08-31T13:31:21Z",
+  "total": 555,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3931,6 +3931,16 @@
     {
       "path": "_pdf_gerados/Lindailson de Souza Trajano/carteirinha escav (TMondini) Lindailson de Souza Trajano.pdf",
       "nome": "carteirinha escav (TMondini) Lindailson de Souza Trajano.pdf",
+      "funcionario": "Lindailson de Souza Trajano",
+      "consulta": "https://elizangela2805.github.io/documentos/lindailsondesouzatrajano/carteirinha/31082026",
+      "route_funcionario": "lindailsondesouzatrajano",
+      "route_documento": "carteirinha",
+      "route_data": "31082026",
+      "route": "lindailsondesouzatrajano/carteirinha/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Lindailson de Souza Trajano/carteirinha guin (TMondini) Lindailson de Souza Trajano.pdf",
+      "nome": "carteirinha guin (TMondini) Lindailson de Souza Trajano.pdf",
       "funcionario": "Lindailson de Souza Trajano",
       "consulta": "https://elizangela2805.github.io/documentos/lindailsondesouzatrajano/carteirinha/31082026",
       "route_funcionario": "lindailsondesouzatrajano",
