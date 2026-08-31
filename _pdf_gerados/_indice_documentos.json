@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T16:37:11Z",
-  "total": 649,
+  "updated_at": "2026-08-31T16:37:26Z",
+  "total": 650,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4934,6 +4934,16 @@
       "route_documento": "nr35",
       "route_data": "31082026",
       "route": "werikgustavolisboaduarte/nr35/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Werik Gustavo Lisboa Duarte/OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
+      "nome": "OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
+      "funcionario": "Werik Gustavo Lisboa Duarte",
+      "consulta": "https://elizangela2805.github.io/documentos/werikgustavolisboaduarte/oscaldeireiro4estacoeswerikgustavolisboaduarte/31082026",
+      "route_funcionario": "werikgustavolisboaduarte",
+      "route_documento": "oscaldeireiro4estacoeswerikgustavolisboaduarte",
+      "route_data": "31082026",
+      "route": "werikgustavolisboaduarte/oscaldeireiro4estacoeswerikgustavolisboaduarte/31082026"
     }
   ]
 }
