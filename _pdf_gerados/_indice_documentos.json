@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-08-31T12:53:37Z",
-  "total": 538,
+  "updated_at": "2026-08-31T13:27:12Z",
+  "total": 539,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3777,6 +3777,16 @@
       "route_documento": "carteirinha18andaime",
       "route_data": "31082026",
       "route": "ramonbenedettilopesdias/carteirinha18andaime/31082026"
+    },
+    {
+      "path": "_pdf_gerados/Lindailson de Souza Trajano/NR 6 (06) (TMondini) Lindailson de Souza Trajano.pdf",
+      "nome": "NR 6 (06) (TMondini) Lindailson de Souza Trajano.pdf",
+      "funcionario": "Lindailson de Souza Trajano",
+      "consulta": "https://elizangela2805.github.io/documentos/lindailsondesouzatrajano/nr6/31082026",
+      "route_funcionario": "lindailsondesouzatrajano",
+      "route_documento": "nr6",
+      "route_data": "31082026",
+      "route": "lindailsondesouzatrajano/nr6/31082026"
     }
   ]
 }
