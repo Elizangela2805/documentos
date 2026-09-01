@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-18T14:20:39",
+  "updated_at": "2026-09-01T08:15:00",
   "empresa": {
     "id": 9,
     "nome": "Thiago Mondini Montagem e Desmontagem Industrial LTDA",
@@ -16,6 +16,36 @@
     {
       "id": 78,
       "nome": "Lucas de Oliveira",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    },
+    {
+      "id": 103,
+      "nome": "Michel Aparecido Moyses",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    },
+    {
+      "id": 104,
+      "nome": "Lindailson de Souza Trajano",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    },
+    {
+      "id": 105,
+      "nome": "Ramon Benedetti Lopes Dias",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    },
+    {
+      "id": 106,
+      "nome": "Rafael Marques Feitosa",
+      "nome_pasta": "Thiago Mondini",
+      "empresa_id": 9
+    },
+    {
+      "id": 107,
+      "nome": "Erisvaldo Romão Meira",
       "nome_pasta": "Thiago Mondini",
       "empresa_id": 9
     }
