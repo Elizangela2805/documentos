@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-01T12:37:10Z",
-  "total": 557,
+  "updated_at": "2026-09-01T12:37:22Z",
+  "total": 558,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3552,6 +3552,16 @@
       "route_documento": "nr33",
       "route_data": "01092026",
       "route": "ramonbenedettilopesdias/nr33/01092026"
+    },
+    {
+      "path": "_pdf_gerados/Ramon Benedetti Lopes Dias/NR 34 (08) (TMondini) Ramon Benedetti Lopes Dias.pdf",
+      "nome": "NR 34 (08) (TMondini) Ramon Benedetti Lopes Dias.pdf",
+      "funcionario": "Ramon Benedetti Lopes Dias",
+      "consulta": "https://elizangela2805.github.io/documentos/ramonbenedettilopesdias/nr34/01092026",
+      "route_funcionario": "ramonbenedettilopesdias",
+      "route_documento": "nr34",
+      "route_data": "01092026",
+      "route": "ramonbenedettilopesdias/nr34/01092026"
     }
   ]
 }
