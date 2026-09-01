@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-01T11:55:11.971Z",
-  "total": 536,
+  "updated_at": "2026-09-01T11:57:10Z",
+  "total": 537,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3413,6 +3413,17 @@
       "nome": "NR 6 (06 Wermeson AurÃ©lio FalcÃ£o Freitas.pdf",
       "funcionario": "Wermeson AurÃ©lio FalcÃ£o Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01092026"
+    },
+    {
+      "path": "_pdf_gerados/Ivanildo dos Santos/OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
+      "nome": "OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
+      "funcionario": "Ivanildo dos Santos",
+      "consulta": "https://elizangela2805.github.io/documentos/ivanildodossantos/ossoldador4estacoesivanildodossantos/01092026",
+      "route_funcionario": "ivanildodossantos",
+      "route_documento": "ossoldador4estacoesivanildodossantos",
+      "route_data": "01092026",
+      "route": "ivanildodossantos/ossoldador4estacoesivanildodossantos/01092026",
+      "empresa": "4 Estações"
     }
   ]
 }
