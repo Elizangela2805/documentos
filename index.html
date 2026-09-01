@@ -711,6 +711,7 @@
     const CACHE_TTL_EMPRESAS_MS = 5 * 60 * 1000;
     let cacheEmpresasExtras = { chave: "", at: 0, data: null };
     const EMPRESAS_PADRAO = [
+      "4 Estações",
       "3 MMM",
       "AD2",
       "MG Monte",
@@ -727,6 +728,7 @@
       rjm: "RJM",
       uniferco: "Uniferco",
       "3mmm": "3 MMM",
+      "4estacoes": "4 Estações",
       mgmonte: "MG Monte",
       thiagomondini: "Thiago Mondini",
       vcmsmontagens: "VCMS Montagens",
@@ -1210,6 +1212,7 @@
       if (/\bwm\b/.test(txt) || txt.includes("wm montagens") || txt.includes("wm projetos")) return "WM Montagens Industriais";
       if (/\bad2\b/.test(txt)) return "AD2";
       if (/\brjm\b/.test(txt)) return "RJM";
+      if (txt.includes("4 estacoes") || txt.includes("quatro estacoes")) return "4 Estações";
       if (/\buniferco\b/.test(txt)) return "Uniferco";
       if (/\bprojetta\b/.test(txt) || txt.includes("projetta engenharia")) return "Projetta";
       return base;

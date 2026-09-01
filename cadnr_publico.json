@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-06-24 18:00:00",
+  "updated_at": "2026-09-01T08:00:00",
   "empresas": [
     {
       "id": 1,
@@ -54,6 +54,12 @@
       "nome": "Thiago Mondini Montagem e Desmontagem Industrial LTDA",
       "nome_pasta": "Thiago Mondini",
       "logo": "_logos_empresas/9_Thiago Mondini.jpeg"
+    },
+    {
+      "id": 11,
+      "nome": "Quatro Estações Montagem Industrial LTDA",
+      "nome_pasta": "4 Estações",
+      "logo": "_logos_empresas/11_4 Estações.png"
     }
   ],
   "funcionarios": [
@@ -548,6 +554,30 @@
       "nome": "FREDSON DA SILVA MORAES JÚNIOR",
       "nome_pasta": "Uniferco",
       "empresa_id": 4
+    },
+    {
+      "id": 108,
+      "nome": "Ivanildo dos Santos",
+      "nome_pasta": "4 Estações",
+      "empresa_id": 11
+    },
+    {
+      "id": 109,
+      "nome": "Jose Carlos Jorge da Silva",
+      "nome_pasta": "4 Estações",
+      "empresa_id": 11
+    },
+    {
+      "id": 110,
+      "nome": "Dion Wagner Barbosa de Paula",
+      "nome_pasta": "4 Estações",
+      "empresa_id": 11
+    },
+    {
+      "id": 111,
+      "nome": "Werik Gustavo Lisboa Duarte",
+      "nome_pasta": "4 Estações",
+      "empresa_id": 11
     }
   ],
   "documentos": [
@@ -596,6 +626,12 @@
     {
       "caminho": "",
       "empresa_id": 9,
+      "funcionario_id": null,
+      "tipo_documento": ""
+    },
+    {
+      "caminho": "",
+      "empresa_id": 11,
       "funcionario_id": null,
       "tipo_documento": ""
     }
