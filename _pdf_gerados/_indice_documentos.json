@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-01T11:59:45.767Z",
-  "total": 537,
+  "updated_at": "2026-09-01T12:01:13.127Z",
+  "total": 535,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -1414,12 +1414,6 @@
       "consulta": "https://elizangela2805.github.io/documentos/ivanildodossantos/nr35/01092026"
     },
     {
-      "path": "_pdf_gerados/Ivanildo dos Santos/NR 6 Ivanildo dos Santos.pdf",
-      "nome": "NR 6 Ivanildo dos Santos.pdf",
-      "funcionario": "Ivanildo dos Santos",
-      "consulta": "https://elizangela2805.github.io/documentos/ivanildodossantos/nr6/01092026"
-    },
-    {
       "path": "_pdf_gerados/Ivanildo dos Santos/OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
       "nome": "OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
       "funcionario": "Ivanildo dos Santos",
@@ -1589,12 +1583,6 @@
       "nome": "NR 6 Jose Carlos Jorge da Silva.pdf",
       "funcionario": "Jose Carlos Jorge da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/nr6/01092026"
-    },
-    {
-      "path": "_pdf_gerados/Jose Carlos Jorge da Silva/OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
-      "nome": "OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
-      "funcionario": "Jose Carlos Jorge da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/01092026"
     },
     {
       "path": "_pdf_gerados/Jose Cicero da Silva/anuencia (Uniferco) Jose Cicero da Silva.pdf",
