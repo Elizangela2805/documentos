@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-01T12:10:03Z",
+  "updated_at": "2026-09-01T12:13:11.103Z",
   "total": 539,
   "items": [
     {
@@ -1424,7 +1424,7 @@
       "nome": "NR 6 Ivanildo dos Santos.pdf",
       "funcionario": "Ivanildo dos Santos",
       "consulta": "https://elizangela2805.github.io/documentos/ivanildodossantos/nr6/01092026",
-      "empresa": "4 EstaÃÂ§ÃÂµes"
+      "empresa": "4 EstaÃÂÃÂ§ÃÂÃÂµes"
     },
     {
       "path": "_pdf_gerados/Ivanildo dos Santos/OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
@@ -3404,6 +3404,12 @@
       "consulta": "https://elizangela2805.github.io/documentos/werikgustavolisboaduarte/nr6/01092026"
     },
     {
+      "path": "_pdf_gerados/Werik Gustavo Lisboa Duarte/OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
+      "nome": "OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
+      "funcionario": "Werik Gustavo Lisboa Duarte",
+      "consulta": "https://elizangela2805.github.io/documentos/werikgustavolisboaduarte/oscaldeireiro4estacoeswerikgustavolisboaduarte/01092026"
+    },
+    {
       "path": "_pdf_gerados/Wermeson Aurélio Falcão Freitas/NR 18 (08 Wermeson Aurélio Falcão Freitas.pdf",
       "nome": "NR 18 (08 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
@@ -3426,17 +3432,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01092026"
-    },
-    {
-      "path": "_pdf_gerados/Werik Gustavo Lisboa Duarte/OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
-      "nome": "OS Caldeireiro (4 Estações) Werik Gustavo Lisboa Duarte.pdf",
-      "funcionario": "Werik Gustavo Lisboa Duarte",
-      "consulta": "https://elizangela2805.github.io/documentos/werikgustavolisboaduarte/oscaldeireiro4estacoeswerikgustavolisboaduarte/01092026",
-      "route_funcionario": "werikgustavolisboaduarte",
-      "route_documento": "oscaldeireiro4estacoeswerikgustavolisboaduarte",
-      "route_data": "01092026",
-      "route": "werikgustavolisboaduarte/oscaldeireiro4estacoeswerikgustavolisboaduarte/01092026",
-      "empresa": "4 Estações"
     }
   ]
 }
