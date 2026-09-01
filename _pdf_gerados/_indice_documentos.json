@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-01T12:36:22.661Z",
-  "total": 554,
+  "updated_at": "2026-09-01T12:36:42Z",
+  "total": 555,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3522,6 +3522,16 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01092026"
+    },
+    {
+      "path": "_pdf_gerados/Ramon Benedetti Lopes Dias/NR 12 lix (08) (TMondini) Ramon Benedetti Lopes Dias.pdf",
+      "nome": "NR 12 lix (08) (TMondini) Ramon Benedetti Lopes Dias.pdf",
+      "funcionario": "Ramon Benedetti Lopes Dias",
+      "consulta": "https://elizangela2805.github.io/documentos/ramonbenedettilopesdias/nr12/01092026",
+      "route_funcionario": "ramonbenedettilopesdias",
+      "route_documento": "nr12",
+      "route_data": "01092026",
+      "route": "ramonbenedettilopesdias/nr12/01092026"
     }
   ]
 }
