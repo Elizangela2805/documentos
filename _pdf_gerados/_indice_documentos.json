@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-01T12:09:18Z",
+  "updated_at": "2026-09-01T12:09:57.599Z",
   "total": 538,
   "items": [
     {
@@ -446,6 +446,12 @@
       "nome": "NR 6 Dion Wagner Barbosa de Paula.pdf",
       "funcionario": "Dion Wagner Barbosa de Paula",
       "consulta": "https://elizangela2805.github.io/documentos/dionwagnerbarbosadepaula/nr6/01092026"
+    },
+    {
+      "path": "_pdf_gerados/Dion Wagner Barbosa de Paula/OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
+      "nome": "OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
+      "funcionario": "Dion Wagner Barbosa de Paula",
+      "consulta": "https://elizangela2805.github.io/documentos/dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/01092026"
     },
     {
       "path": "_pdf_gerados/Douglas Aparecido Benjamin/NR 10 (40) (WM Douglas Aparecido Benjamin.pdf",
@@ -1418,7 +1424,7 @@
       "nome": "NR 6 Ivanildo dos Santos.pdf",
       "funcionario": "Ivanildo dos Santos",
       "consulta": "https://elizangela2805.github.io/documentos/ivanildodossantos/nr6/01092026",
-      "empresa": "4 EstaÃ§Ãµes"
+      "empresa": "4 EstaÃÂ§ÃÂµes"
     },
     {
       "path": "_pdf_gerados/Ivanildo dos Santos/OS Soldador (4 Estações) Ivanildo dos Santos.pdf",
@@ -1590,6 +1596,12 @@
       "nome": "NR 6 Jose Carlos Jorge da Silva.pdf",
       "funcionario": "Jose Carlos Jorge da Silva",
       "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/nr6/01092026"
+    },
+    {
+      "path": "_pdf_gerados/Jose Carlos Jorge da Silva/OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
+      "nome": "OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
+      "funcionario": "Jose Carlos Jorge da Silva",
+      "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/01092026"
     },
     {
       "path": "_pdf_gerados/Jose Cicero da Silva/anuencia (Uniferco) Jose Cicero da Silva.pdf",
@@ -3414,28 +3426,6 @@
       "nome": "NR 6 (06 Wermeson Aurélio Falcão Freitas.pdf",
       "funcionario": "Wermeson Aurélio Falcão Freitas",
       "consulta": "https://elizangela2805.github.io/documentos/wermesonaureliofalcaofreitas/nr6/01092026"
-    },
-    {
-      "path": "_pdf_gerados/Jose Carlos Jorge da Silva/OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
-      "nome": "OS Soldador (4 Estações) Jose Carlos Jorge da Silva.pdf",
-      "funcionario": "Jose Carlos Jorge da Silva",
-      "consulta": "https://elizangela2805.github.io/documentos/josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/01092026",
-      "route_funcionario": "josecarlosjorgedasilva",
-      "route_documento": "ossoldador4estacoesjosecarlosjorgedasilva",
-      "route_data": "01092026",
-      "route": "josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/01092026",
-      "empresa": "4 Estações"
-    },
-    {
-      "path": "_pdf_gerados/Dion Wagner Barbosa de Paula/OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
-      "nome": "OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
-      "funcionario": "Dion Wagner Barbosa de Paula",
-      "consulta": "https://elizangela2805.github.io/documentos/dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/01092026",
-      "route_funcionario": "dionwagnerbarbosadepaula",
-      "route_documento": "osencarregado4estacoesdionwagnerbarbosadepaula",
-      "route_data": "01092026",
-      "route": "dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/01092026",
-      "empresa": "4 Estações"
     }
   ]
 }
