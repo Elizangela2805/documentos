@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-01T12:08:07Z",
-  "total": 537,
+  "updated_at": "2026-09-01T12:09:18Z",
+  "total": 538,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3424,6 +3424,17 @@
       "route_documento": "ossoldador4estacoesjosecarlosjorgedasilva",
       "route_data": "01092026",
       "route": "josecarlosjorgedasilva/ossoldador4estacoesjosecarlosjorgedasilva/01092026",
+      "empresa": "4 Estações"
+    },
+    {
+      "path": "_pdf_gerados/Dion Wagner Barbosa de Paula/OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
+      "nome": "OS Encarregado (4 Estações) Dion Wagner Barbosa de Paula.pdf",
+      "funcionario": "Dion Wagner Barbosa de Paula",
+      "consulta": "https://elizangela2805.github.io/documentos/dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/01092026",
+      "route_funcionario": "dionwagnerbarbosadepaula",
+      "route_documento": "osencarregado4estacoesdionwagnerbarbosadepaula",
+      "route_data": "01092026",
+      "route": "dionwagnerbarbosadepaula/osencarregado4estacoesdionwagnerbarbosadepaula/01092026",
       "empresa": "4 Estações"
     }
   ]
