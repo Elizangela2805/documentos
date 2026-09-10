@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-10T17:44:43Z",
-  "total": 586,
+  "updated_at": "2026-09-10T17:47:44Z",
+  "total": 587,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3754,6 +3754,16 @@
       "route_documento": "carteirinha18andaime",
       "route_data": "10092026",
       "route": "marcelopiressantana/carteirinha18andaime/10092026"
+    },
+    {
+      "path": "_pdf_gerados/Fabiano de Faria/NR 11 (16-garra) Fabiano de Faria.pdf",
+      "nome": "NR 11 (16-garra) Fabiano de Faria.pdf",
+      "funcionario": "Fabiano de Faria",
+      "consulta": "https://elizangela2805.github.io/documentos/fabianodefaria/nr11garra/10092026",
+      "route_funcionario": "fabianodefaria",
+      "route_documento": "nr11garra",
+      "route_data": "10092026",
+      "route": "fabianodefaria/nr11garra/10092026"
     }
   ]
 }
