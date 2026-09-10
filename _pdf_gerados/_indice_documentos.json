@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-09T10:14:23Z",
-  "total": 580,
+  "updated_at": "2026-09-10T17:40:53Z",
+  "total": 581,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3694,6 +3694,16 @@
       "route_documento": "nr18",
       "route_data": "09092026",
       "route": "werikgustavolisboaduarte/nr18/09092026"
+    },
+    {
+      "path": "_pdf_gerados/Valter Pereira de Azevedo/NR 11 (16-garra) Valter Pereira de Azevedo.pdf",
+      "nome": "NR 11 (16-garra) Valter Pereira de Azevedo.pdf",
+      "funcionario": "Valter Pereira de Azevedo",
+      "consulta": "https://elizangela2805.github.io/documentos/valterpereiradeazevedo/nr11garra/10092026",
+      "route_funcionario": "valterpereiradeazevedo",
+      "route_documento": "nr11garra",
+      "route_data": "10092026",
+      "route": "valterpereiradeazevedo/nr11garra/10092026"
     }
   ]
 }
