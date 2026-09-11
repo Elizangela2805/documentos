@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-10T17:51:55Z",
-  "total": 595,
+  "updated_at": "2026-09-11T16:34:19Z",
+  "total": 596,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3845,6 +3845,16 @@
       "route_data": "10092026",
       "route": "adilsonaparecidodasnevesjunior/carteirinha18andaime/10092026",
       "empresa": "Uniferco"
+    },
+    {
+      "path": "_pdf_gerados/José Adelino Ferreira/NR 6 José Adelino Ferreira.pdf",
+      "nome": "NR 6 José Adelino Ferreira.pdf",
+      "funcionario": "José Adelino Ferreira",
+      "consulta": "https://elizangela2805.github.io/documentos/joseadelinoferreira/nr6/11092026",
+      "route_funcionario": "joseadelinoferreira",
+      "route_documento": "nr6",
+      "route_data": "11092026",
+      "route": "joseadelinoferreira/nr6/11092026"
     }
   ]
 }
