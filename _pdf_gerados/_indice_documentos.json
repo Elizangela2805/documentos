@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-11T16:34:19Z",
-  "total": 596,
+  "updated_at": "2026-09-11T16:34:33Z",
+  "total": 597,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3855,6 +3855,16 @@
       "route_documento": "nr6",
       "route_data": "11092026",
       "route": "joseadelinoferreira/nr6/11092026"
+    },
+    {
+      "path": "_pdf_gerados/José Adelino Ferreira/NR 12 José Adelino Ferreira.pdf",
+      "nome": "NR 12 José Adelino Ferreira.pdf",
+      "funcionario": "José Adelino Ferreira",
+      "consulta": "https://elizangela2805.github.io/documentos/joseadelinoferreira/nr12/11092026",
+      "route_funcionario": "joseadelinoferreira",
+      "route_documento": "nr12",
+      "route_data": "11092026",
+      "route": "joseadelinoferreira/nr12/11092026"
     }
   ]
 }
