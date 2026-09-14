@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-11T16:35:01Z",
-  "total": 599,
+  "updated_at": "2026-09-14T10:30:24Z",
+  "total": 600,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3885,6 +3885,16 @@
       "route_documento": "nr35",
       "route_data": "11092026",
       "route": "joseadelinoferreira/nr35/11092026"
+    },
+    {
+      "path": "_pdf_gerados/Carlos Miguel Massari/NR 6 Carlos Miguel Massari.pdf",
+      "nome": "NR 6 Carlos Miguel Massari.pdf",
+      "funcionario": "Carlos Miguel Massari",
+      "consulta": "https://elizangela2805.github.io/documentos/carlosmiguelmassari/nr6/14092026",
+      "route_funcionario": "carlosmiguelmassari",
+      "route_documento": "nr6",
+      "route_data": "14092026",
+      "route": "carlosmiguelmassari/nr6/14092026"
     }
   ]
 }
