@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-16T18:15:37Z",
-  "total": 610,
+  "updated_at": "2026-09-16T18:18:20Z",
+  "total": 611,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -3995,6 +3995,16 @@
       "route_documento": "carteirinha18guin",
       "route_data": "16092026",
       "route": "franciscodesouzasantos/carteirinha18guin/16092026"
+    },
+    {
+      "path": "_pdf_gerados/Emerson Douglas Carlin/NR 18 Emerson Douglas Carlin.pdf",
+      "nome": "NR 18 Emerson Douglas Carlin.pdf",
+      "funcionario": "Emerson Douglas Carlin",
+      "consulta": "https://elizangela2805.github.io/documentos/emersondouglascarlin/nr18/16092026",
+      "route_funcionario": "emersondouglascarlin",
+      "route_documento": "nr18",
+      "route_data": "16092026",
+      "route": "emersondouglascarlin/nr18/16092026"
     }
   ]
 }
