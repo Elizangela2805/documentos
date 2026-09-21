@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-21T13:25:47Z",
-  "total": 615,
+  "updated_at": "2026-09-21T13:25:59Z",
+  "total": 616,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4045,6 +4045,16 @@
       "route_documento": "nr34",
       "route_data": "21092026",
       "route": "emersonpereiradeoliveira/nr34/21092026"
+    },
+    {
+      "path": "_pdf_gerados/Emerson Pereira de Oliveira/NR 35 Emerson Pereira de Oliveira.pdf",
+      "nome": "NR 35 Emerson Pereira de Oliveira.pdf",
+      "funcionario": "Emerson Pereira de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/emersonpereiradeoliveira/nr35/21092026",
+      "route_funcionario": "emersonpereiradeoliveira",
+      "route_documento": "nr35",
+      "route_data": "21092026",
+      "route": "emersonpereiradeoliveira/nr35/21092026"
     }
   ]
 }
