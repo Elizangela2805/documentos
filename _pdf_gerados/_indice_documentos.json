@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-16T18:18:44Z",
-  "total": 612,
+  "updated_at": "2026-09-21T13:25:19Z",
+  "total": 613,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4015,6 +4015,16 @@
       "route_documento": "fittestunifercoemersondouglascarlin",
       "route_data": "16092026",
       "route": "emersondouglascarlin/fittestunifercoemersondouglascarlin/16092026"
+    },
+    {
+      "path": "_pdf_gerados/Emerson Pereira de Oliveira/NR 12 Emerson Pereira de Oliveira.pdf",
+      "nome": "NR 12 Emerson Pereira de Oliveira.pdf",
+      "funcionario": "Emerson Pereira de Oliveira",
+      "consulta": "https://elizangela2805.github.io/documentos/emersonpereiradeoliveira/nr12/21092026",
+      "route_funcionario": "emersonpereiradeoliveira",
+      "route_documento": "nr12",
+      "route_data": "21092026",
+      "route": "emersonpereiradeoliveira/nr12/21092026"
     }
   ]
 }
