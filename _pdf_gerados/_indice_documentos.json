@@ -1,5 +1,5 @@
 {
-  "updated_at": "2026-09-21T13:26:27Z",
+  "updated_at": "2026-09-21T13:34:55Z",
   "total": 618,
   "items": [
     {
@@ -4034,7 +4034,8 @@
       "route_funcionario": "emersonpereiradeoliveira",
       "route_documento": "nr33",
       "route_data": "21092026",
-      "route": "emersonpereiradeoliveira/nr33/21092026"
+      "route": "emersonpereiradeoliveira/nr33/21092026",
+      "empresa": "Projetta"
     },
     {
       "path": "_pdf_gerados/Emerson Pereira de Oliveira/NR 34 Emerson Pereira de Oliveira.pdf",
