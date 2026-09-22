@@ -1,6 +1,6 @@
 {
-  "updated_at": "2026-09-22T20:12:43Z",
-  "total": 619,
+  "updated_at": "2026-09-22T20:12:57Z",
+  "total": 620,
   "items": [
     {
       "path": "_pdf_gerados/Adailton Nascimento de Cerqueira/NR 12 (08) (VCMS) Adailton Nascimento de Cerqueira.pdf",
@@ -4087,6 +4087,16 @@
       "route_documento": "nr12garra",
       "route_data": "22092026",
       "route": "apolomarinodemoraes/nr12garra/22092026"
+    },
+    {
+      "path": "_pdf_gerados/Apolo Marino de Moraes/NR 20 (08) Apolo Marino de Moraes.pdf",
+      "nome": "NR 20 (08) Apolo Marino de Moraes.pdf",
+      "funcionario": "Apolo Marino de Moraes",
+      "consulta": "https://elizangela2805.github.io/documentos/apolomarinodemoraes/nr20/22092026",
+      "route_funcionario": "apolomarinodemoraes",
+      "route_documento": "nr20",
+      "route_data": "22092026",
+      "route": "apolomarinodemoraes/nr20/22092026"
     }
   ]
 }
